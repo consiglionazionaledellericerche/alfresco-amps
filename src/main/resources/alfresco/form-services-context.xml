@@ -1,0 +1,116 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+
+<beans>
+    
+    <bean id="formResourceBundles" class="org.alfresco.i18n.ResourceBundleBootstrapComponent">
+        <property name="resourceBundles">
+            <list>
+                <value>alfresco.messages.form-service</value>
+            </list>
+        </property>
+    </bean>
+   
+    <!-- form service bean -->
+    <bean id="FormService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>org.alfresco.repo.forms.FormService</value>
+        </property>
+        <property name="target">
+            <ref bean="formService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref local="FormService_transaction"/>
+                <idref bean="AuditMethodInterceptor"/>
+                <idref bean="exceptionTranslator"/>
+                <idref local="FormService_security"/>
+            </list>
+        </property>
+    </bean>
+ 
+     <!-- Form service transaction bean -->
+    <bean id="FormService_transaction" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+        <property name="transactionManager">
+            <ref bean="transactionManager"/>
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">${server.transaction.mode.default}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Form service security bean -->
+    <bean id="FormService_security" class="org.alfresco.repo.security.permissions.impl.AlwaysProceedMethodInterceptor" />
+    
+    <bean id="formService" class="org.alfresco.repo.forms.FormServiceImpl">
+       <property name="processorRegistry" ref="formProcessorRegistry" />
+    </bean>
+    
+    <!-- Registry beans -->
+    <bean id="formProcessorRegistry" 
+          class="org.alfresco.repo.forms.processor.FormProcessorRegistry" />
+
+    <bean id="nodeFilterRegistry"
+          class="org.alfresco.repo.forms.processor.FilterRegistry" />
+          
+    <bean id="typeFilterRegistry"
+          class="org.alfresco.repo.forms.processor.FilterRegistry" />
+    
+    <!-- Form processors  -->
+    <bean id="baseFormProcessor" abstract="true" init-method="register"
+          class="org.alfresco.repo.forms.processor.AbstractFormProcessor">
+        <property name="processorRegistry" ref="formProcessorRegistry" />
+    </bean>
+    
+    <bean id="filteredFormProcessor" abstract="true"
+          class="org.alfresco.repo.forms.processor.FilteredFormProcessor" 
+          parent="baseFormProcessor" />
+     
+    <bean id="nodeFormProcessor" 
+          class="org.alfresco.repo.forms.processor.node.NodeFormProcessor" 
+          parent="filteredFormProcessor">
+        <property name="filterRegistry" ref="nodeFilterRegistry" />
+        <property name="nodeService" ref="NodeService" />
+        <property name="fileFolderService" ref="FileFolderService" />
+        <property name="dictionaryService" ref="DictionaryService" />
+        <property name="namespaceService" ref="NamespaceService" />
+        <property name="matchPattern">
+            <value>node</value>
+        </property>
+    </bean>
+    
+    <bean id="typeFormProcessor" 
+          class="org.alfresco.repo.forms.processor.node.TypeFormProcessor" 
+          parent="filteredFormProcessor">
+        <property name="filterRegistry" ref="typeFilterRegistry" />
+        <property name="nodeService" ref="NodeService" />
+        <property name="fileFolderService" ref="FileFolderService" />
+        <property name="dictionaryService" ref="DictionaryService" />
+        <property name="namespaceService" ref="NamespaceService" />
+        <property name="matchPattern">
+            <value>type</value>
+        </property>
+    </bean>
+    
+    <!--  Filters -->
+    <bean id="baseFormFilter" abstract="true" init-method="register"
+          class="org.alfresco.repo.forms.processor.AbstractFilter" />
+    
+    <!-- 
+    <bean id="imageAspectFormFilter"
+          class="org.alfresco.repo.forms.processor.node.ImageAspectFilter"
+          parent="baseFormFilter">
+       <property name="filterRegistry" ref="nodeFilterRegistry" />
+    </bean>
+    -->
+     
+    <bean id="formServiceScript" parent="baseJavaScriptExtension" class="org.alfresco.repo.forms.script.ScriptFormService">
+        <property name="extensionName">
+            <value>formService</value>
+        </property>
+        <property name="formService" ref="FormService"/>
+    </bean>
+    
+</beans>

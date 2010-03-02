@@ -1,0 +1,11 @@
+<webscript>
+  <shortname>Delete relationship (deleteRelationship)</shortname>
+  <description>
+  </description>
+  
+  <url>/cmis/rel/s/{store}/i/{id}/type/{rel_type}/target/s/{target_store}/i/{target_id}</url>
+  
+  <authentication>user</authentication>
+  <format default="atomentry"/>
+  <family>CMIS</family>
+</webscript>

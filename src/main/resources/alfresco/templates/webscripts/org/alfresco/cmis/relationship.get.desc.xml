@@ -1,0 +1,12 @@
+<webscript>
+  <shortname>Retrieve relationship (getProperties)</shortname>
+  <description>
+  </description>
+  
+  <url>/cmis/rel/s/{store}/i/{id}/type/{rel_type}/target/s/{target_store}/i/{target_id}?filter={filter?}&amp;includeAllowableActions={includeAllowableActions?}</url>
+  
+  <authentication>guest</authentication>
+  <transaction allow="readonly"/>
+  <format default="atomentry">argument</format>
+  <family>CMIS</family>
+</webscript>

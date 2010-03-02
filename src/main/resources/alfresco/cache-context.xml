@@ -1,0 +1,984 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+ 
+<!--
+   Configuration of in-transaction caches along with the shared (cross-transaction) caches.
+   The in-transaction caches do not share the same configuration as the shared caches.
+   This is because the shared caches can support replication (EHCache 1.2), while the 
+   in-transaction caches must not use these features.
+-->
+<beans>
+   
+   <!-- ==================================================== -->
+   <!-- EH Cache Manager to produce in-transaction EH Caches -->
+   <!--     Do not override or cluster                       -->
+   <!-- ==================================================== -->
+   
+   <bean name="transactionalEHCacheManager" class="org.alfresco.repo.cache.EhCacheManagerFactoryBean" >
+      <property name="configLocation">
+         <value>classpath:alfresco/ehcache-transactional.xml</value>
+      </property>
+   </bean>
+   
+   <!-- ============================================ -->
+   <!-- EH Cache Manager to produce shared EH Caches -->
+   <!-- ============================================ -->
+   
+   <bean name="internalEHCacheManager" class="org.alfresco.repo.cache.InternalEhCacheManagerFactoryBean" />
+   
+   
+   <!-- ===================================== -->
+   <!-- ID lookup for QName entities          -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for QName entities -->
+   
+   <bean name="qnameEntitySharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.qnameEntityCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for QName entities -->
+   
+   <bean name="qnameEntityCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="qnameEntitySharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.cache.qnameEntityTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>500</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- ID lookup for Namespace entities          -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for Namespace entities -->
+   
+   <bean name="namespaceEntitySharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.namespaceEntityCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for Namespace entities -->
+   
+   <bean name="namespaceEntityCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="namespaceEntitySharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.cache.namespaceEntityTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>100</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- ID lookup for Locale entities          -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for Locale entities -->
+   
+   <bean name="localeIdSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.localeIdCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for QName entities -->
+   
+   <bean name="localeIdCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="localeIdSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.cache.localeEntityTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>100</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- ID lookup for Mimetype entities       -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for Mimetype entities -->
+   
+   <bean name="mimetypeEntitySharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.mimetypeEntityCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for Mimetype entities -->
+   
+   <bean name="mimetypeEntityCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="mimetypeEntitySharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.cache.mimetypeEntityTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>100</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- ID lookup for Encoding entities       -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for Encoding entities -->
+   
+   <bean name="encodingEntitySharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.encodingEntityCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for Encoding entities -->
+   
+   <bean name="encodingEntityCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="encodingEntitySharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.cache.encodingEntityTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>100</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- ID lookup for general, shared, immutable entities       -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for Encoding entities -->
+   
+   <bean name="immutableEntitySharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.immutableEntityCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for Encoding entities -->
+   
+   <bean name="immutableEntityCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="immutableEntitySharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.cache.immutableEntityTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>10000</value>
+      </property>
+   </bean>
+   
+   <!-- =============================== -->
+   <!-- Store and Node ID cache lookup  -->
+   <!-- =============================== -->
+
+   <!-- The cross-transaction shared cache for Store IDs -->
+   
+   <bean name="storeAndNodeIdSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.storeAndNodeIdCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for Store and Node IDs -->
+   
+   <bean name="storeAndNodeIdCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="storeAndNodeIdSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.storeAndNodeIdTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>10000</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- Parent Associations lookup for nodes  -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for Parent Associations -->
+   
+   <bean name="parentAssocsSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.parentAssocsCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for Parent Associations -->
+   
+   <bean name="parentAssocsCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="parentAssocsSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.parentAssocsTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>80000</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- Authority container look up for users -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for User Authorities -->
+   
+   <bean name="userToAuthoritySharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.userToAuthorityCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for User Authorities -->
+   
+   <bean name="userToAuthorityCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="userToAuthoritySharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.userToAuthorityTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>100</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- Permissions access cache              -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for Permissions -->
+   
+   <bean name="permissionsAccessSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.permissionsAccessCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for Permissions -->
+   
+   <bean name="permissionsAccessCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="permissionsAccessSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <!-- Eh cache area -->
+      <property name="name">
+         <value>org.alfresco.permissionsAccessTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>10000</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- Node owner cache                      -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for Node Ownership -->
+   
+   <bean name="nodeOwnerSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.nodeOwnerCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for Node Ownership -->
+   
+   <bean name="nodeOwnerCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="nodeOwnerSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.nodeOwnerTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>10000</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- Person username to NodeRef cache      -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for Person -->
+   
+   <bean name="personSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.personCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for Person -->
+   
+   <bean name="personCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="personSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <!-- Eh cache area -->
+      <property name="name">
+         <value>org.alfresco.personTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>1000</value>
+      </property>
+   </bean>
+
+   <!-- ===================================== -->
+   <!-- Authentication Ticket Cache           -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for In-Memory Tickets -->
+   
+   <bean name="ticketsSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.ticketsCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for In-Memory Tickets -->
+   
+   <bean name="ticketsCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="ticketsSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.ticketsTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>10</value>
+      </property>
+   </bean>
+   
+   
+   <!-- ===================================== -->
+   <!-- Lookup for AVM entities               -->
+   <!-- ===================================== -->
+   
+   <!-- The cross-transaction shared cache for AVM Store entities -->
+   
+   <bean name="avmStoreSharedCache" class="org.alfresco.repo.cache.NullCache"/>
+   
+   <!--
+   <bean name="avmStoreSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.avm.avmStoreCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   -->
+   
+   <!-- The transactional cache for AVM Store entities -->
+   
+   <bean name="avmStoreCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="avmStoreSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.cache.avmStoreTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>1000</value>
+      </property>
+   </bean>
+   
+   <!-- The cross-transaction shared cache for AVM entities (various - using cache region) -->
+   
+   <bean name="avmEntitySharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.avm.avmEntityCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for AVM entities (various - using cache region) -->
+   
+   <bean name="avmEntityCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="avmEntitySharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.cache.avmEntityTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>5000</value>
+      </property>
+   </bean>
+   
+   <!-- The cross-transaction shared cache for AVM VersionRoot entities -->
+   
+   <bean name="avmVersionRootEntitySharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.avm.avmVersionRootEntityCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for AVM VersionRoot entities -->
+   
+   <bean name="avmVersionRootEntityCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="avmVersionRootEntitySharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.cache.avmVersionRootEntityTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>100</value>
+      </property>
+   </bean>
+   
+   <!-- The cross-transaction shared cache for AVM Node entities -->
+   
+   <bean name="avmNodeSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.avm.avmNodeCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for AVM Node entities -->
+   
+   <bean name="avmNodeCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="avmNodeSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.cache.avmNodeTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>5000</value>
+      </property>
+   </bean>
+   
+   
+   <!-- The cross-transaction shared cache for AVM Node Aspects entities -->
+   
+   <bean name="avmNodeAspectsSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.avm.avmNodeAspectsCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for AVM Node Aspects entities -->
+   
+   <bean name="avmNodeAspectsCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="avmNodeAspectsSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.cache.avmNodeAspectsTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>5000</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- WebServices Query Session Cache       -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for WebService query sessions -->
+   
+   <bean name="webServicesQuerySessionSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+       <property name="cache">
+           <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+               <property name="cacheManager">
+                   <ref bean="internalEHCacheManager"/>
+               </property>
+               <property name="cacheName">
+                   <value>org.alfresco.repo.webservices.querySessionSharedCache</value>
+               </property>
+           </bean>
+       </property>
+   </bean>
+   
+   <!-- Transactional cache for WebService query sessions -->
+
+   <bean name="webServicesQuerySessionCache" class="org.alfresco.repo.cache.TransactionalCache">
+       <property name="sharedCache">
+           <ref bean="webServicesQuerySessionSharedCache"/>
+       </property>
+       <property name="cacheManager">
+           <ref bean="transactionalEHCacheManager"/>
+       </property>
+       <property name="name">
+           <value>org.alfresco.repo.webservices.querySessionTransactionalCache</value>
+       </property>
+       <property name="maxCacheSize">
+           <value>50</value>
+       </property>
+   </bean>
+   
+	
+   <!-- ===================================== -->
+   <!-- ACL cache                      -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for Acls -->
+   
+   <bean name="aclSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.aclCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for Node Ownership -->
+   
+   <bean name="aclCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="aclSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.aclTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>10000</value>
+      </property>
+   </bean>
+	
+   <!-- ===================================== -->
+   <!-- Messages Caches                       -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for In-Memory ResourceBundleBaseNames -->
+   
+   <bean name="resourceBundleBaseNamesSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.resourceBundleBaseNamesCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for In-Memory ResourceBundleBaseNames -->
+   
+   <bean name="resourceBundleBaseNamesCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="resourceBundleBaseNamesSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.resourceBundleBaseNamesTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>100</value>
+      </property>
+   </bean>
+
+   <!-- The cross-transaction shared cache for In-Memory LoadedResourceBundles -->
+   
+   <bean name="loadedResourceBundlesSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.loadedResourceBundlesCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for In-Memory LoadedResourceBundles -->
+   
+   <bean name="loadedResourceBundlesCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="loadedResourceBundlesSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.loadedResourceBundlesTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>100</value>
+      </property>
+   </bean>
+   
+   <!-- The cross-transaction shared cache for In-Memory Messages -->
+   
+   <bean name="messagesSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.messagesCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for In-Memory Messages -->
+   
+   <bean name="messagesCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="messagesSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.messagesTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>100</value>
+      </property>
+   </bean>
+   
+
+   <!-- ===================================== -->
+   <!-- Dictionary / Namespace Caches         -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for Dictionary Models -->
+   
+   <bean name="compiledModelsSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.compiledModelsCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for Dictionary Models -->
+   
+   <bean name="compiledModelsCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="compiledModelsSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.compiledModelsTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>100</value>
+      </property>
+   </bean>
+
+   <!-- The cross-transaction shared cache for Dictionary Namespaces -->
+ 
+   <bean name="prefixesSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.prefixesCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for Dictionary Namespaces -->
+   
+   <bean name="prefixesCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="prefixesSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.prefixesTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>100</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- Web Scripts Caches                    -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for In-Memory WebScripts Registry -->
+   
+   <bean name="webScriptsRegistrySharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.webScriptsRegistryCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for In-Memory WebScripts Registry -->
+   
+   <bean name="webScriptsRegistryCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="webScriptsRegistrySharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.webScriptsRegistryTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>100</value>
+      </property>
+   </bean>
+   
+   <!-- ===================================== -->
+   <!-- RoutingContentStore caches            -->
+   <!-- ===================================== -->
+
+   <!-- The cross-transaction shared cache for AbstractRoutingContentStore -->
+   
+   <bean name="routingContentStoreSharedCache" class="org.alfresco.repo.cache.EhCacheAdapter">
+      <property name="cache">
+         <bean class="org.springframework.cache.ehcache.EhCacheFactoryBean" >
+            <property name="cacheManager">
+               <ref bean="internalEHCacheManager" />
+            </property>
+            <property name="cacheName">
+               <value>org.alfresco.cache.routingContentStoreSharedCache</value>
+            </property>
+         </bean>
+      </property>
+   </bean>
+   
+   <!-- The transactional cache for AbstractRoutingContentStore -->
+   
+   <bean name="routingContentStoreCache" class="org.alfresco.repo.cache.TransactionalCache">
+      <property name="sharedCache">
+         <ref bean="routingContentStoreSharedCache" />
+      </property>
+      <property name="cacheManager" >
+         <ref bean="transactionalEHCacheManager" />
+      </property>
+      <property name="name">
+         <value>org.alfresco.routingContentStoreTransactionalCache</value>
+      </property>
+      <property name="maxCacheSize">
+         <value>1000</value>
+      </property>
+   </bean>
+   
+</beans>

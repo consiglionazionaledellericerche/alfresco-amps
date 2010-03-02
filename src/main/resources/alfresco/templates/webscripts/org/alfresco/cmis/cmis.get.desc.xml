@@ -1,0 +1,13 @@
+<webscript>
+  <shortname>CMIS AtomPub Service Document</shortname>
+  <description>
+  </description>
+  
+  <url>/cmis</url>
+  <!-- alfresco style -->
+  <url>/api/cmis</url>  
+  
+  <format default="atomsvc"/>
+  <authentication>user</authentication>
+  <family>CMIS</family>
+</webscript>
