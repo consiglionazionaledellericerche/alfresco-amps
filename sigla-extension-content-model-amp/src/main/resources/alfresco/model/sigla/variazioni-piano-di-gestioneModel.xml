@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+	<!-- Definition of new Model -->
+<model name="varpianogest:contentmodel" xmlns="http://www.alfresco.org/model/dictionary/1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.alfresco.org/model/dictionary/1.0 modelSchema.xsd">
+
+	<!-- Optional meta-data about the model -->
+	<description>SIGLA extension Content Model - Variazioni al piano di
+		Gestione</description>
+	<author>Marco Spasiano</author>
+	<version>1.3</version>
+
+	<!--
+		Imports are required to allow references to definitions in other
+		models
+	-->
+	<imports>
+		<!-- Import Alfresco Dictionary Definitions -->
+		<import uri="http://www.alfresco.org/model/dictionary/1.0"
+			prefix="d" />
+		<!-- Import Alfresco Content Domain Model Definitions -->
+		<import uri="http://www.alfresco.org/model/content/1.0" prefix="cm" />
+	</imports>
+
+	<!-- Introduction of new namespaces defined by this model -->
+	<namespaces>
+		<namespace uri="http://www.cnr.it/variazioni/piano/gestione/1.0/"
+			prefix="varpianogest" />
+	</namespaces>
+	<types>
+		<type name="varpianogest:document">
+			<title>Variazione al Piano di Gestione</title>
+			<description>Variazione al Piano di Gestione</description>
+			<parent>cm:content</parent>
+			<properties>
+				<property name="varpianogest:esercizio">
+					<title>Esercizio Variazione</title>
+					<type>d:int</type>
+				</property>
+				<property name="varpianogest:numeroVariazione">
+					<title>Numero Variazione</title>
+					<type>d:long</type>
+				</property>
+			</properties>
+			<associations>
+				<association name="varpianogest:allegatiVarBilancio">
+					<source>
+						<mandatory>false</mandatory>
+						<many>false</many>
+					</source>
+					<target>
+						<class>cm:content</class>
+						<mandatory>true</mandatory>
+						<many>true</many>
+					</target>
+				</association>
+			</associations>
+		</type>
+	</types>
+</model>

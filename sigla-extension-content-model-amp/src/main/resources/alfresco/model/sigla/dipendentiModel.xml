@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+	<!-- Definition of new Model -->
+<model name="emp:contentmodel" 
+	xmlns="http://www.alfresco.org/model/dictionary/1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.alfresco.org/model/dictionary/1.0 modelSchema.xsd">
+
+	<!-- Optional meta-data about the model -->
+	<description>SIGLA extension Content Model - Dipendenti</description>
+	<author>Marco Spasiano</author>
+	<version>1.3</version>
+
+	<!--
+		Imports are required to allow references to definitions in other
+		models
+	-->
+	<imports>
+		<!-- Import Alfresco Dictionary Definitions -->
+		<import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d" />
+		<!-- Import Alfresco Content Domain Model Definitions -->
+		<import uri="http://www.alfresco.org/model/content/1.0" prefix="cm" />
+	</imports>
+
+	<!-- Introduction of new namespaces defined by this model -->
+	<namespaces>
+		<namespace uri="http://www.cnr.it/emp/1.0/" prefix="emp" />
+	</namespaces>
+	<aspects>
+		<aspect name="emp:cf">
+			<title>Codice fiscale del dipendente</title>
+			<properties>
+				<property name="emp:cfcodice">
+					<title>Codice fiscale</title>
+					<type>d:text</type>
+				</property>
+			</properties>
+		</aspect>
+		<aspect name="emp:matricola">
+			<title>Matricola del dipendente</title>
+			<properties>
+				<property name="emp:matricolacodice">
+					<title>Matricola</title>
+					<type>d:text</type>
+				</property>
+			</properties>
+		</aspect>
+	</aspects>
+</model>
