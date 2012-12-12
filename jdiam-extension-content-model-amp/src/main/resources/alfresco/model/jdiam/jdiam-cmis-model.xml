@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model name="jdiam:model" xmlns="http://www.alfresco.org/model/dictionary/1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="content-schema.xsd">
+
+	<description>JDiAM Model</description>
+	<author>Marco Spasiano</author>
+	<version>1.0</version>
+
+	<imports>
+		<import uri="http://www.alfresco.org/model/dictionary/1.0"
+			prefix="d" />
+		<import uri="http://www.alfresco.org/model/content/1.0" prefix="cm" />
+		<import uri="http://www.alfresco.org/model/system/1.0" prefix="sys" />
+	</imports>
+
+	<namespaces>
+		<namespace uri="http://www.cnr.it/model/jdiam/cmis" prefix="jdiam" />
+	</namespaces>
+
+	<constraints>
+		<constraint name="jdiam:settingLengthMin0Max250" type="LENGTH">
+			<parameter name="minLength">
+				<value>0</value>
+			</parameter>
+			<parameter name="maxLength">
+				<value>250</value>
+			</parameter>
+		</constraint>
+		<constraint name="jdiam:settingLengthMin0Max500" type="LENGTH">
+			<parameter name="minLength">
+				<value>0</value>
+			</parameter>
+			<parameter name="maxLength">
+				<value>500</value>
+			</parameter>
+		</constraint>
+		<constraint name="jdiam:settingLengthMin0Max1000" type="LENGTH">
+			<parameter name="minLength">
+				<value>0</value>
+			</parameter>
+			<parameter name="maxLength">
+				<value>1000</value>
+			</parameter>
+		</constraint>
+		<constraint name="jdiam:settingLengthMin0Max10000" type="LENGTH">
+			<parameter name="minLength">
+				<value>0</value>
+			</parameter>
+			<parameter name="maxLength">
+				<value>10000</value>
+			</parameter>
+		</constraint>
+		<constraint name="jdiam:metadata_format" type="LIST">
+			<parameter name="allowedValues">
+				<list>
+					<value>context_object</value>
+					<value>didl</value>
+					<value>mets</value>
+					<value>oai_dc</value>
+					<value>rem_atom</value>
+					<value>uketd_dc</value>
+					<value>oai_cnrpdr</value>
+					<value>pumadc</value>
+				</list>
+			</parameter>
+		</constraint>
+		<constraint name="jdiam:scheduler_time" type="LIST">
+			<parameter name="allowedValues">
+				<list>
+					<value>1</value>
+					<value>3</value>
+					<value>6</value>
+					<value>12</value>
+					<value>24</value>
+				</list>
+			</parameter>
+		</constraint>
+	</constraints>
+	<types>
+		<type name="jdiam:abstractFolder">
+			<title>Abstract Folder</title>
+			<parent>cm:folder</parent>
+			<properties>
+				<property name="jdiam:folderTitle">
+					<title>Title</title>
+					<description></description>
+					<type>d:text</type>
+					<constraints>
+						<constraint ref="jdiam:settingLengthMin0Max250" />
+					</constraints>
+				</property>
+				<property name="jdiam:folderDescription">
+					<title>Description</title>
+					<description></description>
+					<type>d:text</type>
+					<constraints>
+						<constraint ref="jdiam:settingLengthMin0Max500" />
+					</constraints>
+				</property>
+			</properties>
+		</type>
+
+		<type name="jdiam:communityRoot">
+			<title>Community Root Folder</title>
+			<parent>jdiam:abstractFolder</parent>
+		</type>
+		<type name="jdiam:community">
+			<title>Community Folder</title>
+			<parent>jdiam:abstractFolder</parent>
+		</type>
+		<type name="jdiam:collection">
+			<title>Collection Folder</title>
+			<parent>jdiam:abstractFolder</parent>
+		</type>
+		<type name="jdiam:oai_pmh">
+			<title>Open Archive Repository for query OAI-PMH</title>
+			<description>Open Archive Repository for query OAI-PMH</description>
+			<parent>jdiam:community</parent>
+			<properties>
+				<property name="jdiam:base_url">
+					<title>Base URL</title>
+					<description>Please insert the Base URL for query OAI_PMH.</description>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+				</property>
+				<property name="jdiam:default_type">
+					<title>Default type</title>
+					<description>Please insert the default type for create document.</description>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+				</property>
+				<property name="jdiam:metadata_format">
+					<title>Metadata Format</title>
+					<description>Please insert the Metadata Format for query OAI_PMH.</description>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+					<default>oai_dc</default>
+					<constraints>
+						<constraint ref="jdiam:metadata_format" />
+					</constraints>
+				</property>
+				<property name="jdiam:scheduler_time">
+					<title>Scheduler Time</title>
+					<description>The Last Harvest Time for query OAI_PMH.</description>
+					<type>d:int</type>
+					<mandatory>true</mandatory>
+					<default>24</default>
+					<constraints>
+						<constraint ref="jdiam:scheduler_time" />
+					</constraints>
+				</property>
+				<property name="jdiam:last_harvest_time">
+					<title>Last Harvest Time</title>
+					<description>The Last Harvest Time for query OAI_PMH.</description>
+					<type>d:datetime</type>
+				</property>
+			</properties>
+		</type>
+
+		<type name="jdiam:document">
+			<title>JDiAM Abstract Document</title>
+			<description>Abstract document for common metadata</description>
+			<parent>cm:content</parent>
+			<properties>
+				<property name="jdiam:title">
+					<title>Title</title>
+					<description>Please enter the full title of the deposit.</description>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+					<constraints>
+						<constraint ref="jdiam:settingLengthMin0Max1000" />
+					</constraints>
+				</property>
+
+				<property name="jdiam:language_description">
+					<title>Language of description</title>
+					<description>Please enter the language of pubblication description.</description>
+					<type>d:text</type>
+				</property>
+				<property name="jdiam:abstract">
+					<title>Abstract</title>
+					<description>Please enter the abstract in English of your deposit.
+						You can easily copy and paste it into this box.</description>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+					<constraints>
+						<constraint ref="jdiam:settingLengthMin0Max10000" />
+					</constraints>
+				</property>
+
+				<property name="jdiam:language_local_description">
+					<title>Language of description</title>
+					<description>Please enter the local language of pubblication description.</description>
+					<type>d:text</type>
+				</property>
+				<property name="jdiam:abstract_local">
+					<title>Abstract in local language</title>
+					<description>Please enter the abstract in local language of your deposit.
+						You can easily copy and paste it into this box.</description>
+					<type>d:text</type>
+					<mandatory>true</mandatory>
+					<constraints>
+						<constraint ref="jdiam:settingLengthMin0Max10000" />
+					</constraints>
+				</property>
+
+				<property name="jdiam:note">
+					<title>Note</title>
+					<description>Please enter the note of your deposit.
+						You can easily copy and paste it into this box.</description>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<constraints>
+						<constraint ref="jdiam:settingLengthMin0Max10000" />
+					</constraints>
+				</property>
+				<property name="jdiam:keyword">
+					<title>Keyword</title>
+					<description>Please enter the keyword of pubblication.</description>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:dateIssued">
+					<title>Date Issued</title>
+					<description>Please enter the date issued of the publication.</description>
+					<type>d:datetime</type>
+				</property>
+				<property name="jdiam:language">
+					<title>Language</title>
+					<description>Please enter the language of fulltext pubblication.</description>
+					<type>d:text</type>
+				</property>
+
+				<property name="jdiam:nbn">
+					<title>NBN</title>
+					<description>Please enter the nbn of pubblication.</description>
+					<type>d:text</type>
+				</property>
+				<property name="jdiam:doi">
+					<title>DOI</title>
+					<description>Please enter the doi of pubblication.</description>
+					<type>d:text</type>
+				</property>
+				<property name="jdiam:isbn">
+					<title>ISBN</title>
+					<description>Please enter the isbn of pubblication.</description>
+					<type>d:text</type>
+				</property>
+				<property name="jdiam:otherInformation">
+					<title>Other Information</title>
+					<description>Please enter the other information of pubblication.</description>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:source_id">
+					<title>Id of source without any trasformation</title>
+					<description>Id of source without any trasformation.</description>
+					<type>d:text</type>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:source_type">
+					<title>Type of source without any trasformation</title>
+					<description>Type of source without any trasformation.</description>
+					<type>d:text</type>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:source_type_category">
+					<title>Category Type of source without any trasformation</title>
+					<description>Category Type of source without any trasformation.</description>
+					<type>d:text</type>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+
+
+				<property name="jdiam:oaipmhURL">
+					<title>OAI-PMH Url</title>
+					<description>Please enter OAI-PMH Url.</description>
+					<type>d:text</type>
+				</property>
+				<property name="jdiam:externalIdentifier">
+					<title>External link</title>
+					<description>Please enter the external link of pubblication.</description>
+					<type>d:text</type>
+				</property>
+			</properties>
+			<associations>
+				<association name="jdiam:document_authors_follow">
+					<source>
+						<mandatory>true</mandatory>
+						<many>true</many>
+					</source>
+					<target>
+						<class>jdiam:author</class>
+						<mandatory>false</mandatory>
+						<many>true</many>
+					</target>
+				</association>
+				<association name="jdiam:document_periodical_publications_follow">
+					<source>
+						<mandatory>true</mandatory>
+						<many>true</many>
+					</source>
+					<target>
+						<class>jdiam:periodical_publication</class>
+						<mandatory>false</mandatory>
+						<many>true</many>
+					</target>
+				</association>
+				<association name="jdiam:document_affiliations">
+					<source>
+						<mandatory>true</mandatory>
+						<many>true</many>
+					</source>
+					<target>
+						<class>jdiam:affiliation</class>
+						<mandatory>false</mandatory>
+						<many>true</many>
+					</target>
+				</association>
+			</associations>			
+		</type>
+		<type name="jdiam:relashionship">
+			<title>JDiAM relashionship to JDIAM Document</title>
+			<description>JDiAM relashionship to JDIAM Document</description>
+			<parent>cm:content</parent>
+		</type>		
+		<type name="jdiam:author">
+			<title>Author</title>
+			<description>Author</description>
+			<parent>jdiam:relashionship</parent>
+			<properties>
+				<property name="jdiam:author_id">
+					<title>Author ID</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:author_initials">
+					<title>Initials</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:author_surname">
+					<title>Surname</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:author_name">
+					<title>Name</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:author_fullname">
+					<title>Surname</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:author_email">
+					<title>E-Mail</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+				</property>
+			</properties>
+			<associations>
+				<association name="jdiam:author_affiliations_follow">
+					<source>
+						<mandatory>true</mandatory>
+						<many>true</many>
+					</source>
+					<target>
+						<class>jdiam:affiliation</class>
+						<mandatory>false</mandatory>
+						<many>true</many>
+					</target>
+				</association>
+			</associations>			
+		</type>
+		<type name="jdiam:affiliation">
+			<title>Affiliation</title>
+			<description>Affiliation</description>
+			<parent>jdiam:relashionship</parent>
+			<properties>
+				<property name="jdiam:affiliation_id">
+					<title>Affiliation ID</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:affiliation_organization">
+					<title>Organization</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:affiliation_address_part">
+					<title>Address Part</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:affiliation_city_group">
+					<title>City</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+			</properties>
+		</type>
+		<type name="jdiam:periodical_publication">
+			<title>Periodical Publication</title>
+			<description>Periodical Publication</description>
+			<parent>jdiam:relashionship</parent>
+			<properties>
+				<property name="jdiam:periodical_publication_issn">
+					<title>ISSN</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:periodical_publication_title">
+					<title>Title</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:periodical_publication_title_abbrev">
+					<title>Title Abbrev</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+				<property name="jdiam:periodical_publication_country">
+					<title>Country</title>
+					<type>d:text</type>
+					<multiple>true</multiple>
+					<index enabled="true">
+						<atomic>true</atomic>
+						<stored>false</stored>
+						<tokenised>both</tokenised>
+					</index>
+				</property>
+			</properties>
+		</type>
+		
+	</types>
+</model>
