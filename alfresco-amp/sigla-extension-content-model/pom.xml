@@ -10,8 +10,8 @@
   <description>Alfresco extension</description>
 
   <parent>
-    <artifactId>alfresco-parent</artifactId>
-    <groupId>it.cnr.si</groupId>
+    <artifactId>alfresco-amp-parent</artifactId>
+    <groupId>it.cnr.si.amp</groupId>
     <version>0.1-SNAPSHOT</version>
   </parent>
 </project>

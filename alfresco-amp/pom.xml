@@ -4,7 +4,7 @@
   <artifactId>alfresco-amp-parent</artifactId>
   <groupId>it.cnr.si.amp</groupId>
   <version>0.1-SNAPSHOT</version>
-  <name>Alfresco portal Parent</name>
+  <name>Alfresco AMP Parent</name>
   <packaging>pom</packaging>
   
   <properties>
