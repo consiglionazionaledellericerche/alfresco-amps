@@ -27,6 +27,11 @@
 		<jung.version>2.0.1</jung.version>
 	</properties>
 
+    <parent>
+    <artifactId>alfresco-amp-parent</artifactId>
+    <groupId>it.cnr.si.amp</groupId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
 
 
 	<dependencies>
