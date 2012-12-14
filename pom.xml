@@ -104,7 +104,6 @@
     </plugins>
   </build>
 
-
   <distributionManagement>
     <!-- Publish the versioned releases here -->
     <repository>
