@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!--
+<!--
 		Licensed to the Apache Software Foundation (ASF) under one or more
 		contributor license agreements. See the NOTICE file distributed with
 		this work for additional information regarding copyright ownership.
@@ -15,76 +15,17 @@
 	-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>it.cnr.si</groupId>
-	<artifactId>sigla-extension-content-model</artifactId>
-	<version>2.4</version>
-	<name>SIGLA extension content model</name>
-	<packaging>amp</packaging>
-	<url></url>
-	<description>Alfresco extension</description>
-	<properties>
-		<alfresco.version>4.2.c</alfresco.version>
-		<nexus.url>http://buildandtest.si.cnr.it:8081/nexus</nexus.url>
-	</properties>
-	<repositories>
-		<repository>
-			<id>buildandtest</id>
-			<url>${nexus.url}/content/repositories/releases</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
-	<distributionManagement><!-- Publish the versioned releases here -->
-		<repository>
-			<id>buildandtest</id>
-			<name>nexus buildandtest.si.cnr.it</name>
-			<url>${nexus.url}/content/repositories/releases</url>
-		</repository><!-- Publish the versioned releases here -->
-		<snapshotRepository>
-			<id>buildandtest</id>
-			<name>nexus buildandtest.si.cnr.it</name>
-			<url>${nexus.url}/content/repositories/snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>buildandtest</id>
-			<url>${nexus.url}/content/repositories/releases</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-	<dependencies>
-		<dependency>
-			<groupId>org.alfresco</groupId>
-			<artifactId>alfresco</artifactId>
-			<version>${alfresco.version}</version>
-			<type>pom</type>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-			  <groupId>org.alfresco.maven.plugin</groupId>
-			  <artifactId>maven-amp-plugin</artifactId>
-			  <version>3.0.2</version>
-			  <extensions>true</extensions>
-			  <configuration>
-			    <archive>
-			      <addMavenDescriptor>false</addMavenDescriptor>
-			    </archive>
-			  </configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>it.cnr.si</groupId>
+  <artifactId>sigla-extension-content-model</artifactId>
+  <version>2.4</version>
+  <name>SIGLA extension content model</name>
+  <packaging>amp</packaging>
+  <description>Alfresco extension</description>
+
+  <parent>
+    <artifactId>alfresco-parent</artifactId>
+    <groupId>it.cnr.si</groupId>
+    <version>0.1-SNAPSHOT</version>
+  </parent>
 </project>
