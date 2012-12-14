@@ -56,7 +56,8 @@
       <groupId>org.alfresco</groupId>
       <artifactId>alfresco</artifactId>
       <version>${alfresco.version}</version>
-      <type>war</type>
+      <type>pom</type>
+      <!-- <type>war</type>-->
       <!-- <classifier>community</classifier>-->
       <scope>provided</scope>
     </dependency>
@@ -82,9 +83,11 @@
         <executions>
           <execution>
             <goals>
+              <!--
               <goal>pmd</goal>
               <goal>check</goal>
               <goal>cpd</goal>
+              -->
               <!-- TODO: cpd-check -->
             </goals>
           </execution>
