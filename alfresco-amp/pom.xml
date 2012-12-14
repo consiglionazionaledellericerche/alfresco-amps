@@ -18,6 +18,7 @@
   </parent>
   
   <modules>
+    <module>backup</module>
     <module>advanced-workflow</module>
     <module>alfresco-cnr-ldap</module>
     <module>jconon</module>
