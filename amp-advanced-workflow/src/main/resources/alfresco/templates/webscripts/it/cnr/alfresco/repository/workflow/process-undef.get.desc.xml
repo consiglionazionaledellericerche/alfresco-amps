@@ -1,0 +1,11 @@
+<webscript>
+<shortname>Process definitions Undef</shortname>
+<description>Return deployed Process Definitions </description>
+<url>/process/process-undeploy?p={def}</url>
+<url>/process/process-undeploy.json?p={def?}</url>
+<format default="json">extension</format>
+<authentication>admin</authentication>
+<transaction>required</transaction>
+
+</webscript>
+

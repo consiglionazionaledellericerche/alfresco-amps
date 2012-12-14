@@ -1,0 +1,11 @@
+<webscript>
+<shortname>Process definitions Def Deploy</shortname>
+<description>Return deployed Process Definitions </description>
+<url>/process/process-deploy</url>
+<url>/process/process-deploy.json</url>
+<format default="json">extension</format>
+<authentication>admin</authentication>
+<transaction>required</transaction>
+
+</webscript>
+

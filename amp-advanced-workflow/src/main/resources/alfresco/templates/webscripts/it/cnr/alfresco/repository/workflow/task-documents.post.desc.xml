@@ -1,0 +1,10 @@
+<webscript>
+  <shortname>Modify Workflow Task Bundles</shortname>
+  <description>
+  Modify Task Bundle   
+  </description>
+  <url>/process/task-documents?p={taskId}&amp;m={jsonObject}&amp;o={addRemoveString?}</url>
+  <format default="json"/>
+  <authentication>user</authentication>
+  <transaction allow="readwrite">required</transaction>
+</webscript>

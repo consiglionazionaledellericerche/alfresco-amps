@@ -1,0 +1,13 @@
+<webscript>
+<shortname>Process definitions</shortname>
+<description>Return deployed Process Definitions </description>
+<url>/process/definitions?p={def?}&amp;authority={authority?}</url>
+<url>/process/definitions.html?p={def?}&amp;authority={authority?}</url>
+<url>/process/definitions.json?p={def?}&amp;authority={authority?}</url>
+<url>/process/definitions.xml?p={def?}&amp;authority={authority?}</url>
+<format default="xml">extension</format>
+<authentication>user</authentication>
+<transaction>required</transaction>
+
+</webscript>
+

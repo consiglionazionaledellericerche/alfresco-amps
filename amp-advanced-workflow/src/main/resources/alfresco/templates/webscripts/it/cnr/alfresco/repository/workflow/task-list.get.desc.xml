@@ -1,0 +1,13 @@
+<webscript>
+<shortname>Task Paths</shortname>
+<description>Return Tasks of a Paths</description>
+<url>/process/tasks?p={path}</url>
+<url>/process/tasks.html?p={path}</url>
+<url>/process/tasks.json?p={path}</url>
+<url>/process/tasks.xml?p={path}</url>
+<format default="html">extension</format>
+<authentication>admin</authentication>
+<transaction>none</transaction>
+
+</webscript>
+

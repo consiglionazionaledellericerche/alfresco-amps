@@ -1,0 +1,13 @@
+{
+   "data":
+			   {
+			   		"name":"${wkfname}",
+					"description":"${wkfdesc}",
+					"assegnee":"${wkfass}",
+					"noderef":"${wkfnoderef}",
+					"dueDate":"${wkfduedate}",
+					"priority":"${wkfpriority}",
+					"instanceId":"${instanceId}",
+					"pathId":"${pathId}"
+   			   }
+}

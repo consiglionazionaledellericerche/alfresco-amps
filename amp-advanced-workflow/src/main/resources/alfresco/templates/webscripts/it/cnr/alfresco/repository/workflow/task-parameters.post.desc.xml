@@ -1,0 +1,10 @@
+<webscript>
+  <shortname>Modify Workflow Task Parameters</shortname>
+  <description>
+  Modify Task Parameters   
+  </description>
+  <url>/process/task-parameters?p={taskId}&amp;m={jsonObject}</url>
+  <format default="json"/>
+  <authentication>user</authentication>
+  <transaction allow="readwrite">required</transaction>
+</webscript>

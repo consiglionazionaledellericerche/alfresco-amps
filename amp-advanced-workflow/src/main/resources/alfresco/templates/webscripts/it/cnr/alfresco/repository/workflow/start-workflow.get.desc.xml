@@ -1,0 +1,11 @@
+<webscript>
+<shortname>Start a process definition</shortname>
+<description>Return a new Process Definition Instance ID</description>
+<url>/process/startWorkflow?workflowName={workflowName}&amp;description={description}&amp;assignee={assignee}&amp;documentnoderef={documentnoderef}&amp;duedate={duedate}&amp;priority={priority}</url>
+<url>/process/startWorkflow.html?workflowName={workflowName}&amp;description={description}&amp;assignee={assignee}&amp;documentnoderef={documentnoderef}&amp;duedate={duedate}&amp;priority={priority}</url>
+<url>/process/startWorkflow.json?workflowName={workflowName}&amp;description={description}&amp;assignee={assignee}&amp;documentnoderef={documentnoderef}&amp;duedate={duedate}&amp;priority={priority}</url>
+<format default="json">extension</format>
+<authentication>user</authentication>
+<transaction>none</transaction>
+
+</webscript>

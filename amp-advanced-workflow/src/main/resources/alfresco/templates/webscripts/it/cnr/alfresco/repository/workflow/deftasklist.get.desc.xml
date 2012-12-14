@@ -1,0 +1,19 @@
+<webscript>
+<shortname>Task Graph</shortname>
+<description>Return a Graph of a Process</description>
+<url>/process/deftasks?p={path}</url>
+<url>/process/deftasks.html?p={path}</url>
+<url>/process/deftasks.json?p={path}</url>
+<url>/process/deftasks.xml?p={path}</url>
+<format default="xml">extension</format>
+<authentication>user</authentication>
+<transaction>required</transaction>
+<cache>
+    <never>false</never>
+    <public>false</public>
+    <mustrevalidate/>
+</cache>
+
+
+</webscript>
+

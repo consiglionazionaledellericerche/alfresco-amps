@@ -1,0 +1,27 @@
+<webscript>
+  <shortname>List Workflow Tasks</shortname>
+  <description>
+  Lists all Workflow Task Instances associated with an authority and of a given State.
+  The list of returned tasks also includes pooled tasks which the specified authority is eligible to claim.  
+  </description>
+  <url>/process/task-instance</url>
+  <url>/process/task-instance?authority={authority?}</url>
+  <url>/process/task-instance?status={state?}</url>
+  <url>/process/task-instance?properties={properties?}</url>
+  <url>/process/task-instance?authority={authority?}&amp;?status={state?}</url>
+  <url>/process/task-instance?authority={authority?}&amp;?properties={properties?}</url>
+  <url>/process/task-instance?status={state?}&amp;?properties={properties?}</url>
+  <url>/process/task-instance?authority={authority?}&amp;?status={state?}&amp;?properties={properties?}</url>
+
+  <url>/process/task-instance.xml</url>
+  <url>/process/task-instance.xml?authority={authority?}</url>
+  <url>/process/task-instance.xml?status={state?}</url>
+  <url>/process/task-instance.xml?properties={properties?}</url>
+  <url>/process/task-instance.xml?authority={authority?}&amp;?status={state?}</url> 
+  <url>/process/task-instance.xml?authority={authority?}&amp;?properties={properties?}</url>
+  <url>/process/task-instance.xml?status={state?}&amp;?properties={properties?}</url>
+  <url>/process/task-instance.xml?authority={authority?}&amp;?status={state?}&amp;?properties={properties?}</url>
+  <format default="json"/>
+  <authentication>user</authentication>
+  <transaction allow="readwrite">required</transaction>
+</webscript>

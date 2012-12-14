@@ -1,0 +1,13 @@
+<webscript>
+<shortname>Active Instances</shortname>
+<description>Return Active Instances of a Process Definition</description>
+<url>/process/activeInstances?p={definitionID?}</url>
+<url>/process/activeInstances.html?p={definitionID?}</url>
+<url>/process/activeInstances.json?p={definitionID?}</url>
+<url>/process/activeInstances.xml?p={definitionID?}</url>
+<format default="html">extension</format>
+<authentication>admin</authentication>
+<transaction>required</transaction>
+
+</webscript>
+

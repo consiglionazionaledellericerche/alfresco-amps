@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+		Licensed to the Apache Software Foundation (ASF) under one or more
+		contributor license agreements. See the NOTICE file distributed with
+		this work for additional information regarding copyright ownership.
+		The ASF licenses this file to You under the Apache License, Version
+		2.0 (the "License"); you may not use this file except in compliance
+		with the License. You may obtain a copy of the License at
+		http://www.apache.org/licenses/LICENSE-2.0 Unless required by
+		applicable law or agreed to in writing, software distributed under the
+		License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+		CONDITIONS OF ANY KIND, either express or implied. See the License for
+		the specific language governing permissions and limitations under the
+		License.
+	-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>it.cnr.si</groupId>
+	<artifactId>advanced-workflow</artifactId>
+	<version>1.0</version>
+	<name>Alfresco JBPM Advanced Workflow</name>
+	<packaging>amp</packaging>
+	<url></url>
+	<description>Alfresco extension</description>
+	<properties>
+		<jung.version>2.0.1</jung.version>
+		<alfresco.version>4.2.c</alfresco.version>
+		<nexus.url>http://buildandtest.si.cnr.it:8081/nexus</nexus.url>
+	</properties>
+	<repositories>
+		<repository>
+			<id>buildandtest</id>
+			<url>${nexus.url}/content/repositories/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<distributionManagement><!-- Publish the versioned releases here -->
+		<repository>
+			<id>buildandtest</id>
+			<name>nexus buildandtest.si.cnr.it</name>
+			<url>${nexus.url}/content/repositories/releases</url>
+		</repository><!-- Publish the versioned releases here -->
+		<snapshotRepository>
+			<id>buildandtest</id>
+			<name>nexus buildandtest.si.cnr.it</name>
+			<url>${nexus.url}/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>buildandtest</id>
+			<url>${nexus.url}/content/repositories/releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+	<dependencies>
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-graph-impl</artifactId>
+			<version>${jung.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-algorithms</artifactId>
+			<version>${jung.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.alfresco</groupId>
+			<artifactId>alfresco</artifactId>
+			<version>${alfresco.version}</version>
+			<type>pom</type>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+			  <groupId>org.alfresco.maven.plugin</groupId>
+			  <artifactId>maven-amp-plugin</artifactId>
+			  <version>3.0.2</version>
+			  <extensions>true</extensions>
+			  <configuration>
+			    <archive>
+			      <addMavenDescriptor>false</addMavenDescriptor>
+			    </archive>
+			  </configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
