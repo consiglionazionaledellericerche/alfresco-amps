@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>alfresco-amp-parent</artifactId>
+  <groupId>it.cnr.si.amp</groupId>
+  <version>0.1-SNAPSHOT</version>
+  <name>Alfresco portal Parent</name>
+  <packaging>pom</packaging>
+  
+  <properties>
+    <maven.amp.plugin.version>3.0.2</maven.amp.plugin.version>
+  </properties>
+  
+  <parent>
+      <groupId>it.cnr.si</groupId>
+      <artifactId>alfresco-parent</artifactId>
+      <version>0.1-SNAPSHOT</version>
+  </parent>
+  
+  <modules>
+    <module>sigla-extension-content-model</module>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.alfresco.maven.plugin</groupId>
+        <artifactId>maven-amp-plugin</artifactId>
+        <version>${maven.amp.plugin.version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <archive>
+            <addMavenDescriptor>false</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
