@@ -3,6 +3,6 @@
 
 <beans>
 	
-    <import resource="classpath:alfresco/module/alfresco-advanced-workflow/context/service-context.xml" />
+    <import resource="classpath:alfresco/module/advanced-workflow/context/service-context.xml" />
     
 </beans>
