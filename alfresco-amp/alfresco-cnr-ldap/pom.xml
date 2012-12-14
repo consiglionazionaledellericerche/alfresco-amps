@@ -19,10 +19,10 @@
 	<groupId>it.cnr.si</groupId>
 	<artifactId>alfresco-ldap</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<name>Alfresco extension</name>
+	<name>Alfresco LDAP extension</name>
 	<packaging>amp</packaging>
 	<url></url>
-	<description>Alfresco extension</description>
+	<description>Alfresco LDAP extension</description>
 	<properties>
 		<webapp.name>alfresco-ldap</webapp.name>
 		<alfresco.version>3.2r</alfresco.version>
