@@ -7,7 +7,7 @@
   <version>1.0</version>
   <name>Backup AMP</name>
   <packaging>amp</packaging>
-  <description>Alfresco extension</description>
+  <description>hack per la creazione della folder "backup" in /target, previene un errore che si verifica in fase overlay.</description>
 
   <parent>
     <artifactId>alfresco-amp-parent</artifactId>
