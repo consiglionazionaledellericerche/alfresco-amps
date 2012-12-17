@@ -42,7 +42,7 @@
 					</source>
 					<target>
 						<class>cm:content</class>
-						<mandatory>true</mandatory>
+						<mandatory>false</mandatory>
 						<many>false</many>
 					</target>
 				</association>

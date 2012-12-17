@@ -50,7 +50,7 @@
 					</source>
 					<target>
 						<class>cm:content</class>
-						<mandatory>true</mandatory>
+						<mandatory>false</mandatory>
 						<many>true</many>
 					</target>
 				</association>
