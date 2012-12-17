@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!--
+<!--
 		Licensed to the Apache Software Foundation (ASF) under one or more
 		contributor license agreements. See the NOTICE file distributed with
 		this work for additional information regarding copyright ownership.
@@ -15,14 +15,13 @@
 	-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>it.cnr.si</groupId>
-	<artifactId>jconon-amp</artifactId>
-	<version>1.0</version>
-	<name>JCONON extension amp</name>
-	<packaging>amp</packaging>
-	<url></url>
-	<description>Alfresco extension</description>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>it.cnr.si</groupId>
+  <artifactId>jconon-amp</artifactId>
+  <version>1.0</version>
+  <name>Alfresco - AMP - JCONON extension</name>
+  <packaging>amp</packaging>
+  <description>Alfresco extension</description>
 
   <parent>
     <artifactId>alfresco-amp-parent</artifactId>

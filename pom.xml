@@ -4,7 +4,7 @@
   <artifactId>alfresco-parent</artifactId>
   <groupId>it.cnr.si</groupId>
   <version>0.1-SNAPSHOT</version>
-  <name>Alfresco portal Parent</name>
+  <name>Alfresco - Parent</name>
   <packaging>pom</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -57,7 +57,6 @@
       <artifactId>alfresco</artifactId>
       <version>${alfresco.version}</version>
       <type>pom</type>
-      <!-- <type>war</type>-->
       <!-- <classifier>community</classifier>-->
       <scope>provided</scope>
     </dependency>
