@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>it.cnr.si</groupId>
   <artifactId>jconon-amp</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.2</version>
   <name>Alfresco - AMP - JCONON extension</name>
   <packaging>amp</packaging>
   <description>Alfresco extension</description>
