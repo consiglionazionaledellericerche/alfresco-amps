@@ -1,6 +1,6 @@
 {
 "data":[
-#list transitions as transition>
+<#list transitions as transition>
 {	
 "transitionId":"${jsonUtils.encodeJSONString("${transition[0]}")}" ,
 "title":"${jsonUtils.encodeJSONString("${transition[1]}")}" ,
