@@ -20,6 +20,7 @@
                 null,
             </#if>
             "initiator": "${task.initiator}",
+            "instanceId":"${task.instanceId}",
             "properties":
             <@propertiesJSON properties=task.properties />
         }

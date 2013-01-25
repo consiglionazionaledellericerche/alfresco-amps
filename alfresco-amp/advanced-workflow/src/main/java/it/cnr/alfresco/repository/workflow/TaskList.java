@@ -67,8 +67,8 @@ public class TaskList extends DeclarativeWebScript
 	    			s1=s1+h+"==="+m.get(h)+",";
 	    		}
 	    		String initiator=(String)serviceRegistry.getNodeService().getProperty(((WorkflowTask)o).path.instance.initiator, ContentModel.PROP_USERNAME);
-	    		String s[] ={((WorkflowTask)o).id, ((WorkflowTask)o).name, ((WorkflowTask)o).title, ((WorkflowTask)o).description, ((java.lang.Enum<WorkflowTaskState>)((WorkflowTask)o).state).toString(),s1,initiator};
-	    		System.out.println(((WorkflowTask)o).id+" "+ ((WorkflowTask)o).name+" "+  ((WorkflowTask)o).title+" "+  ((WorkflowTask)o).description+" "+  ((java.lang.Enum<WorkflowTaskState>)((WorkflowTask)o).state).toString()+" "+s1.toString()+" "+initiator);
+	    		String s[] ={((WorkflowTask)o).id, ((WorkflowTask)o).name, ((WorkflowTask)o).title, ((WorkflowTask)o).description, ((java.lang.Enum<WorkflowTaskState>)((WorkflowTask)o).state).toString(),s1,initiator,((WorkflowTask)o).getPath().getInstance().getId()};
+	    		System.out.println(((WorkflowTask)o).id+" "+ ((WorkflowTask)o).name+" "+  ((WorkflowTask)o).title+" "+  ((WorkflowTask)o).description+" "+  ((java.lang.Enum<WorkflowTaskState>)((WorkflowTask)o).state).toString()+" "+s1.toString()+" "+initiator+" "+((WorkflowTask)o).getPath().getInstance().getId());
 	    		tasks.add(s);
 	    	}
 	    	System.out.println("**********************************************************");
@@ -82,8 +82,8 @@ public class TaskList extends DeclarativeWebScript
 	    			s1=s1+h+"==="+m.get(h)+",";
 	    		}
 	    		String initiator=(String)serviceRegistry.getNodeService().getProperty(((WorkflowTask)o).path.instance.initiator, ContentModel.PROP_USERNAME);
-	    		String s[] ={((WorkflowTask)o).id, ((WorkflowTask)o).name, ((WorkflowTask)o).title, ((WorkflowTask)o).description, ((java.lang.Enum<WorkflowTaskState>)((WorkflowTask)o).state).toString(),s1,initiator};
-	    		System.out.println(((WorkflowTask)o).id+" "+ ((WorkflowTask)o).name+" "+  ((WorkflowTask)o).title+" "+  ((WorkflowTask)o).description+" "+  ((java.lang.Enum<WorkflowTaskState>)((WorkflowTask)o).state).toString()+" "+s1.toString()+" "+initiator);
+	    		String s[] ={((WorkflowTask)o).id, ((WorkflowTask)o).name, ((WorkflowTask)o).title, ((WorkflowTask)o).description, ((java.lang.Enum<WorkflowTaskState>)((WorkflowTask)o).state).toString(),s1,initiator, ((WorkflowTask)o).getPath().getInstance().getId()};
+	    		System.out.println(((WorkflowTask)o).id+" "+ ((WorkflowTask)o).name+" "+  ((WorkflowTask)o).title+" "+  ((WorkflowTask)o).description+" "+  ((java.lang.Enum<WorkflowTaskState>)((WorkflowTask)o).state).toString()+" "+s1.toString()+" "+initiator+" "+((WorkflowTask)o).getPath().getInstance().getId());
 	    		tasks.add(s);
 	    	}
 	    	System.out.println("**********************************************************");

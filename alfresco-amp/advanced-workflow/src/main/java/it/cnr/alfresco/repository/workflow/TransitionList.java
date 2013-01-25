@@ -95,6 +95,7 @@ public class TransitionList extends DeclarativeWebScript
 		}
 
 		model.put("transitions", transitions);
+		model.put("taskId",req.getParameter("p"));
 		return model;
 
 		

@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
+import org.alfresco.repo.workflow.WorkflowModel;
 
 import it.cnr.alfresco.repository.authUtils.Utils;
 import  it.cnr.alfresco.repository.workflow.WorkflowModelBuilder;
@@ -110,14 +111,21 @@ public class TaskInstancesGet extends AbstractWorkflowWebscript
         allTasks.addAll(pooledTasks);
         ArrayList<Map<String, Object>> results = new ArrayList<Map<String, Object>>();
         String initiator=new String();
+        String instanceId=new String();
         for (WorkflowTask task : allTasks) 
         {
 
         	/*EDGARDO:AGGIUNGO IL SEGUENTE*/
-   		     initiator=(String)nodeService.getProperty(task.path.instance.initiator, ContentModel.PROP_USERNAME);
-			 Map<QName, Serializable> updateProperties = new HashMap<QName, Serializable>();
-			 updateProperties.put(QName.createQName(ContentModel.PROP_USERNAME.toString()),initiator);
+         	 Map<QName, Serializable> updateProperties = new HashMap<QName, Serializable>();
+
+         	 initiator=(String)nodeService.getProperty(task.path.instance.initiator, ContentModel.PROP_USERNAME);
+   		     updateProperties.put(QName.createQName(ContentModel.PROP_USERNAME.toString()),initiator);
+			 instanceId=task.getPath().getInstance().getId();
+			 updateProperties.put(QName.createQName(WorkflowModel.PROP_WORKFLOW_DEFINITION_ID.toString()),instanceId);
+
 			 workflowService.updateTask(task.id, updateProperties, null, null);
+
+			 
 			 /*EDGARDO:*/
 
 			 results.add(modelBuilder.buildSimple(task, properties));
@@ -134,6 +142,7 @@ public class TaskInstancesGet extends AbstractWorkflowWebscript
        			mapExtended.put(s, m.get(s));
         	}
         	mapExtended.put("initiator", initiator);
+        	mapExtended.put("instanceId", instanceId);
         	resultsExtended.add(mapExtended);
         }
         System.out.println("*************LISTA PROPRIETA' TASK INSTANCES********************");

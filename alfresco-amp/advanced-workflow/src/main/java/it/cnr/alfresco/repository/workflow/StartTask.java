@@ -71,21 +71,37 @@ public class StartTask extends DeclarativeWebScript
 //		System.out.println("NodeRef: "+nr);
 //		actionService.executeAction(action, nr);
 		
-		
+		NodeRef workflowPackage = workflowService.createPackage(null); 
+		boolean multiPackage=false;
+
+		if(noderef_val.contains(";")) multiPackage=true;
+		if(multiPackage) {
+			String[] multi_noderef_val=noderef_val.split(";");
+			for (String s:multi_noderef_val) {
+				   NodeRef nr=new NodeRef(s);
+				   System.out.println("NODEREF: "+nr);
+			       System.out.println("NODEREFPACKAGE: "+workflowPackage);
+			       String localQname=QName.createValidLocalName((String)this.serviceRegistry.getNodeService().getProperty(nr, ContentModel.PROP_NAME));
+			       System.out.println("LOCALQNAME: "+localQname);
+			       QName qname=QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI,localQname);
+			       System.out.println("QNAME: "+qname);
+			       this.serviceRegistry.getNodeService().addChild(workflowPackage, nr, ContentModel.ASSOC_CONTAINS,qname);
+			}
+		}else {
 		   NodeRef nr=new NodeRef(noderef_val);
 		   System.out.println("NODEREF: "+nr);
-	       NodeRef workflowPackage = workflowService.createPackage(null);
 	       System.out.println("NODEREFPACKAGE: "+workflowPackage);
 	       String localQname=QName.createValidLocalName((String)this.serviceRegistry.getNodeService().getProperty(nr, ContentModel.PROP_NAME));
 	       System.out.println("LOCALQNAME: "+localQname);
 	       QName qname=QName.createQName(NamespaceService.CONTENT_MODEL_1_0_URI,localQname);
 	       System.out.println("QNAME: "+qname);
 	       this.serviceRegistry.getNodeService().addChild(workflowPackage, nr, ContentModel.ASSOC_CONTAINS,qname);
-	       Map<QName, Serializable> workflowProps = new HashMap<QName, Serializable>(16);
-	       workflowProps.put(WorkflowModel.ASSOC_PACKAGE, workflowPackage);
-	       
+       }
        
-	       //workflowProps.put(WorkflowModel.PROP_WORKFLOW_DEFINITION_NAME,workflowname_val );
+
+		   Map<QName, Serializable> workflowProps = new HashMap<QName, Serializable>(16);
+	       workflowProps.put(WorkflowModel.ASSOC_PACKAGE, workflowPackage);
+		   //workflowProps.put(WorkflowModel.PROP_WORKFLOW_DEFINITION_NAME,workflowname_val );
 	       workflowProps.put(QName.createQName("{http://www.alfresco.org/model/bpm/1.0}workflowDescription"),description_val );
 	       workflowProps.put(QName.createQName("{http://www.alfresco.org/model/bpm/1.0}workflowDueDate"), duedate_val);
 	       workflowProps.put(QName.createQName("{http://www.alfresco.org/model/bpm/1.0}dueDate"), duedate_val);
