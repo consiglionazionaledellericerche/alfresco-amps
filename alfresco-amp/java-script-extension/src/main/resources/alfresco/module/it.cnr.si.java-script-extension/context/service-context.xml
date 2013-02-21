@@ -1,0 +1,8 @@
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<beans>
+    <bean id="cnrutilsScript" parent="baseJavaScriptExtension" class="it.cnr.si.repo.jscript.ScriptUtils">
+        <property name="extensionName">
+            <value>cnrutils</value>
+        </property>
+    </bean> 
+</beans>
