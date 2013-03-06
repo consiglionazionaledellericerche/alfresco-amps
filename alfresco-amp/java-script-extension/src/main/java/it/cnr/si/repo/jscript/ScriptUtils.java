@@ -29,11 +29,6 @@ public class ScriptUtils extends BaseScopableProcessorExtension implements Appli
 		return applicationContext.getBeanNamesForType(myClass);
 	}
 
-	@Deprecated
-	public Object getM(Map map, Object key) {
-		return map.get(key);
-	}
-
 
 	/* reflection utility methods */
 
