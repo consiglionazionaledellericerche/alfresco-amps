@@ -8,10 +8,23 @@
   <name>Alfresco - AMP - JavaScript Extension</name>
   <packaging>amp</packaging>
   <description>Alfresco extension</description>
+  
+  <properties>
+    <junit.version>4.8.1</junit.version>
+  </properties>
 
   <parent>
     <artifactId>alfresco-amp-parent</artifactId>
     <groupId>it.cnr.si.amp</groupId>
     <version>0.1-SNAPSHOT</version>
   </parent>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 </project>
