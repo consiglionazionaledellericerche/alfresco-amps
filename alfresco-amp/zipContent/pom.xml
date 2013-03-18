@@ -13,21 +13,5 @@
     <groupId>it.cnr.si.amp</groupId>
     <version>0.1-SNAPSHOT</version>
   </parent>
-  
-  <properties>
-    <alfresco.version>4.0.b</alfresco.version>
-  </properties>
-  
-  <dependencies>
-	<dependency>
-		<groupId>org.springframework.extensions.surf</groupId>
-		<artifactId>spring-surf</artifactId>
-		<version>1.0.0</version>
-	</dependency>
-	<dependency>
-		<groupId>org.alfresco.enterprise</groupId>
-		<artifactId>alfresco-repository</artifactId>
-		<version>4.1.2</version>
-	</dependency>    
-  </dependencies>
+
 </project>
