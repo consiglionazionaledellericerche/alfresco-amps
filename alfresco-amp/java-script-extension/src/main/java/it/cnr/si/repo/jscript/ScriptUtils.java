@@ -20,6 +20,10 @@ public class ScriptUtils extends BaseScopableProcessorExtension implements Appli
 		this.applicationContext = arg0;
 	}
 	
+	public Object getBeanFromClass(String className) throws BeansException, ClassNotFoundException{
+		return applicationContext.getBean(Class.forName(className));
+	}
+	
 	public Object getBean(String beanName){
 		return applicationContext.getBean(beanName);
 	}

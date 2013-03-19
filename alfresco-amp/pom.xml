@@ -23,6 +23,7 @@
     <module>alfresco-cnr-ldap</module>
     <module>jconon</module>
     <module>java-script-extension</module>
+    <module>groups-extension</module>
     <module>jdiam-extension-content-model</module>
     <module>sigla-extension-content-model</module>
     <module>solr-alfresco4</module>
