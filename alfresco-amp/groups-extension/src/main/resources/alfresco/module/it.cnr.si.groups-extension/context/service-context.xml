@@ -1,0 +1,81 @@
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<beans>
+
+    <bean id="groupAuthorityService" parent="authorityService" 
+    		class="it.cnr.si.repo.security.authority.GroupAuthorityServiceImpl">
+        <property name="storeUrl">
+            <value>${spaces.store}</value>
+        </property>
+        <property name="namespacePrefixResolver">
+            <ref bean="namespaceService" />
+        </property>
+        <property name="groupAuthorityDAO">
+            <ref bean="authorityDAO" />
+        </property>
+        <property name="tenantService">
+            <ref bean="tenantService"/>
+        </property>
+        <property name="nodeService">
+            <ref bean="mlAwareNodeService" />
+        </property>
+        <!--                                                                  -->
+        <!-- A list of groups with admin rights.                              -->
+        <!--                                                                  -->
+        <property name="adminGroups">
+            <set>
+                <value>ALFRESCO_ADMINISTRATORS</value>
+            </set>
+        </property>
+        <!--                                                                  -->
+        <!-- A list of groups with guest rights.                              -->
+        <!--                                                                  -->
+        <property name="guestGroups">
+            <set>
+            </set>
+        </property>        
+    </bean>
+    <bean id="GroupAuthorityService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
+        <property name="authenticationManager"><ref bean="authenticationManager"/></property>
+        <property name="accessDecisionManager"><ref bean="accessDecisionManager"/></property>
+        <property name="afterInvocationManager"><ref bean="afterInvocationManager"/></property>
+        <property name="objectDefinitionSource">
+            <value>
+               it.cnr.si.service.cmr.security.GroupAuthorityService.addAuthority=ACL_NODE.0.sys:base.CreateChildren,ACL_NODE.1.sys:base.ReadProperties
+                it.cnr.si.service.cmr.security.GroupAuthorityService.createAuthority=ACL_NODE.0.sys:base.CreateChildren
+                it.cnr.si.service.cmr.security.GroupAuthorityService.deleteAuthority=ACL_NODE.0.sys:base.DeleteNode
+                it.cnr.si.service.cmr.security.GroupAuthorityService.getAuthorityNameOrNull=ACL_NODE.0.sys:base.ReadProperties
+                it.cnr.si.service.cmr.security.GroupAuthorityService.*=ACL_DENY
+            </value>
+        </property>
+    </bean>
+
+    <bean id="GroupAuthorityService" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces">
+            <value>it.cnr.si.service.cmr.security.GroupAuthorityService</value>
+        </property>
+        <property name="target">
+            <ref bean="groupAuthorityService"/>
+        </property>
+        <property name="interceptorNames">
+            <list>
+                <idref bean="AuthorityService_transaction"/>
+                <idref bean="AuditMethodInterceptor"/>
+                <idref bean="exceptionTranslator"/>
+                <idref bean="GroupAuthorityService_security"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="groupAuthorityScript" parent="baseJavaScriptExtension" class="it.cnr.si.repo.jscript.GroupAuthority">
+        <property name="groupAuthorityService">
+        	<ref bean="GroupAuthorityService" />
+        </property>
+        <property name="services">
+            <ref bean="ServiceRegistry" />
+        </property>
+        
+        <property name="extensionName">
+            <value>groupAuthority</value>
+        </property>
+    </bean> 
+</beans>
