@@ -151,8 +151,7 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
     	final HashMap<QName, Serializable> props = new HashMap<QName, Serializable>();
         props.put(ContentModel.PROP_AUTHORITY_NAME, name);
         props.put(ContentModel.PROP_AUTHORITY_DISPLAY_NAME, authorityDisplayName);
-        NodeRef childRef = null;
-        AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
+        NodeRef childRef = AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
         	@Override
 			public NodeRef doWork() throws Exception {
 				return nodeService.createNode(getAuthorityContainer(), ContentModel.ASSOC_CHILDREN, 
@@ -170,7 +169,6 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
             }
             nodeService.addChild(zoneRefs, childRef, ContentModel.ASSOC_IN_ZONE, QName.createQName("cm", name, namespacePrefixResolver));
         }
-        addAuthority(authorityParentRef, childRef);
     	return childRef;
     }
     

@@ -83,6 +83,8 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         	NodeRef result = groupAuthorityService.createAuthority(
         			parentGroup==null ? groupAuthorityService.getAuthorityContainer():parentGroup.getNodeRef(), 
         					groupName, groupDisplayName);
+        	if (parentGroup != null)
+        		groupAuthorityService.addAuthority(parentGroup.getNodeRef(), result);
 
         	group = new ScriptNode(result, services, getScope());
         }
