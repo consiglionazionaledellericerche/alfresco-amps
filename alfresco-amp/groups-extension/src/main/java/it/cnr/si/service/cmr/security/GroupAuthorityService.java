@@ -4,9 +4,8 @@ import java.util.Set;
 
 import org.alfresco.service.Auditable;
 import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.security.AuthorityService;
 
-public interface GroupAuthorityService extends AuthorityService{
+public interface GroupAuthorityService{
 	@Auditable	
 	public NodeRef getAuthorityContainerRef();
 
@@ -33,6 +32,9 @@ public interface GroupAuthorityService extends AuthorityService{
      */
     @Auditable(parameters = {"parentName", "childName"})
     public void addAuthority(NodeRef parentName, NodeRef childName);
+    
+    @Auditable(parameters = {"parentName", "childName"})
+    public void removeAuthority(NodeRef parentName, NodeRef childName);
 	    
     /**
      * Create an authority.
@@ -46,16 +48,21 @@ public interface GroupAuthorityService extends AuthorityService{
      * @return the name of the authority (this will be the prefix, if any
      *         associated with the type appended with the short name)
      */
-    @Auditable(parameters = {"type", "shortName"})
+    @Auditable(parameters = {"authorityParentRef", "shortName", "authorityDisplayName"})
     public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName);
     
+    @Auditable(parameters = {"authorityParentRef", "shortName", "authorityDisplayName", "authorityZones"})
     public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName, Set<String> authorityZones);	    
 
+    @Auditable(parameters = {"authorityNoderRef"})
 	public void deleteAuthority(NodeRef authorityNoderRef);
-	    
+	
+	@Auditable(parameters = {"authorityNoderRef","cascade"})
 	public void deleteAuthority(NodeRef authorityNoderRef, boolean cascade);
 	
+	@Auditable(parameters = {"nodeRef"})
 	public String getAuthorityNameOrNull(NodeRef nodeRef);
 	
+	@Auditable(parameters = {"groupName"})
 	public NodeRef getAuthorityNodeRefOrNull(String groupName);
 }

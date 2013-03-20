@@ -6,6 +6,7 @@ import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
 import org.alfresco.repo.jscript.ScriptNode;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.springframework.extensions.surf.util.ParameterCheck;
 
@@ -20,7 +21,10 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
 	public void setGroupAuthorityService(GroupAuthorityService groupAuthorityService) {
 		this.groupAuthorityService = groupAuthorityService;
 	}
-	
+
+	private AuthorityService getAuthorityService(){
+		return services.getAuthorityService();
+	}
     /**
      * AddAuthority as a child of group parent
      * @param fullAuthorityName the full name of the authority to add to this group.
@@ -29,9 +33,22 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     {
     	ParameterCheck.mandatoryString("parentName", parentName);
     	ParameterCheck.mandatoryString("childName", childName);
-    	NodeRef nodeRefParent = groupAuthorityService.getAuthorityNodeRef(parentName);
-    	NodeRef nodeRefChild = groupAuthorityService.getAuthorityNodeRef(childName);
+    	NodeRef nodeRefParent = groupAuthorityService.getAuthorityNodeRefOrNull(parentName);
+    	NodeRef nodeRefChild = groupAuthorityService.getAuthorityNodeRefOrNull(childName);
     	groupAuthorityService.addAuthority(nodeRefParent, nodeRefChild);
+    }
+
+    /**
+     * RemoveAuthority as a child of group parent
+     * @param fullAuthorityName the full name of the authority to add to this group.
+     */
+    public void removeAuthority(String parentName, String childName)
+    {
+    	ParameterCheck.mandatoryString("parentName", parentName);
+    	ParameterCheck.mandatoryString("childName", childName);
+    	NodeRef nodeRefParent = groupAuthorityService.getAuthorityNodeRefOrNull(parentName);
+    	NodeRef nodeRefChild = groupAuthorityService.getAuthorityNodeRefOrNull(childName);
+    	groupAuthorityService.removeAuthority(nodeRefParent, nodeRefChild);
     }
 	
     /**
@@ -60,8 +77,8 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         
         ScriptNode group = null;
         
-        String actualName = groupAuthorityService.getName(AuthorityType.GROUP, groupName);
-        if (groupAuthorityService.authorityExists(actualName) == false)
+        String actualName = getAuthorityService().getName(AuthorityType.GROUP, groupName);
+        if (getAuthorityService().authorityExists(actualName) == false)
         {
         	NodeRef result = groupAuthorityService.createAuthority(
         			parentGroup==null ? groupAuthorityService.getAuthorityContainer():parentGroup.getNodeRef(), 

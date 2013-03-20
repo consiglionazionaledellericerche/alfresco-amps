@@ -13,19 +13,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.error.AlfrescoRuntimeException;
 import org.alfresco.model.ContentModel;
+import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authority.AuthorityDAO;
-import org.alfresco.repo.security.authority.AuthorityServiceImpl;
 import org.alfresco.repo.tenant.TenantService;
 import org.alfresco.service.cmr.repository.ChildAssociationRef;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
 
-public class GroupAuthorityServiceImpl extends AuthorityServiceImpl implements GroupAuthorityService{
+public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 
 	private NamespacePrefixResolver namespacePrefixResolver;
 
@@ -45,8 +46,14 @@ public class GroupAuthorityServiceImpl extends AuthorityServiceImpl implements G
     private StoreRef storeRef;
 
     private NodeService nodeService;
+
+    private AuthorityService authorityService;
     
-    public void setGroupAuthorityDAO(AuthorityDAO groupAuthorityDAO) {
+    public void setAuthorityService(AuthorityService authorityService) {
+		this.authorityService = authorityService;
+	}
+
+	public void setGroupAuthorityDAO(AuthorityDAO groupAuthorityDAO) {
 		this.groupAuthorityDAO = groupAuthorityDAO;
 	}
 
@@ -129,26 +136,37 @@ public class GroupAuthorityServiceImpl extends AuthorityServiceImpl implements G
     	groupAuthorityDAO.addAuthority(Collections.singleton(groupAuthorityDAO.getAuthorityName(parentName)), 
     			groupAuthorityDAO.getAuthorityName(childName));
 	}
+
+    public void removeAuthority(NodeRef parentName, NodeRef childName) {
+    	groupAuthorityDAO.removeAuthority(groupAuthorityDAO.getAuthorityName(parentName), 
+    			groupAuthorityDAO.getAuthorityName(childName));
+	}
     
     public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName){
     	return createAuthority(authorityParentRef, shortName, authorityDisplayName, null);
     }
     
     public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName, Set<String> authorityZones){
-    	String name = getName(AuthorityType.GROUP, shortName);        
-    	HashMap<QName, Serializable> props = new HashMap<QName, Serializable>();
+    	final String name = authorityService.getName(AuthorityType.GROUP, shortName);        
+    	final HashMap<QName, Serializable> props = new HashMap<QName, Serializable>();
         props.put(ContentModel.PROP_AUTHORITY_NAME, name);
         props.put(ContentModel.PROP_AUTHORITY_DISPLAY_NAME, authorityDisplayName);
-        NodeRef childRef;
-        childRef = nodeService.createNode(authorityParentRef, ContentModel.ASSOC_CHILDREN, 
-        		QName.createQName("cm", name, namespacePrefixResolver),
-                ContentModel.TYPE_AUTHORITY_CONTAINER, props).getChildRef();
+        NodeRef childRef = null;
+        AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
+        	@Override
+			public NodeRef doWork() throws Exception {
+				return nodeService.createNode(getAuthorityContainer(), ContentModel.ASSOC_CHILDREN, 
+		        		QName.createQName("cm", name, namespacePrefixResolver),
+		                ContentModel.TYPE_AUTHORITY_CONTAINER, props).getChildRef();
+			}
+        	
+		});
         if (authorityZones != null)
         {
             Set<NodeRef> zoneRefs = new HashSet<NodeRef>(authorityZones.size() * 2);
             for (String authorityZone : authorityZones)
             {
-                zoneRefs.add(getOrCreateZone(authorityZone));
+                zoneRefs.add(authorityService.getOrCreateZone(authorityZone));
             }
             nodeService.addChild(zoneRefs, childRef, ContentModel.ASSOC_IN_ZONE, QName.createQName("cm", name, namespacePrefixResolver));
         }
@@ -169,7 +187,7 @@ public class GroupAuthorityServiceImpl extends AuthorityServiceImpl implements G
      */
     public void deleteAuthority(NodeRef authorityNoderRef)
     {
-        super.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), false);
+    	authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), false);
     }
     
     /**
@@ -177,7 +195,7 @@ public class GroupAuthorityServiceImpl extends AuthorityServiceImpl implements G
      */
     public void deleteAuthority(NodeRef authorityNoderRef, boolean cascade)
     {
-    	super.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), cascade);
+    	authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), cascade);
     }
     
 }

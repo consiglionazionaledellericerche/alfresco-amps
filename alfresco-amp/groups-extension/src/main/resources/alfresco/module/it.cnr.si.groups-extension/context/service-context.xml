@@ -1,8 +1,7 @@
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 <beans>
 
-    <bean id="groupAuthorityService" parent="authorityService" 
-    		class="it.cnr.si.repo.security.authority.GroupAuthorityServiceImpl">
+    <bean id="groupAuthorityService" class="it.cnr.si.repo.security.authority.GroupAuthorityServiceImpl">
         <property name="storeUrl">
             <value>${spaces.store}</value>
         </property>
@@ -18,6 +17,10 @@
         <property name="nodeService">
             <ref bean="mlAwareNodeService" />
         </property>
+        <property name="authorityService">
+            <ref bean="authorityService" />
+        </property>
+
         <!--                                                                  -->
         <!-- A list of groups with admin rights.                              -->
         <!--                                                                  -->
@@ -34,16 +37,22 @@
             </set>
         </property>        
     </bean>
+
     <bean id="GroupAuthorityService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
         <property name="authenticationManager"><ref bean="authenticationManager"/></property>
         <property name="accessDecisionManager"><ref bean="accessDecisionManager"/></property>
         <property name="afterInvocationManager"><ref bean="afterInvocationManager"/></property>
         <property name="objectDefinitionSource">
             <value>
-               it.cnr.si.service.cmr.security.GroupAuthorityService.addAuthority=ACL_NODE.0.sys:base.CreateChildren,ACL_NODE.1.sys:base.ReadProperties
+               	it.cnr.si.service.cmr.security.GroupAuthorityService.addAuthority=ACL_NODE.0.sys:base.CreateChildren,ACL_NODE.1.sys:base.ReadProperties
+               	it.cnr.si.service.cmr.security.GroupAuthorityService.removeAuthority=ACL_NODE.0.sys:base.DeleteChildren,ACL_NODE.1.sys:base.ReadProperties
                 it.cnr.si.service.cmr.security.GroupAuthorityService.createAuthority=ACL_NODE.0.sys:base.CreateChildren
                 it.cnr.si.service.cmr.security.GroupAuthorityService.deleteAuthority=ACL_NODE.0.sys:base.DeleteNode
                 it.cnr.si.service.cmr.security.GroupAuthorityService.getAuthorityNameOrNull=ACL_NODE.0.sys:base.ReadProperties
+                it.cnr.si.service.cmr.security.GroupAuthorityService.getAuthorityNodeRefOrNull=ACL_ALLOW,AFTER_ACL_NODE.sys:base.ReadProperties
+				it.cnr.si.service.cmr.security.GroupAuthorityService.getAuthorityContainerRef=ACL_ALLOW
+				it.cnr.si.service.cmr.security.GroupAuthorityService.getAuthorityContainer=ACL_ALLOW
+				it.cnr.si.service.cmr.security.GroupAuthorityService.getZoneContainer=ACL_ALLOW
                 it.cnr.si.service.cmr.security.GroupAuthorityService.*=ACL_DENY
             </value>
         </property>
@@ -73,7 +82,6 @@
         <property name="services">
             <ref bean="ServiceRegistry" />
         </property>
-        
         <property name="extensionName">
             <value>groupAuthority</value>
         </property>
