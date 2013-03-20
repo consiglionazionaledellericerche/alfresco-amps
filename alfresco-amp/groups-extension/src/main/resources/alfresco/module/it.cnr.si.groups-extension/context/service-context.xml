@@ -19,23 +19,7 @@
         </property>
         <property name="authorityService">
             <ref bean="authorityService" />
-        </property>
-
-        <!--                                                                  -->
-        <!-- A list of groups with admin rights.                              -->
-        <!--                                                                  -->
-        <property name="adminGroups">
-            <set>
-                <value>ALFRESCO_ADMINISTRATORS</value>
-            </set>
-        </property>
-        <!--                                                                  -->
-        <!-- A list of groups with guest rights.                              -->
-        <!--                                                                  -->
-        <property name="guestGroups">
-            <set>
-            </set>
-        </property>        
+        </property>  
     </bean>
 
     <bean id="GroupAuthorityService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
