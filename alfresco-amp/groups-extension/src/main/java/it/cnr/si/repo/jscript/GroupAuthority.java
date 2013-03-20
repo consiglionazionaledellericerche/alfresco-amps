@@ -110,4 +110,11 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         return group;
     }	
 
+    public void deleteGroup(String groupName, boolean cascade){
+    	groupAuthorityService.deleteAuthority(groupAuthorityService.getAuthorityNodeRefOrNull(groupName), cascade);
+    }
+    
+    public void deleteGroup(String groupName){
+    	deleteGroup(groupName, false);
+    }
 }
