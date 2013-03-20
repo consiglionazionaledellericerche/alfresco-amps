@@ -2,17 +2,13 @@ package it.cnr.si.repo.security.authority;
 
 import it.cnr.si.service.cmr.security.GroupAuthorityService;
 
-import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.alfresco.error.AlfrescoRuntimeException;
-import org.alfresco.model.ContentModel;
 import org.alfresco.repo.security.authentication.AuthenticationUtil;
 import org.alfresco.repo.security.authority.AuthorityDAO;
 import org.alfresco.repo.tenant.TenantService;
@@ -146,29 +142,18 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
     	return createAuthority(authorityParentRef, shortName, authorityDisplayName, null);
     }
     
-    public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName, Set<String> authorityZones){
+    public NodeRef createAuthority(final NodeRef authorityParentRef, String shortName, final String authorityDisplayName, final Set<String> authorityZones){
     	final String name = authorityService.getName(AuthorityType.GROUP, shortName);        
-    	final HashMap<QName, Serializable> props = new HashMap<QName, Serializable>();
-        props.put(ContentModel.PROP_AUTHORITY_NAME, name);
-        props.put(ContentModel.PROP_AUTHORITY_DISPLAY_NAME, authorityDisplayName);
         NodeRef childRef = AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
         	@Override
 			public NodeRef doWork() throws Exception {
-				return nodeService.createNode(getAuthorityContainer(), ContentModel.ASSOC_CHILDREN, 
-		        		QName.createQName("cm", name, namespacePrefixResolver),
-		                ContentModel.TYPE_AUTHORITY_CONTAINER, props).getChildRef();
+        		groupAuthorityDAO.createAuthority(name, authorityDisplayName, authorityZones);
+        		NodeRef newGroup = groupAuthorityDAO.getAuthorityNodeRefOrNull(name);
+	        	if (!authorityParentRef.equals(getAuthorityContainer()))
+	        		addAuthority(authorityParentRef, newGroup);
+	        	return newGroup;
 			}
-        	
 		});
-        if (authorityZones != null)
-        {
-            Set<NodeRef> zoneRefs = new HashSet<NodeRef>(authorityZones.size() * 2);
-            for (String authorityZone : authorityZones)
-            {
-                zoneRefs.add(authorityService.getOrCreateZone(authorityZone));
-            }
-            nodeService.addChild(zoneRefs, childRef, ContentModel.ASSOC_IN_ZONE, QName.createQName("cm", name, namespacePrefixResolver));
-        }
     	return childRef;
     }
     
