@@ -3,6 +3,7 @@ package it.cnr.si.repo.security.authority;
 import it.cnr.si.service.cmr.security.GroupAuthorityService;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,8 +24,6 @@ import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
 
 public class GroupAuthorityServiceImpl implements GroupAuthorityService{
-
-	private NamespacePrefixResolver namespacePrefixResolver;
 
     private QName qnameAssocSystem;
 
@@ -100,7 +99,6 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
     
     public void setNamespacePrefixResolver(NamespacePrefixResolver namespacePrefixResolver)
     {
-        this.namespacePrefixResolver = namespacePrefixResolver;
         qnameAssocSystem = QName.createQName("sys", "system", namespacePrefixResolver);
         qnameAssocAuthorities = QName.createQName("sys", "authorities", namespacePrefixResolver);
         qnameAssocZones = QName.createQName("sys", "zones", namespacePrefixResolver);
@@ -161,6 +159,10 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
     	return groupAuthorityDAO.getAuthorityName(nodeRef);
     }
 
+    public String getAuthorityDisplayNameOrNull(NodeRef nodeRef){
+    	return groupAuthorityDAO.getAuthorityDisplayName( getAuthorityNameOrNull(nodeRef));
+    }
+    
     public NodeRef getAuthorityNodeRefOrNull(String groupName){
     	return groupAuthorityDAO.getAuthorityNodeRefOrNull(groupName);
     }
@@ -179,6 +181,28 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
     public void deleteAuthority(NodeRef authorityNoderRef, boolean cascade)
     {
     	authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), cascade);
+    }
+    
+    public Set<NodeRef> getAllUserAuthorities(NodeRef parent){
+    	return getAuthorities(parent, AuthorityType.USER);
+    }
+
+    public Set<NodeRef> getAllGroupAuthorities(NodeRef parent){
+    	return getAuthorities(parent, AuthorityType.GROUP);
+    }
+    
+    public Set<NodeRef> getAuthorities(NodeRef parent, AuthorityType authorityType){
+    	Set<String> authorities = null;
+    	if (parent == null)
+    		authorities = authorityService.getAllRootAuthorities(authorityType);
+    	else{
+    		authorities = authorityService.getContainedAuthorities(authorityType, getAuthorityNameOrNull(parent), false);
+    	}
+    	Set<NodeRef> result = new HashSet<NodeRef>(authorities.size());
+    	for (String authority : authorities) {
+    		result.add(getAuthorityNodeRefOrNull(authority));
+		}
+    	return result;
     }
     
 }

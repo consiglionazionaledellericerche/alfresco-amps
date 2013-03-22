@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.alfresco.service.Auditable;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.security.AuthorityType;
 
 public interface GroupAuthorityService{
 	@Auditable	
@@ -65,4 +66,13 @@ public interface GroupAuthorityService{
 	
 	@Auditable(parameters = {"groupName"})
 	public NodeRef getAuthorityNodeRefOrNull(String groupName);
+	
+	@Auditable(parameters = {"parent"})
+	public Set<NodeRef> getAllUserAuthorities(NodeRef parent);
+
+	@Auditable(parameters = {"parent"})
+	public Set<NodeRef> getAllGroupAuthorities(NodeRef parent);
+	
+	@Auditable(parameters = {"parent"})
+	public Set<NodeRef> getAuthorities(NodeRef parent, AuthorityType authorityType);
 }
