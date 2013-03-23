@@ -196,7 +196,7 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
     	if (parent == null)
     		authorities = authorityService.getAllRootAuthorities(authorityType);
     	else{
-    		authorities = authorityService.getContainedAuthorities(authorityType, getAuthorityNameOrNull(parent), false);
+    		authorities = authorityService.getContainedAuthorities(authorityType, getAuthorityNameOrNull(parent), true);
     	}
     	Set<NodeRef> result = new HashSet<NodeRef>(authorities.size());
     	for (String authority : authorities) {
