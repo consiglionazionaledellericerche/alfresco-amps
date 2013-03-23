@@ -3,21 +3,21 @@ package it.cnr.si.repo.jscript;
 
 import it.cnr.si.service.cmr.security.GroupAuthorityService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
 import org.alfresco.repo.jscript.ScriptNode;
 import org.alfresco.repo.security.authority.script.Authority;
+import org.alfresco.repo.security.authority.script.Authority.AuthorityComparator;
 import org.alfresco.repo.security.authority.script.ScriptGroup;
 import org.alfresco.repo.security.authority.script.ScriptUser;
-import org.alfresco.repo.security.authority.script.Authority.AuthorityComparator;
-import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeRef;
+import org.alfresco.service.cmr.security.AccessStatus;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.AuthorityType;
 import org.alfresco.service.cmr.security.PermissionService;
@@ -127,6 +127,35 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         return authority;
     }	
 
+    public AuthorityPermission getAuthorityPermission(String authorityName) 
+    {
+        ParameterCheck.mandatoryString("AuthorityName", authorityName);
+        AuthorityPermission authorityPermission = null;
+        NodeRef authorityRef = groupAuthorityService.getAuthorityNodeRefOrNull(authorityName);
+        if (authorityRef != null)
+        {
+        	authorityPermission = new AuthorityPermission(authorityRef,
+				new ScriptGroup(groupAuthorityService.getAuthorityNameOrNull(authorityRef), 
+				services, this.getScope()));
+        	addPermission(authorityPermission, authorityRef);
+        }
+		return authorityPermission;
+    }
+
+    public AuthorityPermission getRootAuthorityPermission() 
+    {
+        AuthorityPermission authorityPermission = null;
+        NodeRef authorityRef = groupAuthorityService.getAuthorityContainer();
+        if (authorityRef != null)
+        {
+        	authorityPermission = new AuthorityPermission(authorityRef,
+				new ScriptGroup(groupAuthorityService.getAuthorityNameOrNull(authorityRef), 
+				services, this.getScope()));
+        	addPermission(authorityPermission, authorityRef);
+        }
+		return authorityPermission;
+    }
+    
     public void deleteGroup(String groupName, boolean cascade){
     	groupAuthorityService.deleteAuthority(groupAuthorityService.getAuthorityNodeRefOrNull(groupName), cascade);
     }
@@ -157,11 +186,18 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     
     public class AuthorityPermission implements Authority{
     	private final Authority authority;
-    	private Map<String, AccessStatus> permissions;
-		public AuthorityPermission(Authority authority) {
+    	private final NodeRef nodeRef;
+    	private List<String> allowableActions;
+    	
+		public AuthorityPermission(NodeRef nodeRef, Authority authority) {
 			super();
 			this.authority = authority;
-			this.permissions = new HashMap<String, AccessStatus>();
+			this.nodeRef = nodeRef; 
+			this.allowableActions = new ArrayList<String>();
+		}
+
+		public NodeRef getNodeRef() {
+			return nodeRef;
 		}
 
 		public Authority getAuthority() {
@@ -188,24 +224,28 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
 			return authority.getDisplayName();
 		}
 
-		public Map<String, AccessStatus> getPermissions() {
-			return permissions;
+		public List<String> getAllowableActions() {
+			return allowableActions;
 		}
     	
-		public void addPermission(String key, AccessStatus value){
-			permissions.put(key, value);
+		public void addAllowableActions(String key){
+			allowableActions.add(key);
 		}
     }
     
     private void addPermission(AuthorityPermission authorityPermission, NodeRef child){
-		authorityPermission.addPermission(PermissionService.CREATE_CHILDREN, 
-		getPermissionService().hasPermission(child, PermissionService.CREATE_CHILDREN));
-		authorityPermission.addPermission(PermissionService.CHANGE_PERMISSIONS, 
-		getPermissionService().hasPermission(child, PermissionService.CHANGE_PERMISSIONS));
-		authorityPermission.addPermission(PermissionService.DELETE, 
-		getPermissionService().hasPermission(child, PermissionService.DELETE));
-		authorityPermission.addPermission(PermissionService.WRITE_PROPERTIES, 
-		getPermissionService().hasPermission(child, PermissionService.WRITE_PROPERTIES));
+    	if (getPermissionService().hasPermission(child, 
+    			PermissionService.CREATE_CHILDREN).equals(AccessStatus.ALLOWED))
+    		authorityPermission.addAllowableActions("CAN_CREATE_CHILDREN");
+    	if (getPermissionService().hasPermission(child, 
+    			PermissionService.CHANGE_PERMISSIONS).equals(AccessStatus.ALLOWED))
+    		authorityPermission.addAllowableActions("CAN_APPLY_ACL");
+    	if (getPermissionService().hasPermission(child, 
+    			PermissionService.DELETE).equals(AccessStatus.ALLOWED))
+    		authorityPermission.addAllowableActions("CAN_DELETE_OBJECT");
+    	if (getPermissionService().hasPermission(child, 
+    			PermissionService.WRITE_PROPERTIES).equals(AccessStatus.ALLOWED))
+    		authorityPermission.addAllowableActions("CAN_UPDATE_PROPERTIES");
     }
     /**
      * Get all the children of this group, regardless of type
@@ -219,7 +259,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         if (authorityType == null || authorityType.equals(AuthorityType.GROUP.name())){
         	Set<NodeRef> childs = groupAuthorityService.getAllGroupAuthorities(groupRef);
         	for (NodeRef child : childs) {
-        		AuthorityPermission authorityPermission = new AuthorityPermission(
+        		AuthorityPermission authorityPermission = new AuthorityPermission(child,
         				new ScriptGroup(groupAuthorityService.getAuthorityNameOrNull(child), 
         				services, this.getScope()));
         		addPermission(authorityPermission, child);
@@ -229,7 +269,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         if (authorityType == null || authorityType.equals(AuthorityType.USER.name())){
         	Set<NodeRef> childs = groupAuthorityService.getAllUserAuthorities(groupRef);
         	for (NodeRef child : childs) {
-        		AuthorityPermission authorityPermission = new AuthorityPermission(
+        		AuthorityPermission authorityPermission = new AuthorityPermission(child,
         				new ScriptUser(groupAuthorityService.getAuthorityNameOrNull(child), 
                 				child, services, this.getScope()));
         		addPermission(authorityPermission, child);
