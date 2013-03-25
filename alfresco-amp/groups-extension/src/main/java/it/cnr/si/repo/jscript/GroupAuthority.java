@@ -269,9 +269,11 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     	Set<AuthorityPermission> result = new HashSet<AuthorityPermission>();
         NodeRef groupRef = null;
         if (groupName != null){
-            if (NodeRef.isNodeRef(groupName))
+            if (NodeRef.isNodeRef(groupName)){
             	groupRef = new NodeRef(groupName);
-            else	
+            	if (groupAuthorityService.getAuthorityContainer().equals(groupRef))
+            		groupRef = null;
+            }else	
             	groupRef = groupAuthorityService.getAuthorityNodeRefOrNull(groupName);
         }    
         if (authorityType == null || authorityType.equals(AuthorityType.GROUP.name())){
