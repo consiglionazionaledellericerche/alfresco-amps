@@ -148,9 +148,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         NodeRef authorityRef = groupAuthorityService.getAuthorityContainer();
         if (authorityRef != null)
         {
-        	authorityPermission = new AuthorityPermission(authorityRef,
-				new ScriptGroup(groupAuthorityService.getAuthorityNameOrNull(authorityRef), 
-				services, this.getScope()));
+        	authorityPermission = new AuthorityPermission(authorityRef, null);
         	addPermission(authorityPermission, authorityRef);
         }
 		return authorityPermission;
