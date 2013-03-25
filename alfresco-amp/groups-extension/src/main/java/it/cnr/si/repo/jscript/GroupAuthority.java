@@ -331,7 +331,10 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         @Override
         public int compare(Authority g1, Authority g2)
         {
-            return get(g1).compareTo( get(g2) );
+        	if (g1.getAuthorityType().equals(g2.getAuthorityType()))
+        		return get(g1).compareTo( get(g2) );
+        	else
+        		return g1.getAuthorityType().compareTo(g2.getAuthorityType());
         }
         
         private String get(Authority g)
@@ -350,7 +353,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
                 }
                 else
                 {
-                    v = g.getAuthorityType().name(); 
+                    v = g.getFullName(); 
                 }
                 // Lower case it for case insensitive search
                 v = v.toLowerCase();
