@@ -239,8 +239,6 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
 		}
 
 		public List<String> getAllowableActions() {
-			if (authority == null)
-				return null;
 			return allowableActions;
 		}
     	
