@@ -122,8 +122,6 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         NodeRef authorityRef;
         if (NodeRef.isNodeRef(authorityName)){
         	authorityRef = new NodeRef(authorityName);
-        	if (groupAuthorityService.getAuthorityContainer().getId().equals(authorityRef.getId()))
-        		authorityRef = groupAuthorityService.getAuthorityContainer();
         }else	
         	authorityRef = groupAuthorityService.getAuthorityNodeRefOrNull(authorityName);
         if (authorityRef != null)
@@ -140,8 +138,6 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         NodeRef authorityRef;
         if (NodeRef.isNodeRef(authorityName)){
         	authorityRef = new NodeRef(authorityName);
-        	if (groupAuthorityService.getAuthorityContainer().getId().equals(authorityRef.getId()))
-        		authorityRef = groupAuthorityService.getAuthorityContainer();
         }else	
         	authorityRef = groupAuthorityService.getAuthorityNodeRefOrNull(authorityName);
         if (authorityRef != null)
@@ -275,8 +271,6 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         if (groupName != null){
             if (NodeRef.isNodeRef(groupName)){
             	groupRef = new NodeRef(groupName);
-            	if (groupAuthorityService.getAuthorityContainer().getId().equals(groupRef.getId()))
-            		groupRef = null;
             }else	
             	groupRef = groupAuthorityService.getAuthorityNodeRefOrNull(groupName);
         }    
