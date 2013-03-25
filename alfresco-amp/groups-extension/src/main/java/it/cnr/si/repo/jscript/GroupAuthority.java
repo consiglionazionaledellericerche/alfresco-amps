@@ -120,9 +120,11 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         ParameterCheck.mandatoryString("AuthorityName", authorityName);
         ScriptNode authority = null;
         NodeRef authorityRef;
-        if (NodeRef.isNodeRef(authorityName))
+        if (NodeRef.isNodeRef(authorityName)){
         	authorityRef = new NodeRef(authorityName);
-        else	
+        	if (groupAuthorityService.getAuthorityContainer().equals(authorityRef))
+        		authorityRef = groupAuthorityService.getAuthorityContainer();
+        }else	
         	authorityRef = groupAuthorityService.getAuthorityNodeRefOrNull(authorityName);
         if (authorityRef != null)
         {
