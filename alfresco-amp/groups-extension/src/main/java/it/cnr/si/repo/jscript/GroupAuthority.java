@@ -204,25 +204,35 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
 
 		@Override
 		public ScriptAuthorityType getAuthorityType() {
+			if (authority == null)
+				return null;
 			return authority.getAuthorityType();
 		}
 
 		@Override
 		public String getShortName() {
+			if (authority == null)
+				return null;
 			return authority.getShortName();
 		}
 
 		@Override
 		public String getFullName() {
+			if (authority == null)
+				return null;
 			return authority.getFullName();
 		}
 
 		@Override
 		public String getDisplayName() {
+			if (authority == null)
+				return null;
 			return authority.getDisplayName();
 		}
 
 		public List<String> getAllowableActions() {
+			if (authority == null)
+				return null;
 			return allowableActions;
 		}
     	
