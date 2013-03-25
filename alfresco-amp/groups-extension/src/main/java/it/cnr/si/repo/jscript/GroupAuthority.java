@@ -5,14 +5,16 @@ import it.cnr.si.service.cmr.security.GroupAuthorityService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
 import org.alfresco.repo.jscript.ScriptNode;
 import org.alfresco.repo.security.authority.script.Authority;
-import org.alfresco.repo.security.authority.script.Authority.AuthorityComparator;
 import org.alfresco.repo.security.authority.script.ScriptGroup;
 import org.alfresco.repo.security.authority.script.ScriptUser;
 import org.alfresco.service.ServiceRegistry;
@@ -306,13 +308,57 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     private <T extends AuthorityPermission> T[] makePagedAuthority(ScriptPagingDetails paging, String sortBy, T[] groups)
     {
         // Sort the groups
-    	if (sortBy != null)
-    		Arrays.sort(groups, new AuthorityComparator(sortBy));
+    	Arrays.sort(groups, new GroupAuthorityComparator(sortBy));
 
         // Now page
         int maxItems = paging.getMaxItems(); 
         int skipCount = paging.getSkipCount();
         paging.setTotalItems(groups.length);
         return ModelUtil.page(groups, maxItems, skipCount);
-    }    
+    }   
+ 
+    public static class GroupAuthorityComparator implements Comparator<Authority>
+    {
+        private Map<Authority,String> nameCache;
+        private String sortBy;
+        
+        public GroupAuthorityComparator(String sortBy)
+        {
+            this.sortBy = sortBy;
+            this.nameCache = new HashMap<Authority, String>();
+        }
+
+        @Override
+        public int compare(Authority g1, Authority g2)
+        {
+            return get(g1).compareTo( get(g2) );
+        }
+        
+        private String get(Authority g)
+        {
+            String v = nameCache.get(g);
+            if(v == null)
+            {
+                // Get the value from the group
+                if("displayName".equals(sortBy))
+                {
+                    v = g.getDisplayName(); 
+                }
+                else if("shortName".equals(sortBy))
+                {
+                    v = g.getShortName();
+                }
+                else
+                {
+                    v = g.getAuthorityType().name(); 
+                }
+                // Lower case it for case insensitive search
+                v = v.toLowerCase();
+                // Cache it
+                nameCache.put(g, v);
+            }
+            return v;
+        }
+    }
+    
 }
