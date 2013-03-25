@@ -258,6 +258,12 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     			PermissionService.DELETE).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_DELETE_OBJECT");
     	if (getPermissionService().hasPermission(child, 
+    			PermissionService.DELETE_ASSOCIATIONS).equals(AccessStatus.ALLOWED))
+    		authorityPermission.addAllowableActions("CAN_DELETE_ASSOCIATIONS");
+    	if (getPermissionService().hasPermission(child, 
+    			PermissionService.CREATE_ASSOCIATIONS).equals(AccessStatus.ALLOWED))
+    		authorityPermission.addAllowableActions("CAN_CREATE_ASSOCIATIONS");
+    	if (getPermissionService().hasPermission(child, 
     			PermissionService.WRITE_PROPERTIES).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_UPDATE_PROPERTIES");
     }
