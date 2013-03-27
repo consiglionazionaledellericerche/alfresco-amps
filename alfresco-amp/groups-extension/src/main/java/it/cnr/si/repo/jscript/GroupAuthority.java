@@ -160,6 +160,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         {
         	authorityPermission = new AuthorityPermission(authorityRef, null);
         	addPermission(authorityPermission, authorityRef);
+        	authorityPermission.getAllowableActions().remove("CAN_CREATE_ASSOCIATIONS");
         }
 		return authorityPermission;
     }
@@ -262,9 +263,11 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     	if (getPermissionService().hasPermission(child, 
     			PermissionService.DELETE_ASSOCIATIONS).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_DELETE_ASSOCIATIONS");
+    	
     	if (getPermissionService().hasPermission(child, 
     			PermissionService.CREATE_ASSOCIATIONS).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_CREATE_ASSOCIATIONS");
+    	
     	if (getPermissionService().hasPermission(child, 
     			PermissionService.WRITE_PROPERTIES).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_UPDATE_PROPERTIES");
