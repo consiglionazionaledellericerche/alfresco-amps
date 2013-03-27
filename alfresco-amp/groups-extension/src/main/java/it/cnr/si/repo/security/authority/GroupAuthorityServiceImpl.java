@@ -19,6 +19,8 @@ import org.alfresco.service.cmr.repository.NodeService;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.alfresco.service.cmr.security.AuthorityService;
 import org.alfresco.service.cmr.security.AuthorityType;
+import org.alfresco.service.cmr.security.OwnableService;
+import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
@@ -44,7 +46,19 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 
     private AuthorityService authorityService;
     
-    public void setAuthorityService(AuthorityService authorityService) {
+    private PermissionService permissionService;
+
+    private OwnableService ownableService;
+    
+    public void setOwnableService(OwnableService ownableService) {
+		this.ownableService = ownableService;
+	}
+
+	public void setPermissionService(PermissionService permissionService) {
+		this.permissionService = permissionService;
+	}
+
+	public void setAuthorityService(AuthorityService authorityService) {
 		this.authorityService = authorityService;
 	}
 
@@ -152,6 +166,9 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 	        	return newGroup;
 			}
 		});
+    	ownableService.takeOwnership(childRef);
+    	permissionService.setPermission(childRef, AuthenticationUtil.getFullyAuthenticatedUser(), 
+    			PermissionService.COORDINATOR, true);
     	return childRef;
     }
     

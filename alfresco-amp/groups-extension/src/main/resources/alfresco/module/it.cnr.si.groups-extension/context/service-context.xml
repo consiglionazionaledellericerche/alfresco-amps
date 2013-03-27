@@ -20,6 +20,12 @@
         <property name="authorityService">
             <ref bean="authorityService" />
         </property>  
+        <property name="permissionService">
+            <ref bean="permissionService" />
+        </property>  
+        <property name="ownableService">
+            <ref bean="ownableService" />
+        </property>  
     </bean>
 
     <bean id="GroupAuthorityService_security" class="org.alfresco.repo.security.permissions.impl.acegi.MethodSecurityInterceptor">
