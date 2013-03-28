@@ -8,7 +8,7 @@
         <property name="namespacePrefixResolver">
             <ref bean="namespaceService" />
         </property>
-        <property name="groupAuthorityDAO">
+        <property name="authorityDAO">
             <ref bean="authorityDAO" />
         </property>
         <property name="tenantService">
@@ -18,7 +18,7 @@
             <ref bean="mlAwareNodeService" />
         </property>
         <property name="authorityService">
-            <ref bean="authorityService" />
+            <ref bean="AuthorityService" />
         </property>  
         <property name="permissionService">
             <ref bean="permissionService" />
