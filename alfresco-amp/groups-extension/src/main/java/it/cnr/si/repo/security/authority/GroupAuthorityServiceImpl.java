@@ -161,26 +161,26 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 		});
 	}
     
-    public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName){
+    public String createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName){
     	return createAuthority(authorityParentRef, shortName, authorityDisplayName, null);
     }
     
-    public NodeRef createAuthority(final NodeRef authorityParentRef, String shortName, final String authorityDisplayName, final Set<String> authorityZones){
+    public String createAuthority(final NodeRef authorityParentRef, String shortName, final String authorityDisplayName, final Set<String> authorityZones){
     	final String name = authorityService.getName(AuthorityType.GROUP, shortName);        
-        NodeRef childRef = AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
+        String groupName = AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<String>() {
         	@Override
-			public NodeRef doWork() throws Exception {
-        		authorityService.createAuthority(AuthorityType.GROUP, name, authorityDisplayName, authorityZones);
-        		NodeRef newGroup = authorityDAO.getAuthorityNodeRefOrNull(name);
-	        	if (!authorityParentRef.equals(getAuthorityContainer()))
-	        		addAuthority(authorityParentRef, newGroup);
-	        	return newGroup;
+			public String doWork() throws Exception {
+        		String groupName = authorityService.createAuthority(AuthorityType.GROUP, name, authorityDisplayName, authorityZones);
+	        	if (!authorityParentRef.equals(getAuthorityContainer())){
+	        		authorityService.addAuthority(getAuthorityNameOrNull(authorityParentRef), name);
+	        	}
+	        	return groupName;
 			}
 		});
-    	ownableService.takeOwnership(childRef);
-    	permissionService.setPermission(childRef, AuthenticationUtil.getFullyAuthenticatedUser(), 
-    			PermissionService.COORDINATOR, true);
-    	return childRef;
+//    	ownableService.takeOwnership(childRef);
+//    	permissionService.setPermission(childRef, AuthenticationUtil.getFullyAuthenticatedUser(), 
+//    			PermissionService.COORDINATOR, true);
+    	return groupName;
     }
     
     public String getAuthorityNameOrNull(NodeRef nodeRef){

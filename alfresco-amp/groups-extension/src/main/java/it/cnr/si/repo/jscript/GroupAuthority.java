@@ -80,7 +80,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
      * 
      * @return the group reference if successful or null if failed
      */
-    public ScriptNode createGroup(String groupName, String groupDisplayName)
+    public ScriptGroup createGroup(String groupName, String groupDisplayName)
     {
         return createGroup(null, groupName, groupDisplayName);
     }
@@ -93,19 +93,19 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
      * 
      * @return the group reference if successful or null if failed
      */
-    public ScriptNode createGroup(ScriptNode parentGroup, String groupName, String groupDisplayName)
+    public ScriptGroup createGroup(ScriptNode parentGroup, String groupName, String groupDisplayName)
     {
         ParameterCheck.mandatoryString("GroupName", groupName);
         
-        ScriptNode group = null;
+        ScriptGroup group = null;
         
         String actualName = getAuthorityService().getName(AuthorityType.GROUP, groupName);
         if (getAuthorityService().authorityExists(actualName) == false)
         {
-        	NodeRef result = groupAuthorityService.createAuthority(
+        	String fullName = groupAuthorityService.createAuthority(
         			parentGroup==null ? groupAuthorityService.getAuthorityContainer():parentGroup.getNodeRef(), 
         					groupName, groupDisplayName);
-        	group = new ScriptNode(result, services, getScope());
+        	group = new ScriptGroup(fullName, services, this.getScope());
         }
         
         return group;
