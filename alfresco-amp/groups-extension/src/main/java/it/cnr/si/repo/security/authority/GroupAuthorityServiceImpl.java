@@ -2,6 +2,7 @@ package it.cnr.si.repo.security.authority;
 
 import it.cnr.si.service.cmr.security.GroupAuthorityService;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,8 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
     /** System Container ref cache (Tennant aware) */
     private Map<String, NodeRef> systemContainerRefs = new ConcurrentHashMap<String, NodeRef>(4);
 
+    private AuthorityDAO groupAuthorityDAO;
+
     private TenantService tenantService;
 
     private StoreRef storeRef;
@@ -47,13 +50,7 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 
     private OwnableService ownableService;
     
-    private AuthorityDAO authorityDAO;
-    
-    public void setAuthorityDAO(AuthorityDAO authorityDAO) {
-		this.authorityDAO = authorityDAO;
-	}
-
-	public void setOwnableService(OwnableService ownableService) {
+    public void setOwnableService(OwnableService ownableService) {
 		this.ownableService = ownableService;
 	}
 
@@ -63,6 +60,10 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 
 	public void setAuthorityService(AuthorityService authorityService) {
 		this.authorityService = authorityService;
+	}
+
+	public void setGroupAuthorityDAO(AuthorityDAO groupAuthorityDAO) {
+		this.groupAuthorityDAO = groupAuthorityDAO;
 	}
 
 	public void setTenantService(TenantService tenantService) {
@@ -139,60 +140,53 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
         return getSystemContainer(qnameAssocZones);
     }
     
-    public void addAuthority(final NodeRef parentName, final NodeRef childName) {
-        AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
-        	@Override
-			public Void doWork() throws Exception {
-            	authorityService.addAuthority(authorityDAO.getAuthorityName(parentName), 
-            			authorityDAO.getAuthorityName(childName));
-            	return null;
-			}
-		});
+    public void addAuthority(NodeRef parentName, NodeRef childName) {
+    	groupAuthorityDAO.addAuthority(Collections.singleton(groupAuthorityDAO.getAuthorityName(parentName)), 
+    			groupAuthorityDAO.getAuthorityName(childName));
 	}
 
-    public void removeAuthority(final NodeRef parentName, final NodeRef childName) {
-        AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
-        	@Override
-			public Void doWork() throws Exception {
-            	authorityService.removeAuthority(authorityDAO.getAuthorityName(parentName), 
-            			authorityDAO.getAuthorityName(childName));
-            	return null;
-			}
-		});
+    public void removeAuthority(NodeRef parentName, NodeRef childName) {
+    	groupAuthorityDAO.removeAuthority(groupAuthorityDAO.getAuthorityName(parentName), 
+    			groupAuthorityDAO.getAuthorityName(childName));
 	}
     
-    public String createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName){
+    public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName){
     	return createAuthority(authorityParentRef, shortName, authorityDisplayName, null);
     }
     
-    public String createAuthority(final NodeRef authorityParentRef, String shortName, final String authorityDisplayName, final Set<String> authorityZones){
+    public NodeRef createAuthority(final NodeRef authorityParentRef, String shortName, final String authorityDisplayName, final Set<String> authorityZones){
     	final String name = authorityService.getName(AuthorityType.GROUP, shortName);        
-        String groupName = AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<String>() {
+        NodeRef childRef = AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
         	@Override
-			public String doWork() throws Exception {
-        		String groupName = authorityService.createAuthority(AuthorityType.GROUP, name, authorityDisplayName, authorityZones);
-	        	if (!authorityParentRef.equals(getAuthorityContainer())){
-	        		authorityService.addAuthority(getAuthorityNameOrNull(authorityParentRef), name);
-	        	}
-	        	return groupName;
+			public NodeRef doWork() throws Exception {
+        		Set<String> zones = new HashSet<String>(1); 
+        		if (authorityZones == null)
+        			zones.add(AuthorityService.ZONE_APP_DEFAULT);
+        		else
+        			zones.addAll(authorityZones);
+        		groupAuthorityDAO.createAuthority(name, authorityDisplayName, zones);
+        		NodeRef newGroup = groupAuthorityDAO.getAuthorityNodeRefOrNull(name);
+	        	if (!authorityParentRef.equals(getAuthorityContainer()))
+	        		addAuthority(authorityParentRef, newGroup);
+	        	return newGroup;
 			}
 		});
-//    	ownableService.takeOwnership(childRef);
-//    	permissionService.setPermission(childRef, AuthenticationUtil.getFullyAuthenticatedUser(), 
-//    			PermissionService.COORDINATOR, true);
-    	return groupName;
+    	ownableService.takeOwnership(childRef);
+    	permissionService.setPermission(childRef, AuthenticationUtil.getFullyAuthenticatedUser(), 
+    			PermissionService.COORDINATOR, true);
+    	return childRef;
     }
     
     public String getAuthorityNameOrNull(NodeRef nodeRef){
-    	return authorityDAO.getAuthorityName(nodeRef);
+    	return groupAuthorityDAO.getAuthorityName(nodeRef);
     }
 
     public String getAuthorityDisplayNameOrNull(NodeRef nodeRef){
-    	return authorityDAO.getAuthorityDisplayName( getAuthorityNameOrNull(nodeRef));
+    	return groupAuthorityDAO.getAuthorityDisplayName( getAuthorityNameOrNull(nodeRef));
     }
     
     public NodeRef getAuthorityNodeRefOrNull(String groupName){
-    	return authorityDAO.getAuthorityNodeRefOrNull(groupName);
+    	return groupAuthorityDAO.getAuthorityNodeRefOrNull(groupName);
     }
 
     /**
@@ -200,7 +194,7 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
      */
     public void deleteAuthority(NodeRef authorityNoderRef)
     {
-    	authorityService.deleteAuthority(authorityDAO.getAuthorityName(authorityNoderRef), false);
+    	authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), false);
     }
     
     /**
@@ -208,7 +202,7 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
      */
     public void deleteAuthority(NodeRef authorityNoderRef, boolean cascade)
     {
-    	authorityService.deleteAuthority(authorityDAO.getAuthorityName(authorityNoderRef), cascade);
+    	authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), cascade);
     }
     
     public Set<NodeRef> getAllUserAuthorities(NodeRef parent){

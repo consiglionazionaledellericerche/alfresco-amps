@@ -50,10 +50,10 @@ public interface GroupAuthorityService{
      *         associated with the type appended with the short name)
      */
     @Auditable(parameters = {"authorityParentRef", "shortName", "authorityDisplayName"})
-    public String createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName);
+    public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName);
     
     @Auditable(parameters = {"authorityParentRef", "shortName", "authorityDisplayName", "authorityZones"})
-    public String createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName, Set<String> authorityZones);	    
+    public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName, Set<String> authorityZones);	    
 
     @Auditable(parameters = {"authorityNoderRef"})
 	public void deleteAuthority(NodeRef authorityNoderRef);
