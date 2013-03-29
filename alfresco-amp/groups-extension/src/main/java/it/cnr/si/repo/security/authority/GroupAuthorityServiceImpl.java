@@ -173,7 +173,7 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 		});
     	ownableService.takeOwnership(childRef);
     	permissionService.setPermission(childRef, AuthenticationUtil.getFullyAuthenticatedUser(), 
-    			PermissionService.COORDINATOR, true);
+    			PermissionService.FULL_CONTROL, true);
     	return childRef;
     }
     
