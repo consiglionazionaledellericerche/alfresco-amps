@@ -80,9 +80,9 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
      * 
      * @return the group reference if successful or null if failed
      */
-    public ScriptNode createGroup(String groupName, String groupDisplayName)
+    public ScriptNode createGroup(String groupName, String groupDisplayName, String... zones)
     {
-        return createGroup(null, groupName, groupDisplayName);
+        return createGroup(null, groupName, groupDisplayName, zones);
     }
     
     /**
@@ -93,7 +93,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
      * 
      * @return the group reference if successful or null if failed
      */
-    public ScriptNode createGroup(ScriptNode parentGroup, String groupName, String groupDisplayName)
+    public ScriptNode createGroup(ScriptNode parentGroup, String groupName, String groupDisplayName, String... zones)
     {
         ParameterCheck.mandatoryString("GroupName", groupName);
         
@@ -104,7 +104,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         {
         	NodeRef result = groupAuthorityService.createAuthority(
         			parentGroup==null ? groupAuthorityService.getAuthorityContainer():parentGroup.getNodeRef(), 
-        					groupName, groupDisplayName);
+        					groupName, groupDisplayName, zones);
         	group = new ScriptNode(result, services, getScope());
         }
         
@@ -305,6 +305,17 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         }
         return makePagedAuthority(paging, sortBy, result.toArray(new AuthorityPermission[result.size()]));
     }
+    public Set<String> getAuthorityZones(String name){
+    	return groupAuthorityService.getAuthorityZones(name);
+    }
+
+    public void addAuthorityToZones(String authorityName, String... zones){
+		groupAuthorityService.addAuthorityToZones(authorityName, zones);
+	}
+
+    public void removeAuthorityFromZones(String authorityName, String... zones){
+		groupAuthorityService.removeAuthorityFromZones(authorityName, zones);
+	}
 
     private <T extends AuthorityPermission> T[] makePagedAuthority(ScriptPagingDetails paging, String sortBy, T[] groups)
     {

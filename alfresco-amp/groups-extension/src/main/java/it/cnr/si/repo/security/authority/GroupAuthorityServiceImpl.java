@@ -2,6 +2,7 @@ package it.cnr.si.repo.security.authority;
 
 import it.cnr.si.service.cmr.security.GroupAuthorityService;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -151,19 +152,19 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 	}
     
     public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName){
-    	return createAuthority(authorityParentRef, shortName, authorityDisplayName, null);
+    	return createAuthority(authorityParentRef, shortName, authorityDisplayName, null, null);
     }
     
-    public NodeRef createAuthority(final NodeRef authorityParentRef, String shortName, final String authorityDisplayName, final Set<String> authorityZones){
+    public NodeRef createAuthority(final NodeRef authorityParentRef, String shortName, final String authorityDisplayName, final String... authorityZones){
     	final String name = authorityService.getName(AuthorityType.GROUP, shortName);        
         NodeRef childRef = AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
         	@Override
 			public NodeRef doWork() throws Exception {
-        		Set<String> zones = new HashSet<String>(1); 
+        		Set<String> zones = new HashSet<String>(); 
         		if (authorityZones == null)
         			zones.add(AuthorityService.ZONE_APP_DEFAULT);
         		else
-        			zones.addAll(authorityZones);
+        			zones.addAll(Arrays.asList(authorityZones));
         		groupAuthorityDAO.createAuthority(name, authorityDisplayName, zones);
         		NodeRef newGroup = groupAuthorityDAO.getAuthorityNodeRefOrNull(name);
 	        	if (!authorityParentRef.equals(getAuthorityContainer()))
@@ -226,5 +227,20 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 		}
     	return result;
     }
+
+	@Override
+	public Set<String> getAuthorityZones(String name) {
+		return authorityService.getAuthorityZones(name);
+	}
+
+	@Override
+	public void addAuthorityToZones(String authorityName, String... zones) {
+		authorityService.addAuthorityToZones(authorityName, new HashSet<String>(Arrays.asList(zones)));
+	}
+
+	@Override
+	public void removeAuthorityFromZones(String authorityName, String... zones) {
+		authorityService.removeAuthorityFromZones(authorityName, new HashSet<String>(Arrays.asList(zones)));
+	}
     
 }

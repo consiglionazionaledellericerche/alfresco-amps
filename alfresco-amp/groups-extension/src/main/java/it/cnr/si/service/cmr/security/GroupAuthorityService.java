@@ -3,6 +3,7 @@ package it.cnr.si.service.cmr.security;
 import java.util.Set;
 
 import org.alfresco.service.Auditable;
+import org.alfresco.service.NotAuditable;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.security.AuthorityType;
 
@@ -53,7 +54,7 @@ public interface GroupAuthorityService{
     public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName);
     
     @Auditable(parameters = {"authorityParentRef", "shortName", "authorityDisplayName", "authorityZones"})
-    public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName, Set<String> authorityZones);	    
+    public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName, String... authorityZones);	    
 
     @Auditable(parameters = {"authorityNoderRef"})
 	public void deleteAuthority(NodeRef authorityNoderRef);
@@ -75,4 +76,14 @@ public interface GroupAuthorityService{
 	
 	@Auditable(parameters = {"parent"})
 	public Set<NodeRef> getAuthorities(NodeRef parent, AuthorityType authorityType);
+	
+	@NotAuditable
+    public Set<String> getAuthorityZones(String name);
+
+	@NotAuditable
+    public void addAuthorityToZones(String authorityName, String... zones);
+
+	@NotAuditable
+    public void removeAuthorityFromZones(String authorityName, String... zones);
+	
 }

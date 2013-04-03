@@ -44,7 +44,10 @@
 				it.cnr.si.service.cmr.security.GroupAuthorityService.getAuthorityContainer=ACL_ALLOW
 				it.cnr.si.service.cmr.security.GroupAuthorityService.getZoneContainer=ACL_ALLOW				
 				it.cnr.si.service.cmr.security.GroupAuthorityService.getAllUserAuthorities=ACL_NODE.0.sys:base.ReadChildren,AFTER_ACL_NODE.sys:base.ReadProperties
-				it.cnr.si.service.cmr.security.GroupAuthorityService.getAllGroupAuthorities=ACL_NODE.0.sys:base.ReadChildren,AFTER_ACL_NODE.sys:base.ReadProperties				
+				it.cnr.si.service.cmr.security.GroupAuthorityService.getAllGroupAuthorities=ACL_NODE.0.sys:base.ReadChildren,AFTER_ACL_NODE.sys:base.ReadProperties
+				it.cnr.si.service.cmr.security.GroupAuthorityService.getAuthorityZones=ACL_ALLOW
+				it.cnr.si.service.cmr.security.GroupAuthorityService.addAuthorityToZones=ACL_ALLOW
+				it.cnr.si.service.cmr.security.GroupAuthorityService.removeAuthorityFromZones=ACL_ALLOW				
                 it.cnr.si.service.cmr.security.GroupAuthorityService.*=ACL_DENY
             </value>
         </property>
