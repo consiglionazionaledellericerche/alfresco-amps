@@ -6,17 +6,17 @@
   <version>0.1-SNAPSHOT</version>
   <name>Alfresco - AMP - Parent</name>
   <packaging>pom</packaging>
-  
+
   <properties>
     <maven.amp.plugin.version>3.0.2</maven.amp.plugin.version>
   </properties>
-  
+
   <parent>
       <groupId>it.cnr.si</groupId>
       <artifactId>alfresco-parent</artifactId>
       <version>0.1-SNAPSHOT</version>
   </parent>
-  
+
   <modules>
     <module>backup</module>
     <module>advanced-workflow</module>
@@ -27,6 +27,8 @@
     <module>jdiam-extension-content-model</module>
     <module>sigla-extension-content-model</module>
     <module>solr-alfresco4</module>
+    <module>zip-content</module>
+
   </modules>
 
   <build>

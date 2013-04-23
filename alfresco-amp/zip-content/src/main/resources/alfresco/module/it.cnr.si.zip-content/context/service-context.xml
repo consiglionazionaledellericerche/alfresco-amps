@@ -1,0 +1,24 @@
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<beans>
+	<!-- ZIP Bean PROVA PER VEDERE SE MODIFICA -->
+	<bean id="zipContent" class="it.cnr.si.ZipContent" >
+		 <property name="contentService" ref="ContentService" />
+      <property name="nodeService" ref="NodeService" /> <!--Meglio con NodeService-->
+      <property name="namespaceService" ref="namespaceService"/>
+      <property name="dictionaryService" ref="dictionaryService" />
+      <property name="fileFolderService" ref="FileFolderService" />
+	</bean>
+	
+	 <bean id="webscript.it.cnr.si.zip-content.get" class="it.cnr.si.ZipContent" parent="webscript">
+      <property name="contentService" ref="ContentService" />
+      <property name="nodeService" ref="NodeService" />
+      <property name="namespaceService" ref="namespaceService"/>
+      <property name="dictionaryService" ref="dictionaryService" />
+      <property name="fileFolderService" ref="FileFolderService" />
+
+      <!-- <property name="storeUrl">
+         <value>${spaces.store}</value>
+      </property>-->
+   	</bean>
+</beans>
+
