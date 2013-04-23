@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2012 Atol Conseils et D�veloppements.
- * http://www.atolcd.com/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
 package it.cnr.si;
 
 
@@ -260,13 +242,7 @@ public class ZipContent extends AbstractWebScript {
 			logger.info("Unmanaged type: " + nodeQnameType.getPrefixedQName(this.namespaceService) + ", filename: " + nodeName);
 		}
 	}
-	/**
-	 * ZipEntry() does not convert filenames from Unicode to platform (waiting
-	 * Java 7) http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4244499
-	 * 
-	 * @param s
-	 * @return
-	 */
+	
 	public static String unAccent(String s) {
 		String temp = Normalizer.normalize(s, Normalizer.NFD, 0);
 		return temp.replaceAll("[^\\p{ASCII}]", "");
