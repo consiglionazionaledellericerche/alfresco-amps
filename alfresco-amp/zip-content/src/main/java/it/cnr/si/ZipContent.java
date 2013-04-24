@@ -41,6 +41,9 @@ import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import com.ibm.icu.text.Normalizer;
 
+/**
+ * https://github.com/atolcd/alfresco-zip-and-download
+ */
 public class ZipContent extends AbstractWebScript {
 
 	private static Log logger = LogFactory.getLog(ZipContent.class);
@@ -100,9 +103,9 @@ public class ZipContent extends AbstractWebScript {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "noaccent");
 		}
 
-		String destinazione = req.getParameter("destinazione");
+		String destinazione = req.getParameter("destination");
 		if (destinazione == null || destinazione.length() == 0) {
-			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "destinazione");
+			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "destination");
 		}
 
 		try {
@@ -179,7 +182,14 @@ public class ZipContent extends AbstractWebScript {
 		}
 
 	}
-
+/**
+ * Non modificato
+ * @param node
+ * @param out
+ * @param noaccent
+ * @param path
+ * @throws IOException
+ */
 	public void addToZip(NodeRef node, ZipOutputStream out, boolean noaccent, String path) throws IOException {
 		QName nodeQnameType = this.nodeService.getType(node);
 		// Special case : links
@@ -243,6 +253,13 @@ public class ZipContent extends AbstractWebScript {
 		}
 	}
 	
+	/**
+	 * ZipEntry() does not convert filenames from Unicode to platform (waiting
+	 * Java 7) http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4244499
+	 * 
+	 * @param s
+	 * @return
+	 */
 	public static String unAccent(String s) {
 		String temp = Normalizer.normalize(s, Normalizer.NFD, 0);
 		return temp.replaceAll("[^\\p{ASCII}]", "");
