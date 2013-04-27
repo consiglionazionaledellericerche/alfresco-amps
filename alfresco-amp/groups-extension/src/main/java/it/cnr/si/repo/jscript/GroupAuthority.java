@@ -147,7 +147,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         	authorityPermission = new AuthorityPermission(authorityRef,
 				new ScriptGroup(groupAuthorityService.getAuthorityNameOrNull(authorityRef), 
 				services, this.getScope()));
-        	addPermission(authorityPermission, authorityRef);
+        	addPermission(authorityPermission);
         }
 		return authorityPermission;
     }
@@ -159,7 +159,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         if (authorityRef != null)
         {
         	authorityPermission = new AuthorityPermission(authorityRef, null);
-        	addPermission(authorityPermission, authorityRef);
+        	addPermission(authorityPermission);
         	authorityPermission.getAllowableActions().remove("CAN_CREATE_ASSOCIATIONS");
         }
 		return authorityPermission;
@@ -250,23 +250,23 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
 		}
     }
     
-    private void addPermission(AuthorityPermission authorityPermission, NodeRef child){
-    	if (getPermissionService().hasPermission(child, 
+    private void addPermission(AuthorityPermission authorityPermission){
+    	if (getPermissionService().hasPermission(authorityPermission.getNodeRef(), 
     			PermissionService.CREATE_CHILDREN).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_CREATE_CHILDREN");
-    	if (getPermissionService().hasPermission(child, 
+    	if (getPermissionService().hasPermission(authorityPermission.getNodeRef(), 
     			PermissionService.CHANGE_PERMISSIONS).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_APPLY_ACL");
-    	if (getPermissionService().hasPermission(child, 
+    	if (getPermissionService().hasPermission(authorityPermission.getNodeRef(), 
     			PermissionService.DELETE).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_DELETE_OBJECT");
-    	if (getPermissionService().hasPermission(child, 
+    	if (getPermissionService().hasPermission(authorityPermission.getNodeRef(), 
     			PermissionService.DELETE_ASSOCIATIONS).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_DELETE_ASSOCIATIONS");
-    	if (getPermissionService().hasPermission(child, 
+    	if (getPermissionService().hasPermission(authorityPermission.getNodeRef(), 
     			PermissionService.CREATE_ASSOCIATIONS).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_CREATE_ASSOCIATIONS");    	
-    	if (getPermissionService().hasPermission(child, 
+    	if (getPermissionService().hasPermission(authorityPermission.getNodeRef(), 
     			PermissionService.WRITE_PROPERTIES).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_UPDATE_PROPERTIES");
     }
@@ -289,7 +289,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         		AuthorityPermission authorityPermission = new AuthorityPermission(child,
         				new ScriptGroup(groupAuthorityService.getAuthorityNameOrNull(child), 
         				services, this.getScope()));
-        		addPermission(authorityPermission, child);
+        		addPermission(authorityPermission);
         		result.add(authorityPermission);
     		}
         }
@@ -299,7 +299,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         		AuthorityPermission authorityPermission = new AuthorityPermission(child,
         				new ScriptUser(groupAuthorityService.getAuthorityNameOrNull(child), 
                 				child, services, this.getScope()));
-        		addPermission(authorityPermission, child);
+        		addPermission(authorityPermission);
         		result.add(authorityPermission);
     		}
         }
