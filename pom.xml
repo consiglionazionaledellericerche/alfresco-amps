@@ -16,6 +16,7 @@
   <modules>
     <module>alfresco-amp</module>
     <module>alfresco-app</module>
+    <module>share-app</module>
   </modules>
 
   <repositories>
