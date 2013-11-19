@@ -2,7 +2,7 @@
 <webscript>
   <shortname>zipContent</shortname>
   <description>Zip content</description>
-  <url>/zipper/zipContent?nodes={parent}&amp;destination={destination}&amp;filename={name}&amp;noaccent={noaccent}</url>
+  <url>/zipper/zipContent?query={query}&amp;nodes={parent}&amp;destination={destination}&amp;filename={name}&amp;noaccent={noaccent}</url>
   <format default="json"/>
   <authentication>user</authentication>
 </webscript>

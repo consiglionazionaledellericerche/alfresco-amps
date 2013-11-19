@@ -1,15 +1,17 @@
 package it.cnr.si;
 
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
 import java.util.zip.Adler32;
@@ -26,6 +28,9 @@ import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.NodeService;
+import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.cmr.search.ResultSet;
+import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.TempFileProvider;
@@ -57,9 +62,13 @@ public class ZipContent extends AbstractWebScript {
 	private NamespaceService namespaceService;
 	private DictionaryService dictionaryService;
 	private FileFolderService fileFolderService;
+	private SearchService searchService;
+
+	public void setSearchService(SearchService searchService) {
+		this.searchService = searchService;
+	}
 
 	private static String DEFAULT_ENCODING = "UTF-8";
-
 
 	public FileFolderService getFileFolderService() {
 		return fileFolderService;
@@ -85,13 +94,59 @@ public class ZipContent extends AbstractWebScript {
 		this.dictionaryService = dictionaryService;
 	}
 
-
 	public void execute(WebScriptRequest req, WebScriptResponse res) throws WebScriptException {
+		
+		String[] nodes = req.getParameterValues("nodes");
+		
+		List<NodeRef> nodesRef;
+		
+//		if ((nodes == null || nodes.length == 0 )) {
+//			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,"nodes");
+//		} else{
+//			nodesRef = new ArrayList<NodeRef>();
+//			for (int i = 0; i < nodes.length; i++) {
+//				nodesRef.add(new NodeRef(nodes[i]));
+//			}
+//		}
+//		
+//		
+		String query = req.getParameter("query");
+//		if(query == null || query.length() == 0){
+//			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
+//					"query");
+//		}else{
+//			StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.getIdentifier());	
+//			ResultSet rs = searchService.query(store, SearchService.LANGUAGE_CMIS_ALFRESCO, query);
+//			nodesRef = rs.getNodeRefs();
+////			List<NodeRef> appo = rs.getNodeRefs();
+////			NodeRef[] appo2 = new NodeRef[appo.size()];
+////			appo.toArray(appo2);
+////			for (int i = 0; i < appo2.length; i++) {
+////				nodes[i] = appo2[i].getId();
+////			}
+//		}
 
-		String nodes = req.getParameter("nodes");
-		if (nodes == null || nodes.length() == 0) {
-			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "nodes");
+		if (nodes != null && query == null){
+			if(nodes.length != 0){
+				nodesRef = new ArrayList<NodeRef>();
+				for (int i = 0; i < nodes.length; i++) {
+					nodesRef.add(new NodeRef(nodes[i]));
+				}
+			} else {
+				throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "nodes");
+			}
+		} else if (query != null && nodes == null ) {
+			if (query.length() != 0){
+				StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.getIdentifier());	
+				ResultSet rs = searchService.query(store, SearchService.LANGUAGE_CMIS_ALFRESCO, query);
+				nodesRef = rs.getNodeRefs();
+			} else{
+				throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "query");
+			}
+		} else{
+			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "query or nodes");
 		}
+
 
 		String filename = req.getParameter("filename");
 		if (filename == null || filename.length() == 0) {
@@ -113,37 +168,67 @@ public class ZipContent extends AbstractWebScript {
 			res.setHeader("Content-Transfer-Encoding", "binary");
 			res.addHeader("Content-Disposition", "attachment;filename=\"" + unAccent(filename) + ZIP_EXTENSION + "\"");
 
-			res.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+			res.setHeader("Cache-Control","must-revalidate, post-check=0, pre-check=0");
 			res.setHeader("Pragma", "public");
 			res.setHeader("Expires", "0");
 
-			createZipFile(nodes, destinazione, filename, new Boolean(noaccentStr));
-
+//			if (query != null){
+//				StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.getIdentifier());	
+//				ResultSet rs = searchService.query(store, SearchService.LANGUAGE_CMIS_ALFRESCO, query);	
+//				List<NodeRef> appo = rs.getNodeRefs();
+//				NodeRef[] appo2 = new NodeRef[appo.size()];
+//				appo.toArray(appo2);
+//				for (int i = 0; i < appo2.length; i++) {
+//					nodes[i] = appo2[i].getId();
+//				}
+//			}
+			createZipFile(nodesRef, destinazione, filename, new Boolean(noaccentStr));
+			
+			res.getOutputStream();
+			
 		} catch (Exception e) {
-			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, e.getLocalizedMessage() + "--" + e.getMessage());
+			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
+					e.getLocalizedMessage() + "--" + e.getMessage());
 		}
 	}
 
-
-	public void createZipFile(String nodeIds, String destinazione, String filename, boolean noaccent) throws Exception  {
+	public void createZipFile(List<NodeRef> nodesRef, String destinazione, String filename, boolean noaccent) throws Exception {
 		File zipAppo = null;
+		ZipOutputStream out = null;
 
-		if (nodeIds != null && !nodeIds.isEmpty()) {
-			zipAppo = TempFileProvider.createTempFile(TEMP_FILE_PREFIX, ZIP_EXTENSION);
+		if (nodesRef != null && nodesRef.size() > 0) {
+			zipAppo = TempFileProvider.createTempFile(TEMP_FILE_PREFIX,	ZIP_EXTENSION);
 			FileOutputStream stream = new FileOutputStream(zipAppo);
 			CheckedOutputStream checksum = new CheckedOutputStream(stream, new Adler32());
 			BufferedOutputStream buff = new BufferedOutputStream(checksum);
-			ZipOutputStream out = new ZipOutputStream(buff);
+			out = new ZipOutputStream(buff);
 			out.setMethod(ZipOutputStream.DEFLATED);
 			out.setLevel(Deflater.BEST_COMPRESSION);
 
-			NodeRef node;
+			// NodeRef node;
+//			NodeRef[] nodesRef = new NodeRef[nodeIds.length];
 			try {
-				node = new NodeRef(nodeIds);
-				addToZip(node, out, noaccent, "");
+			
+
+//				StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.getIdentifier());	
+//				ResultSet rs = searchService.query(store, SearchService.LANGUAGE_CMIS_ALFRESCO, "select cmis:name from cmis:document");	
+//				List<NodeRef> appo = rs.getNodeRefs();			
+				
+				for (int i = 0; i < nodesRef.size(); i++) {
+//					nodesRef[i] = new NodeRef(nodeIds[i]);
+					addToZip(nodesRef.get(i), out, noaccent, "");
+				}
+				
+//				for (int i = 0; i < nodeIds.length; i++) {
+//					nodesRef[i] = new NodeRef(nodeIds[i]);
+//					addToZip(nodesRef[i], out, noaccent, "");
+//				}
+				// }
+				
 			} catch (Exception e) {
 				logger.debug(e);
 			} finally {
+				// Scrivo su alfresco il file zip
 				out.close();
 				buff.close();
 				checksum.close();
@@ -154,7 +239,7 @@ public class ZipContent extends AbstractWebScript {
 				in.read(buffer);
 
 				String fileName = zipAppo.getName();
-				NodeRef dest = new NodeRef(destinazione); 
+				NodeRef dest = new NodeRef(destinazione);
 
 				Map<QName, Serializable> titledProps = new HashMap<QName, Serializable>(1, 1.0f);
 				titledProps.put(ContentModel.PROP_TITLE, fileName);
@@ -163,49 +248,59 @@ public class ZipContent extends AbstractWebScript {
 				QName contentQName = QName.createQName("{http://www.alfresco.org/model/content/1.0}content");
 
 				NodeRef appo = fileFolderService.searchSimple(dest, filename + ".zip");
-				if(appo != null){
+				if (appo != null) {
 					fileFolderService.delete(appo);
 				}
-				//	                    creo il file zip in dest
-				FileInfo zipInfo = fileFolderService.create(dest, filename + ".zip" , contentQName);
+				// creo il file zip in dest
+				FileInfo zipInfo = fileFolderService.create(dest, filename + ".zip", contentQName);
 				NodeRef zipNodeRef = zipInfo.getNodeRef();
-				ContentWriter writer = contentService.getWriter(zipNodeRef, ContentModel.PROP_CONTENT, true);
+				ContentWriter writer = contentService.getWriter(zipNodeRef,	ContentModel.PROP_CONTENT, true);
 				writer.setLocale(Locale.getDefault());
 				writer.setEncoding(DEFAULT_ENCODING);
-				writer.setMimetype(MIMETYPE_ZIP); 
-				writer.putContent(zipAppo);				    
+				writer.setMimetype(MIMETYPE_ZIP);
+				writer.putContent(zipAppo);
 			}
 		}
 
 		if (zipAppo != null) {
 			zipAppo.delete();
 		}
-
 	}
-/**
- * Non modificato
- * @param node
- * @param out
- * @param noaccent
- * @param path
- * @throws IOException
- */
-	public void addToZip(NodeRef node, ZipOutputStream out, boolean noaccent, String path) throws IOException {
+
+	/**
+	 * Non modificato
+	 * 
+	 * @param node
+	 * @param out
+	 * @param noaccent
+	 * @param path
+	 * @throws IOException
+	 */
+	public void addToZip(NodeRef node, ZipOutputStream out, boolean noaccent,
+			String path) throws IOException {
 		QName nodeQnameType = this.nodeService.getType(node);
 		// Special case : links
-		if (this.dictionaryService.isSubClass(nodeQnameType, ApplicationModel.TYPE_FILELINK)) {
-			NodeRef linkDestinationNode = (NodeRef) nodeService.getProperty(node, ContentModel.PROP_LINK_DESTINATION);
+		if (this.dictionaryService.isSubClass(nodeQnameType,
+				ApplicationModel.TYPE_FILELINK)) {
+			NodeRef linkDestinationNode = (NodeRef) nodeService.getProperty(
+					node, ContentModel.PROP_LINK_DESTINATION);
 			if (linkDestinationNode == null) {
 				return;
 			}
-			// Duplicate entry: check if link is not in the same space of the link destination
-			if (nodeService.getPrimaryParent(node).getParentRef().equals(nodeService.getPrimaryParent(linkDestinationNode).getParentRef())) {
+			// Duplicate entry: check if link is not in the same space of the
+			// link destination
+			if (nodeService
+					.getPrimaryParent(node)
+					.getParentRef()
+					.equals(nodeService.getPrimaryParent(linkDestinationNode)
+							.getParentRef())) {
 				return;
 			}
 			nodeQnameType = this.nodeService.getType(linkDestinationNode);
 			node = linkDestinationNode;
 		}
-		String nodeName = (String) nodeService.getProperty(node, ContentModel.PROP_NAME);
+		String nodeName = (String) nodeService.getProperty(node,
+				ContentModel.PROP_NAME);
 		nodeName = noaccent ? unAccent(nodeName) : nodeName;
 
 		if (this.dictionaryService.isSubClass(nodeQnameType, ContentModel.TYPE_CONTENT)) {
@@ -215,7 +310,7 @@ public class ZipContent extends AbstractWebScript {
 				String filename = path.isEmpty() ? nodeName : path + '/' + nodeName;
 
 				ZipEntry entry = new ZipEntry(filename);
-				entry.setTime(((Date) nodeService.getProperty(node, ContentModel.PROP_MODIFIED)).getTime());
+				entry.setTime(((Date) nodeService.getProperty(node,	ContentModel.PROP_MODIFIED)).getTime());
 
 				entry.setSize(reader.getSize());
 				out.putNextEntry(entry);
@@ -230,13 +325,10 @@ public class ZipContent extends AbstractWebScript {
 				}
 				is.close();
 				out.closeEntry();
+			} else {
+				logger.warn("Could not read : " + nodeName + "content");
 			}
-			else {
-				logger.warn("Could not read : "	+ nodeName + "content");
-			}
-		}
-		else if(this.dictionaryService.isSubClass(nodeQnameType, ContentModel.TYPE_FOLDER) 
-				&& !this.dictionaryService.isSubClass(nodeQnameType, ContentModel.TYPE_SYSTEM_FOLDER)) {
+		} else if (this.dictionaryService.isSubClass(nodeQnameType,	ContentModel.TYPE_FOLDER) && !this.dictionaryService.isSubClass(nodeQnameType,ContentModel.TYPE_SYSTEM_FOLDER)) {
 			List<ChildAssociationRef> children = nodeService
 					.getChildAssocs(node);
 			if (children.isEmpty()) {
@@ -249,10 +341,12 @@ public class ZipContent extends AbstractWebScript {
 				}
 			}
 		} else {
-			logger.info("Unmanaged type: " + nodeQnameType.getPrefixedQName(this.namespaceService) + ", filename: " + nodeName);
+			logger.info("Unmanaged type: "
+					+ nodeQnameType.getPrefixedQName(this.namespaceService)
+					+ ", filename: " + nodeName);
 		}
 	}
-	
+
 	/**
 	 * ZipEntry() does not convert filenames from Unicode to platform (waiting
 	 * Java 7) http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4244499
