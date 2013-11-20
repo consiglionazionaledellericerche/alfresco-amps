@@ -152,7 +152,7 @@ public class ZipContent extends AbstractWebScript {
 		if (filename == null || filename.length() == 0) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "filename");
 		}
-
+		
 		String noaccentStr = req.getParameter("noaccent");
 		if (noaccentStr == null || noaccentStr.length() == 0) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "noaccent");
@@ -162,6 +162,10 @@ public class ZipContent extends AbstractWebScript {
 		if (destinazione == null || destinazione.length() == 0) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "destination");
 		}
+		
+		Boolean download = Boolean.valueOf(req.getParameter("download"));
+		if (download == null) 
+			download = false;
 
 		try {
 			res.setContentType(MIMETYPE_ZIP);
@@ -182,9 +186,11 @@ public class ZipContent extends AbstractWebScript {
 //					nodes[i] = appo2[i].getId();
 //				}
 //			}
-			createZipFile(nodesRef, destinazione, filename, new Boolean(noaccentStr));
 			
-			res.getOutputStream();
+			if(download)
+				createZipFile(nodesRef, destinazione, filename, res.getOutputStream(), new Boolean(noaccentStr));
+			else
+				createZipFile(nodesRef, destinazione, filename, null, new Boolean(noaccentStr));
 			
 		} catch (Exception e) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
@@ -192,7 +198,7 @@ public class ZipContent extends AbstractWebScript {
 		}
 	}
 
-	public void createZipFile(List<NodeRef> nodesRef, String destinazione, String filename, boolean noaccent) throws Exception {
+	public void createZipFile(List<NodeRef> nodesRef, String destinazione, String filename, OutputStream os, boolean noaccent) throws Exception {
 		File zipAppo = null;
 		ZipOutputStream out = null;
 
@@ -208,8 +214,6 @@ public class ZipContent extends AbstractWebScript {
 			// NodeRef node;
 //			NodeRef[] nodesRef = new NodeRef[nodeIds.length];
 			try {
-			
-
 //				StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.getIdentifier());	
 //				ResultSet rs = searchService.query(store, SearchService.LANGUAGE_CMIS_ALFRESCO, "select cmis:name from cmis:document");	
 //				List<NodeRef> appo = rs.getNodeRefs();			
@@ -259,6 +263,18 @@ public class ZipContent extends AbstractWebScript {
 				writer.setEncoding(DEFAULT_ENCODING);
 				writer.setMimetype(MIMETYPE_ZIP);
 				writer.putContent(zipAppo);
+				
+				//riempio l'output stream
+				if (os != null) {
+					in = new FileInputStream(zipAppo);
+
+					buffer = new byte[BUFFER_SIZE];
+					int len;
+
+					while ((len = in.read(buffer)) > 0) {
+						os.write(buffer, 0, len);
+					}
+				}
 			}
 		}
 
