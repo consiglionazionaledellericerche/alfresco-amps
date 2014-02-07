@@ -1,8 +1,9 @@
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 <beans>
-    <bean id="verificaFirmaScript" parent="baseJavaScriptExtension" class="it.cnr.jada.firma.Verifica">
+    <bean id="verificaFirmaScript" parent="baseJavaScriptExtension" class="it.cnr.jada.firma.script.VerificaScript">
         <property name="extensionName">
             <value>verifica</value>
         </property>
+	      <property name="contentService" ref="ContentService" />
     </bean> 
 </beans>
