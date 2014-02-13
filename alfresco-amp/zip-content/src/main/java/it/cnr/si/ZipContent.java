@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
 import java.util.zip.Adler32;
@@ -94,37 +93,10 @@ public class ZipContent extends AbstractWebScript {
 		this.dictionaryService = dictionaryService;
 	}
 
-	public void execute(WebScriptRequest req, WebScriptResponse res) throws WebScriptException {
-		
-		String[] nodes = req.getParameterValues("nodes");
-		
+	public void execute(WebScriptRequest req, WebScriptResponse res) throws WebScriptException {		
+		String[] nodes = req.getParameterValues("nodes");	
 		List<NodeRef> nodesRef;
-		
-//		if ((nodes == null || nodes.length == 0 )) {
-//			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,"nodes");
-//		} else{
-//			nodesRef = new ArrayList<NodeRef>();
-//			for (int i = 0; i < nodes.length; i++) {
-//				nodesRef.add(new NodeRef(nodes[i]));
-//			}
-//		}
-//		
-//		
 		String query = req.getParameter("query");
-//		if(query == null || query.length() == 0){
-//			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
-//					"query");
-//		}else{
-//			StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.getIdentifier());	
-//			ResultSet rs = searchService.query(store, SearchService.LANGUAGE_CMIS_ALFRESCO, query);
-//			nodesRef = rs.getNodeRefs();
-////			List<NodeRef> appo = rs.getNodeRefs();
-////			NodeRef[] appo2 = new NodeRef[appo.size()];
-////			appo.toArray(appo2);
-////			for (int i = 0; i < appo2.length; i++) {
-////				nodes[i] = appo2[i].getId();
-////			}
-//		}
 
 		if (nodes != null && query == null){
 			if(nodes.length != 0){
@@ -152,7 +124,7 @@ public class ZipContent extends AbstractWebScript {
 		if (filename == null || filename.length() == 0) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "filename");
 		}
-		
+
 		String noaccentStr = req.getParameter("noaccent");
 		if (noaccentStr == null || noaccentStr.length() == 0) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "noaccent");
@@ -162,7 +134,7 @@ public class ZipContent extends AbstractWebScript {
 		if (destinazione == null || destinazione.length() == 0) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "destination");
 		}
-		
+
 		Boolean download = Boolean.valueOf(req.getParameter("download"));
 		if (download == null) 
 			download = false;
@@ -175,30 +147,16 @@ public class ZipContent extends AbstractWebScript {
 			res.setHeader("Cache-Control","must-revalidate, post-check=0, pre-check=0");
 			res.setHeader("Pragma", "public");
 			res.setHeader("Expires", "0");
+			createZipFile(nodesRef, destinazione, filename, res.getOutputStream(), new Boolean(noaccentStr), download);
 
-//			if (query != null){
-//				StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.getIdentifier());	
-//				ResultSet rs = searchService.query(store, SearchService.LANGUAGE_CMIS_ALFRESCO, query);	
-//				List<NodeRef> appo = rs.getNodeRefs();
-//				NodeRef[] appo2 = new NodeRef[appo.size()];
-//				appo.toArray(appo2);
-//				for (int i = 0; i < appo2.length; i++) {
-//					nodes[i] = appo2[i].getId();
-//				}
-//			}
-			
-			if(download)
-				createZipFile(nodesRef, destinazione, filename, res.getOutputStream(), new Boolean(noaccentStr));
-			else
-				createZipFile(nodesRef, destinazione, filename, null, new Boolean(noaccentStr));
-			
+
 		} catch (Exception e) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
 					e.getLocalizedMessage() + "--" + e.getMessage());
 		}
 	}
 
-	public void createZipFile(List<NodeRef> nodesRef, String destinazione, String filename, OutputStream os, boolean noaccent) throws Exception {
+	public void createZipFile(List<NodeRef> nodesRef, String destinazione, String filename, OutputStream os, boolean noaccent, boolean download) throws Exception {
 		File zipAppo = null;
 		ZipOutputStream out = null;
 
@@ -211,24 +169,10 @@ public class ZipContent extends AbstractWebScript {
 			out.setMethod(ZipOutputStream.DEFLATED);
 			out.setLevel(Deflater.BEST_COMPRESSION);
 
-			// NodeRef node;
-//			NodeRef[] nodesRef = new NodeRef[nodeIds.length];
-			try {
-//				StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.getIdentifier());	
-//				ResultSet rs = searchService.query(store, SearchService.LANGUAGE_CMIS_ALFRESCO, "select cmis:name from cmis:document");	
-//				List<NodeRef> appo = rs.getNodeRefs();			
-				
+			try {	
 				for (int i = 0; i < nodesRef.size(); i++) {
-//					nodesRef[i] = new NodeRef(nodeIds[i]);
 					addToZip(nodesRef.get(i), out, noaccent, "");
-				}
-				
-//				for (int i = 0; i < nodeIds.length; i++) {
-//					nodesRef[i] = new NodeRef(nodeIds[i]);
-//					addToZip(nodesRef[i], out, noaccent, "");
-//				}
-				// }
-				
+				}				
 			} catch (Exception e) {
 				logger.debug(e);
 			} finally {
@@ -238,10 +182,6 @@ public class ZipContent extends AbstractWebScript {
 				checksum.close();
 				stream.close();
 
-				InputStream in = new FileInputStream(zipAppo);
-				byte[] buffer = new byte[BUFFER_SIZE];
-				in.read(buffer);
-
 				String fileName = zipAppo.getName();
 				NodeRef dest = new NodeRef(destinazione);
 
@@ -250,11 +190,6 @@ public class ZipContent extends AbstractWebScript {
 				this.nodeService.addAspect(dest, ContentModel.ASPECT_TITLED, titledProps);
 
 				QName contentQName = QName.createQName("{http://www.alfresco.org/model/content/1.0}content");
-
-				NodeRef appo = fileFolderService.searchSimple(dest, filename + ".zip");
-				if (appo != null) {
-					fileFolderService.delete(appo);
-				}
 				// creo il file zip in dest
 				FileInfo zipInfo = fileFolderService.create(dest, filename + ".zip", contentQName);
 				NodeRef zipNodeRef = zipInfo.getNodeRef();
@@ -263,21 +198,18 @@ public class ZipContent extends AbstractWebScript {
 				writer.setEncoding(DEFAULT_ENCODING);
 				writer.setMimetype(MIMETYPE_ZIP);
 				writer.putContent(zipAppo);
-				
 				//riempio l'output stream
-				if (os != null) {
-					in = new FileInputStream(zipAppo);
-
-					buffer = new byte[BUFFER_SIZE];
+				if (download) {
+					InputStream in = new FileInputStream(zipAppo);
+					byte[] buffer = new byte[BUFFER_SIZE];
 					int len;
-
 					while ((len = in.read(buffer)) > 0) {
 						os.write(buffer, 0, len);
 					}
+					in.close();
 				}
 			}
 		}
-
 		if (zipAppo != null) {
 			zipAppo.delete();
 		}
