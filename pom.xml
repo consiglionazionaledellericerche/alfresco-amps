@@ -87,28 +87,28 @@
               <goal>pmd</goal>
               <goal>check</goal>
               <goal>cpd</goal>
-              -->
-              <!-- TODO: cpd-check -->
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+            -->
+            <!-- TODO: cpd-check -->
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
+  </plugins>
+</build>
 
-  <distributionManagement>
-    <!-- Publish the versioned releases here -->
-    <repository>
-      <id>buildandtest</id>
-      <name>nexus buildandtest.si.cnr.it</name>
-      <url>${nexus.url}/content/repositories/releases</url>
-    </repository>
+<distributionManagement>
+  <!-- Publish the versioned releases here -->
+  <repository>
+    <id>buildandtest</id>
+    <name>nexus buildandtest.si.cnr.it</name>
+    <url>${nexus.url}/content/repositories/releases</url>
+  </repository>
 
-    <!-- Publish the versioned releases here -->
-    <snapshotRepository>
-      <id>buildandtest</id>
-      <name>nexus buildandtest.si.cnr.it</name>
-      <url>${nexus.url}/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
+  <!-- Publish the versioned releases here -->
+  <snapshotRepository>
+    <id>buildandtest</id>
+    <name>nexus buildandtest.si.cnr.it</name>
+    <url>${nexus.url}/content/repositories/snapshots</url>
+  </snapshotRepository>
+</distributionManagement>
 </project>

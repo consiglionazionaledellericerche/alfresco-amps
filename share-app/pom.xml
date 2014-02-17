@@ -42,94 +42,95 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>2.3</version>
         <configuration>
-          <useCache>true</useCache> <!-- serve per il replacer http://code.google.com/p/maven-replacer-plugin/wiki/UsageWithOtherPlugins -->
+          <useCache>true</useCache>
+          <!-- serve per il replacer http://code.google.com/p/maven-replacer-plugin/wiki/UsageWithOtherPlugins -->
           <!--  Here is can control the order of overlay of your (WAR, AMP, etc.) dependencies
                         | NOTE: At least one WAR dependency must be uncompressed first
                         | NOTE: In order to have a dependency effectively added to the WAR you need to
                         | explicitly mention it in the overlay section.
                         | NOTE: First-win resource strategy is used by the WAR plugin
-                         -->
-          <overlays>
-            <!-- Current project customizations -->
-            <overlay/>
-            <!-- The Alfresco WAR -->
-            <overlay>
-              <groupId>${alfresco.groupId}</groupId>
-              <artifactId>${alfresco.client.war}</artifactId>
-              <type>war</type>
-              <!-- To allow inclusion of META-INF -->
-              <excludes/>
-            </overlay>
-            <!-- Add / order your AMPs here -->
-            <overlay>
-              <groupId>org.sharextras</groupId>
-              <artifactId>javascript-console-share</artifactId>
-              <type>amp</type>
-            </overlay>
-        </overlays>
-        </configuration>
-          <executions>
-           <execution>
-             <id>prepare-war</id>
-             <phase>prepare-package</phase>
-             <goals>
-               <goal>exploded</goal>
-             </goals>
-           </execution>
-         </executions>
-      </plugin>
-      <plugin>
-         <groupId>com.google.code.maven-replacer-plugin</groupId>
-         <artifactId>replacer</artifactId>
-         <version>1.5.1</version>
-         <executions>
-            <execution>
-              <phase>prepare-package</phase>
-              <goals>
-               <goal>replace</goal>
-              </goals>
-            </execution>
-         </executions>
-         <configuration>
-             <filesToInclude>target/share/WEB-INF/classes/alfresco/web-extension/share-config-custom.xml</filesToInclude>
-             <replacements>
-                 <replacement>
-                    <token>localhost:8080/alfresco</token>
-                    <value>${alfresco.host}</value>
-                 </replacement>
-              </replacements>
-              <regexFlags>
-                <regexFlag>MULTILINE</regexFlag>
-              </regexFlags>
-        </configuration>
-      </plugin>
+                      -->
+                      <overlays>
+                        <!-- Current project customizations -->
+                        <overlay/>
+                        <!-- The Alfresco WAR -->
+                        <overlay>
+                          <groupId>${alfresco.groupId}</groupId>
+                          <artifactId>${alfresco.client.war}</artifactId>
+                          <type>war</type>
+                          <!-- To allow inclusion of META-INF -->
+                          <excludes/>
+                        </overlay>
+                        <!-- Add / order your AMPs here -->
+                        <overlay>
+                          <groupId>org.sharextras</groupId>
+                          <artifactId>javascript-console-share</artifactId>
+                          <type>amp</type>
+                        </overlay>
+                      </overlays>
+                    </configuration>
+                    <executions>
+                     <execution>
+                       <id>prepare-war</id>
+                       <phase>prepare-package</phase>
+                       <goals>
+                         <goal>exploded</goal>
+                       </goals>
+                     </execution>
+                   </executions>
+                 </plugin>
+                 <plugin>
+                   <groupId>com.google.code.maven-replacer-plugin</groupId>
+                   <artifactId>replacer</artifactId>
+                   <version>1.5.1</version>
+                   <executions>
+                    <execution>
+                      <phase>prepare-package</phase>
+                      <goals>
+                       <goal>replace</goal>
+                     </goals>
+                   </execution>
+                 </executions>
+                 <configuration>
+                   <filesToInclude>target/share/WEB-INF/classes/alfresco/web-extension/share-config-custom.xml</filesToInclude>
+                   <replacements>
+                     <replacement>
+                      <token>localhost:8080/alfresco</token>
+                      <value>${alfresco.host}</value>
+                    </replacement>
+                  </replacements>
+                  <regexFlags>
+                    <regexFlag>MULTILINE</regexFlag>
+                  </regexFlags>
+                </configuration>
+              </plugin>
 
 
-    </plugins>
-  </build>
+            </plugins>
+          </build>
 
 
-  <repositories>
-    <repository>
-      <id>cnr</id>
-      <name>cnr public</name>
-      <url>http://buildandtest.si.cnr.it:8081/nexus/content/groups/public</url>
-    </repository>
-  </repositories>
+          <repositories>
+            <repository>
+              <id>cnr</id>
+              <name>cnr public</name>
+              <url>http://buildandtest.si.cnr.it:8081/nexus/content/groups/public</url>
+            </repository>
+          </repositories>
 
-  <distributionManagement>
-    <!-- Publish the versioned releases here -->
-    <repository>
-      <id>buildandtest</id>
-      <name>nexus buildandtest.si.cnr.it</name>
-      <url>${nexus.url}/content/repositories/releases</url>
-    </repository>
+          <distributionManagement>
+            <!-- Publish the versioned releases here -->
+            <repository>
+              <id>buildandtest</id>
+              <name>nexus buildandtest.si.cnr.it</name>
+              <url>${nexus.url}/content/repositories/releases</url>
+            </repository>
 
-    <!-- Publish the versioned releases here -->
-    <snapshotRepository>
-      <id>buildandtest</id>
-      <name>nexus buildandtest.si.cnr.it</name>
-      <url>${nexus.url}/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
-</project>
+            <!-- Publish the versioned releases here -->
+            <snapshotRepository>
+              <id>buildandtest</id>
+              <name>nexus buildandtest.si.cnr.it</name>
+              <url>${nexus.url}/content/repositories/snapshots</url>
+            </snapshotRepository>
+          </distributionManagement>
+        </project>
