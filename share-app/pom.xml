@@ -18,7 +18,7 @@
     <alfresco.version>4.1.5</alfresco.version>
     <alfresco.client.war>share</alfresco.client.war>
     <alfresco.host>test7.si.cnr.it/alfresco</alfresco.host>
-    <nexus.url>http://buildandtest.si.cnr.it:8081/nexus</nexus.url>
+    <nexus.url>http://bandt.si.cnr.it:8280/nexus</nexus.url>
   </properties>
   <dependencies>
     <dependency>
@@ -114,7 +114,7 @@
             <repository>
               <id>cnr</id>
               <name>cnr public</name>
-              <url>http://buildandtest.si.cnr.it:8081/nexus/content/groups/public</url>
+              <url>${nexus.url}/content/groups/public</url>
             </repository>
           </repositories>
 
@@ -122,14 +122,14 @@
             <!-- Publish the versioned releases here -->
             <repository>
               <id>buildandtest</id>
-              <name>nexus buildandtest.si.cnr.it</name>
+              <name>nexus</name>
               <url>${nexus.url}/content/repositories/releases</url>
             </repository>
 
             <!-- Publish the versioned releases here -->
             <snapshotRepository>
               <id>buildandtest</id>
-              <name>nexus buildandtest.si.cnr.it</name>
+              <name>nexus</name>
               <url>${nexus.url}/content/repositories/snapshots</url>
             </snapshotRepository>
           </distributionManagement>
