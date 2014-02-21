@@ -24,14 +24,14 @@ public class ArubaSignServiceClient {
 	private static final Logger LOGGER = Logger.getLogger(ArubaSignServiceClient.class);
 
 	public String pkcs7SignV2(String username, String password, String otp,
-			String content) throws ArubaSignServiceException {
+			byte[] bytes) throws ArubaSignServiceException {
 		LOGGER.debug(username);
 		LOGGER.debug(otp);
 		Auth identity = getIdentity(username, password, otp);
-		return pkcs7SignV2(identity, content);
+		return pkcs7SignV2(identity, bytes);
 	}
 
-	public String pkcs7SignV2(Auth identity, String content)
+	public String pkcs7SignV2(Auth identity, byte[] bytes)
 			throws ArubaSignServiceException {
 
 		LOGGER.debug(identity.getUser());
@@ -43,7 +43,7 @@ public class ArubaSignServiceClient {
 
 		try {
 			SignReturnV2 response = service.pkcs7SignV2(
-					getRequest(identity, content),
+					getRequest(identity, bytes),
 					false,
 					false);
 
@@ -67,12 +67,12 @@ public class ArubaSignServiceClient {
 
 	}
 
-	private SignRequestV2 getRequest(Auth identity, String content) {
+	private SignRequestV2 getRequest(Auth identity, byte[] bytes) {
 		SignRequestV2 request = new SignRequestV2();
 		request.setIdentity(identity);
 		request.setCertID(CERT_ID);
 		request.setTransport(TypeTransport.BYNARYNET);
-		request.setBinaryinput(content.getBytes());
+		request.setBinaryinput(bytes);
 		return request;
 	}
 

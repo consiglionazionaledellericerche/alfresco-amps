@@ -20,7 +20,7 @@ public class ArubaSignServiceClientTest {
 	@Test
 	public void testPkcs7SignV2() throws IOException, ArubaSignServiceException {
 		String content = new ArubaSignServiceClient().pkcs7SignV2(USERNAME,
-				PASSWORD, OTP, CONTENT);
+				PASSWORD, OTP, CONTENT.getBytes());
 		assertTrue(content != null && content.length() > 0);
 		LOGGER.info(content);
 	}

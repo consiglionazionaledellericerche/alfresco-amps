@@ -6,4 +6,11 @@
         </property>
 	      <property name="contentService" ref="ContentService" />
     </bean> 
+    
+    <bean id="arubaSignServiceScript" parent="baseJavaScriptExtension" class="it.cnr.jada.firma.script.ArubaSignServiceScript">
+        <property name="extensionName">
+            <value>arubaSign</value>
+        </property>
+        <property name="contentService" ref="ContentService" />
+    </bean> 
 </beans>
