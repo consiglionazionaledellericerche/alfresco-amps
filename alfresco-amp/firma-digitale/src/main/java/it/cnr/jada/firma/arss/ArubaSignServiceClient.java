@@ -1,12 +1,12 @@
-package it.cnr.firmadigitale.client;
+package it.cnr.jada.firma.arss;
 
-import it.cnr.firmadigitale.stub.ArubaSignService;
-import it.cnr.firmadigitale.stub.ArubaSignServiceService;
-import it.cnr.firmadigitale.stub.Auth;
-import it.cnr.firmadigitale.stub.SignRequestV2;
-import it.cnr.firmadigitale.stub.SignReturnV2;
-import it.cnr.firmadigitale.stub.TypeOfTransportNotImplemented_Exception;
-import it.cnr.firmadigitale.stub.TypeTransport;
+import it.cnr.jada.firma.arss.stub.ArubaSignService;
+import it.cnr.jada.firma.arss.stub.ArubaSignServiceService;
+import it.cnr.jada.firma.arss.stub.Auth;
+import it.cnr.jada.firma.arss.stub.SignRequestV2;
+import it.cnr.jada.firma.arss.stub.SignReturnV2;
+import it.cnr.jada.firma.arss.stub.TypeOfTransportNotImplemented_Exception;
+import it.cnr.jada.firma.arss.stub.TypeTransport;
 
 import java.io.IOException;
 

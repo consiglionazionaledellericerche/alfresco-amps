@@ -1,4 +1,4 @@
-package it.cnr.firmadigitale.client;
+package it.cnr.jada.firma.arss;
 
 import static org.junit.Assert.assertTrue;
 

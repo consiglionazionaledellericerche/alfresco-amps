@@ -69,7 +69,7 @@
           <wsdlUrls>
             <wsdlUrl>${wsdl.url}</wsdlUrl>
           </wsdlUrls>
-          <packageName>it.cnr.firmadigitale.stub</packageName>
+          <packageName>it.cnr.jada.firma.arss.stub</packageName>
           <verbose>true</verbose>
           <sourceDestDir>${jaxws.output.dir}</sourceDestDir>
         </configuration>
