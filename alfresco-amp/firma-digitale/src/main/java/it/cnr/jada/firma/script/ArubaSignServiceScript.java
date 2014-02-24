@@ -25,6 +25,13 @@ public class ArubaSignServiceScript extends BaseScopableProcessorExtension imple
 	private ApplicationContext applicationContext;
 	private ContentService contentService;
 
+	private ArubaSignServiceClient arubaSignServiceClient;
+
+	public void setArubaSignServiceClient(
+			ArubaSignServiceClient arubaSignServiceClient) {
+		this.arubaSignServiceClient = arubaSignServiceClient;
+	}
+
 	public void setContentService(ContentService contentService) {
 		this.contentService = contentService;
 	}
@@ -42,12 +49,16 @@ public class ArubaSignServiceScript extends BaseScopableProcessorExtension imple
 
 		NodeRef node = new NodeRef(nodeRef);
 
+		LOGGER.debug("pkcs7Sign " + nodeRef);
+
 		ContentReader reader = contentService.getReader(node,
 				ContentModel.PROP_CONTENT);
 
 		byte[] bytes = IOUtils.toByteArray(reader.getContentInputStream());
 
-		return new ArubaSignServiceClient().pkcs7SignV2(username, password,
+		LOGGER.debug(bytes.length + " bytes");
+
+		return arubaSignServiceClient.pkcs7SignV2(username, password,
 				otp, bytes);
 	}
 

@@ -9,19 +9,22 @@ import it.cnr.jada.firma.arss.stub.TypeOfTransportNotImplemented_Exception;
 import it.cnr.jada.firma.arss.stub.TypeTransport;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 public class ArubaSignServiceClient {
 
-	private static final String TYPE_OTP_AUTH = "collaudo";
-	private static final String CERT_ID = "AS0";
+	private static final String CERT_ID = "arubaRemoteSignService.certId";
+	private static final String TYPE_OTP_AUTH = "arubaRemoteSignService.typeOtpAuth";
 
 	private static final String UTF_8 = "UTF-8";
 	private static final String STATUS_OK = "OK";
 
 	private static final Logger LOGGER = Logger.getLogger(ArubaSignServiceClient.class);
+
+	private Properties props;
 
 	public String pkcs7SignV2(String username, String password, String otp,
 			byte[] bytes) throws ArubaSignServiceException {
@@ -70,7 +73,7 @@ public class ArubaSignServiceClient {
 	private SignRequestV2 getRequest(Auth identity, byte[] bytes) {
 		SignRequestV2 request = new SignRequestV2();
 		request.setIdentity(identity);
-		request.setCertID(CERT_ID);
+		request.setCertID(props.getProperty(CERT_ID));
 		request.setTransport(TypeTransport.BYNARYNET);
 		request.setBinaryinput(bytes);
 		return request;
@@ -81,8 +84,13 @@ public class ArubaSignServiceClient {
 		identity.setUser(username);
 		identity.setUserPWD(password);
 		identity.setOtpPwd(otp);
-		identity.setTypeOtpAuth(TYPE_OTP_AUTH);
+		identity.setTypeOtpAuth(props.getProperty(TYPE_OTP_AUTH));
 		return identity;
+	}
+
+
+	public void setProps(Properties props) {
+		this.props = props;
 	}
 
 }

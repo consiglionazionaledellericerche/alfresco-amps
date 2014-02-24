@@ -11,6 +11,10 @@
         <property name="extensionName">
             <value>arubaSign</value>
         </property>
+        <property name="arubaSignServiceClient" ref="arubaSignServiceClient" ></property>
         <property name="contentService" ref="ContentService" />
     </bean> 
-</beans>
+
+	<bean id="arubaSignServiceClient" class="it.cnr.jada.firma.arss.ArubaSignServiceClient">
+	  <property name="props" ref="global-properties"></property></bean>    
+	</beans>
