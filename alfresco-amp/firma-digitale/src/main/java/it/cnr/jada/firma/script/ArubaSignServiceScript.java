@@ -54,7 +54,13 @@ public class ArubaSignServiceScript extends BaseScopableProcessorExtension imple
 		ContentReader reader = contentService.getReader(node,
 				ContentModel.PROP_CONTENT);
 
-		byte[] bytes = IOUtils.toByteArray(reader.getContentInputStream());
+		byte[] bytes;
+
+		if (reader != null) {
+			bytes = IOUtils.toByteArray(reader.getContentInputStream());
+		} else {
+			bytes = new byte[0];
+		}
 
 		LOGGER.debug(bytes.length + " bytes");
 
