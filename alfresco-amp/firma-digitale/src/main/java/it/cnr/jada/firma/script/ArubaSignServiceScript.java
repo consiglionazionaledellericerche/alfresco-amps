@@ -43,7 +43,7 @@ public class ArubaSignServiceScript extends BaseScopableProcessorExtension imple
 	}
 
 
-	public String pkcs7SignV2(String username, String password, String otp,
+	public byte[] pkcs7SignV2(String username, String password, String otp,
 			String nodeRef) throws ArubaSignServiceException,
 			ContentIOException, IOException {
 

@@ -3,15 +3,16 @@ package it.cnr.jada.firma.arss;
 import it.cnr.jada.firma.arss.stub.ArubaSignService;
 import it.cnr.jada.firma.arss.stub.ArubaSignServiceService;
 import it.cnr.jada.firma.arss.stub.Auth;
+import it.cnr.jada.firma.arss.stub.DocumentType;
 import it.cnr.jada.firma.arss.stub.SignRequestV2;
 import it.cnr.jada.firma.arss.stub.SignReturnV2;
 import it.cnr.jada.firma.arss.stub.TypeOfTransportNotImplemented_Exception;
 import it.cnr.jada.firma.arss.stub.TypeTransport;
+import it.cnr.jada.firma.arss.stub.VerifyRequest;
+import it.cnr.jada.firma.arss.stub.VerifyReturn;
 
-import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 public class ArubaSignServiceClient {
@@ -26,7 +27,7 @@ public class ArubaSignServiceClient {
 
 	private Properties props;
 
-	public String pkcs7SignV2(String username, String password, String otp,
+	public byte[] pkcs7SignV2(String username, String password, String otp,
 			byte[] bytes) throws ArubaSignServiceException {
 		LOGGER.debug(username);
 		LOGGER.debug(otp);
@@ -34,7 +35,21 @@ public class ArubaSignServiceClient {
 		return pkcs7SignV2(identity, bytes);
 	}
 
-	public String pkcs7SignV2(Auth identity, byte[] bytes)
+	public byte[] verify(byte[] bytes) {
+		ArubaSignService service = new ArubaSignServiceService()
+				.getArubaSignServicePort();
+		VerifyRequest request = new VerifyRequest();
+		request.setBinaryinput(bytes);
+		request.setTransport(TypeTransport.BYNARYNET);
+		request.setType(DocumentType.PKCS_7);
+
+		VerifyReturn out = service.verify(request);
+		LOGGER.info(out.getStatus());
+		LOGGER.info(out.getDescription());
+		return out.getBinaryoutput();
+	}
+
+	public byte[] pkcs7SignV2(Auth identity, byte[] bytes)
 			throws ArubaSignServiceException {
 
 		LOGGER.debug(identity.getUser());
@@ -53,11 +68,7 @@ public class ArubaSignServiceClient {
 			LOGGER.debug(response.getReturnCode() + " " + response.getStatus());
 
 			if (response.getStatus().equals(STATUS_OK)) {
-				try {
-					return IOUtils.toString(response.getBinaryoutput(), UTF_8);
-				} catch (IOException e) {
-					throw new ArubaSignServiceException("Unable to get content", e);
-				}
+				return response.getBinaryoutput();
 			} else {
 				throw new ArubaSignServiceException("Server side error code "
 						+ response.getReturnCode() + ", "
