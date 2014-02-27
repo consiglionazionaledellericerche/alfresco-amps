@@ -16,66 +16,61 @@ import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 public class VerificaScript extends BaseScopableProcessorExtension implements
-		ApplicationContextAware {
+    ApplicationContextAware {
 
-	private final Logger LOGGER = Logger.getLogger(VerificaScript.class);
+  private static final Logger LOGGER = Logger.getLogger(VerificaScript.class);
 
-	private ApplicationContext applicationContext;
-	private ContentService contentService;
+  private ContentService contentService;
 
-	public void setContentService(ContentService contentService) {
-		this.contentService = contentService;
-	}
+  public void setContentService(ContentService contentService) {
+    this.contentService = contentService;
+  }
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext)
-			throws BeansException {
-		this.applicationContext = applicationContext;
-	}
+  @Override
+  public void setApplicationContext(ApplicationContext applicationContext) {
+    // do nothing
+  }
 
-	public boolean verificaBustaFirmata(String encryptedNodeRef,
-			String clearNodeRef) throws FileNotFoundException, CapiException {
+  public boolean verificaBustaFirmata(String encryptedNodeRef,
+      String clearNodeRef) throws FileNotFoundException, CapiException {
 
-		ByteArrayOutputStream decryptedContentOutputStream = new ByteArrayOutputStream();
+    ByteArrayOutputStream decryptedContentOutputStream = new ByteArrayOutputStream();
 
-		InputStream encryptedInputStream = getInputStreamForNode(encryptedNodeRef);
+    InputStream encryptedInputStream = getInputStreamForNode(encryptedNodeRef);
 
-		Verifica.verificaBustaFirmata(encryptedInputStream,
-				decryptedContentOutputStream);
+    Verifica.verificaBustaFirmata(encryptedInputStream,
+        decryptedContentOutputStream);
 
-		InputStream clearInputStream = getInputStreamForNode(clearNodeRef);
-		byte[] clearText = null;
-		try {
-			clearText = IOUtils.toByteArray(clearInputStream);
-		} catch (IOException e) {
-			LOGGER.error("Unable to get data for node " + clearNodeRef, e);
-		}
+    InputStream clearInputStream = getInputStreamForNode(clearNodeRef);
+    byte[] clearText = null;
+    try {
+      clearText = IOUtils.toByteArray(clearInputStream);
+    } catch (IOException e) {
+      LOGGER.error("Unable to get data for node " + clearNodeRef, e);
+    }
 
-		return Arrays.equals(decryptedContentOutputStream.toByteArray(),
-				clearText);
-		
-		
-	}
+    return Arrays.equals(decryptedContentOutputStream.toByteArray(),
+        clearText);
+  }
 
-	private InputStream getInputStreamForNode(String nodeRef) {
+  private InputStream getInputStreamForNode(String nodeRef) {
 
-		NodeRef node = new NodeRef(nodeRef);
+    NodeRef node = new NodeRef(nodeRef);
 
-		ContentReader reader = contentService.getReader(node,
-				ContentModel.PROP_CONTENT);
+    ContentReader reader = contentService.getReader(node,
+        ContentModel.PROP_CONTENT);
 
-		if (reader != null) {
-			return reader.getContentInputStream();
-		} else {
-			LOGGER.error("Unable to get reader for node " + nodeRef);
-		}
+    if (reader != null) {
+      return reader.getContentInputStream();
+    } else {
+      LOGGER.error("Unable to get reader for node " + nodeRef);
+    }
 
-		return null;
-	}
+    return null;
+  }
 
 }
