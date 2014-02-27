@@ -3,6 +3,7 @@ package it.cnr.jada.firma.script;
 import it.cnr.jada.firma.arss.ArubaSignServiceClient;
 import it.cnr.jada.firma.arss.ArubaSignServiceException;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import org.alfresco.model.ContentModel;
@@ -10,6 +11,7 @@ import org.alfresco.repo.jscript.BaseScopableProcessorExtension;
 import org.alfresco.service.cmr.repository.ContentIOException;
 import org.alfresco.service.cmr.repository.ContentReader;
 import org.alfresco.service.cmr.repository.ContentService;
+import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -42,6 +44,16 @@ public class ArubaSignServiceScript extends BaseScopableProcessorExtension imple
 		this.applicationContext = applicationContext;
 	}
 
+	public void pkcs7SignV2(String username, String password, String otp,
+			String source, String target) throws ArubaSignServiceException,
+			ContentIOException, IOException {
+		byte[] bytes = pkcs7SignV2(username, password, otp, source);
+		ContentWriter w = contentService.getWriter(new NodeRef(target),
+				ContentModel.PROP_CONTENT, true);
+		ByteArrayInputStream is = new ByteArrayInputStream(bytes);
+		w.putContent(is);
+
+	}
 
 	public byte[] pkcs7SignV2(String username, String password, String otp,
 			String nodeRef) throws ArubaSignServiceException,
