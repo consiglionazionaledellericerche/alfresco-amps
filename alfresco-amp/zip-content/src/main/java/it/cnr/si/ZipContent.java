@@ -93,8 +93,8 @@ public class ZipContent extends AbstractWebScript {
 		this.dictionaryService = dictionaryService;
 	}
 
-	public void execute(WebScriptRequest req, WebScriptResponse res) throws WebScriptException {		
-		String[] nodes = req.getParameterValues("nodes");	
+	public void execute(WebScriptRequest req, WebScriptResponse res) throws WebScriptException {
+		String[] nodes = req.getParameterValues("nodes");
 		List<NodeRef> nodesRef;
 		String query = req.getParameter("query");
 
@@ -109,7 +109,7 @@ public class ZipContent extends AbstractWebScript {
 			}
 		} else if (query != null && nodes == null ) {
 			if (query.length() != 0){
-				StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.getIdentifier());	
+				StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,StoreRef.STORE_REF_WORKSPACE_SPACESSTORE.getIdentifier());
 				ResultSet rs = searchService.query(store, SearchService.LANGUAGE_CMIS_ALFRESCO, query);
 				nodesRef = rs.getNodeRefs();
 			} else{
@@ -136,7 +136,7 @@ public class ZipContent extends AbstractWebScript {
 		}
 
 		Boolean download = Boolean.valueOf(req.getParameter("download"));
-		if (download == null) 
+		if (download == null)
 			download = false;
 
 		try {
@@ -169,10 +169,10 @@ public class ZipContent extends AbstractWebScript {
 			out.setMethod(ZipOutputStream.DEFLATED);
 			out.setLevel(Deflater.BEST_COMPRESSION);
 
-			try {	
+			try {
 				for (int i = 0; i < nodesRef.size(); i++) {
 					addToZip(nodesRef.get(i), out, noaccent, "");
-				}				
+				}
 			} catch (Exception e) {
 				logger.debug(e);
 			} finally {
@@ -184,10 +184,6 @@ public class ZipContent extends AbstractWebScript {
 
 				String fileName = zipAppo.getName();
 				NodeRef dest = new NodeRef(destinazione);
-
-				Map<QName, Serializable> titledProps = new HashMap<QName, Serializable>(1, 1.0f);
-				titledProps.put(ContentModel.PROP_TITLE, fileName);
-				this.nodeService.addAspect(dest, ContentModel.ASPECT_TITLED, titledProps);
 
 				QName contentQName = QName.createQName("{http://www.alfresco.org/model/content/1.0}content");
 				// creo il file zip in dest
@@ -217,7 +213,7 @@ public class ZipContent extends AbstractWebScript {
 
 	/**
 	 * Non modificato
-	 * 
+	 *
 	 * @param node
 	 * @param out
 	 * @param noaccent
@@ -298,7 +294,7 @@ public class ZipContent extends AbstractWebScript {
 	/**
 	 * ZipEntry() does not convert filenames from Unicode to platform (waiting
 	 * Java 7) http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4244499
-	 * 
+	 *
 	 * @param s
 	 * @return
 	 */
