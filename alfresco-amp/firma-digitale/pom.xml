@@ -4,7 +4,7 @@
 
   <groupId>it.cnr.jada</groupId>
   <artifactId>firma</artifactId>
-  <version>0.1.1</version>
+  <version>1.0</version>
   <packaging>amp</packaging>
 
   <properties>
@@ -26,7 +26,7 @@
     <dependency>
       <groupId>it.cnr.commons</groupId>
       <artifactId>firmadigitale</artifactId>
-      <version>0.2.4</version>
+      <version>0.2.5</version>
     </dependency>
   </dependencies>
 </project>
