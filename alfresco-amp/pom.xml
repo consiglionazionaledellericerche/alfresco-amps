@@ -24,7 +24,6 @@
     <module>groups-extension</module>
     <module>jdiam-extension-content-model</module>
     <module>sigla-extension-content-model</module>
-    <module>solr-alfresco4</module>
     <module>zip-content</module>
     <module>firma-digitale</module>
 
