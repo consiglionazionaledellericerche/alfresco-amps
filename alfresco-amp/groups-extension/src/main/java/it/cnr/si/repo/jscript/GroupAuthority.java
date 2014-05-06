@@ -30,7 +30,7 @@ import org.springframework.extensions.surf.util.ParameterCheck;
 public class GroupAuthority extends BaseScopableProcessorExtension {
 	private GroupAuthorityService groupAuthorityService;
 	private ServiceRegistry services;
-	
+
 	public void setServices(ServiceRegistry services) {
 		this.services = services;
 	}
@@ -72,48 +72,48 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     	NodeRef nodeRefChild = groupAuthorityService.getAuthorityNodeRefOrNull(childName);
     	groupAuthorityService.removeAuthority(nodeRefParent, nodeRefChild);
     }
-	
+
     /**
      * Create a new root level group with the specified unique name
-     * 
+     *
      * @param groupName     The unique group name to create - NOTE: do not prefix with "GROUP_"
-     * 
+     *
      * @return the group reference if successful or null if failed
      */
     public ScriptNode createGroup(String groupName, String groupDisplayName, String... zones)
     {
         return createGroup(null, groupName, groupDisplayName, zones);
     }
-    
+
     /**
      * Create a new group with the specified unique name
-     * 
+     *
      * @param parentGroup   The parent group node - can be null for a root level group
      * @param groupName     The unique group name to create - NOTE: do not prefix with "GROUP_"
-     * 
+     *
      * @return the group reference if successful or null if failed
      */
     public ScriptNode createGroup(ScriptNode parentGroup, String groupName, String groupDisplayName, String... zones)
     {
         ParameterCheck.mandatoryString("GroupName", groupName);
-        
+
         ScriptNode group = null;
-        
+
         String actualName = getAuthorityService().getName(AuthorityType.GROUP, groupName);
         if (getAuthorityService().authorityExists(actualName) == false)
         {
         	NodeRef result = groupAuthorityService.createAuthority(
-        			parentGroup==null ? groupAuthorityService.getAuthorityContainer():parentGroup.getNodeRef(), 
+        			parentGroup==null ? groupAuthorityService.getAuthorityContainer():parentGroup.getNodeRef(),
         					groupName, groupDisplayName, zones);
         	group = new ScriptNode(result, services, getScope());
         }
-        
+
         return group;
     }
-    
+
     /**
      * Gets the Authority given the Authority name
-     * 
+     *
      * @param authorityName  name of group to get
      * @return  the group node (type usr:authorityContainer) or null if no such group exists
      */
@@ -124,35 +124,35 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         NodeRef authorityRef;
         if (NodeRef.isNodeRef(authorityName)){
         	authorityRef = new NodeRef(authorityName);
-        }else	
+        }else
         	authorityRef = groupAuthorityService.getAuthorityNodeRefOrNull(authorityName);
         if (authorityRef != null)
         {
             authority = new ScriptNode(authorityRef, services, getScope());
         }
         return authority;
-    }	
+    }
 
-    public AuthorityPermission getAuthorityPermission(String authorityName) 
+    public AuthorityPermission getAuthorityPermission(String authorityName)
     {
         ParameterCheck.mandatoryString("AuthorityName", authorityName);
         AuthorityPermission authorityPermission = null;
         NodeRef authorityRef;
         if (NodeRef.isNodeRef(authorityName)){
         	authorityRef = new NodeRef(authorityName);
-        }else	
+        }else
         	authorityRef = groupAuthorityService.getAuthorityNodeRefOrNull(authorityName);
         if (authorityRef != null)
         {
         	authorityPermission = new AuthorityPermission(authorityRef,
-				new ScriptGroup(groupAuthorityService.getAuthorityNameOrNull(authorityRef), 
+				new ScriptGroup(groupAuthorityService.getAuthorityNameOrNull(authorityRef),
 				services, this.getScope()));
         	addPermission(authorityRef, authorityPermission);
         }
 		return authorityPermission;
     }
 
-    public AuthorityPermission getRootAuthorityPermission() 
+    public AuthorityPermission getRootAuthorityPermission()
     {
         AuthorityPermission authorityPermission = null;
         NodeRef authorityRef = groupAuthorityService.getAuthorityContainer();
@@ -164,27 +164,27 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         }
 		return authorityPermission;
     }
-    
+
     public void deleteGroup(String groupName, boolean cascade){
     	groupAuthorityService.deleteAuthority(groupAuthorityService.getAuthorityNodeRefOrNull(groupName), cascade);
     }
-    
+
     public void deleteGroup(String groupName){
     	deleteGroup(groupName, false);
     }
-    
+
     public AuthorityPermission[] getChildAuthorities(){
     	return getChildAuthorities(new ScriptPagingDetails(), null);
     }
-    
+
     public AuthorityPermission[] getChildAuthorities(ScriptPagingDetails paging, String sortBy){
     	return getChildAuthorities(null, paging, sortBy);
     }
-    
+
     public AuthorityPermission[] getChildAuthorities(String groupName){
     	return getChildAuthorities(groupName, new ScriptPagingDetails(), null);
     }
-    
+
     public AuthorityPermission[] getChildAuthorities(String groupName, ScriptPagingDetails paging, String sortBy){
     	return getChildAuthorities(groupName, null, paging, sortBy);
     }
@@ -192,18 +192,22 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     public AuthorityPermission[] getChildAuthorities(String groupName, String authorityType){
     	return getChildAuthorities(groupName, authorityType, new ScriptPagingDetails(), null);
     }
-    
+
     public class AuthorityPermission implements Authority{
     	private final Authority authority;
     	private final NodeRef nodeRef;
     	private List<String> allowableActions;
-    	
+
 		public AuthorityPermission(NodeRef nodeRef, Authority authority) {
 			super();
 			this.authority = authority;
-			this.nodeRef = nodeRef; 
+			this.nodeRef = nodeRef;
 			this.allowableActions = new ArrayList<String>();
 		}
+
+        public java.util.Set getZones(){
+            return null;
+        }
 
 		public NodeRef getNodeRef() {
 			return nodeRef;
@@ -244,29 +248,29 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
 		public List<String> getAllowableActions() {
 			return allowableActions;
 		}
-    	
+
 		public void addAllowableActions(String key){
 			allowableActions.add(key);
 		}
     }
-    
+
     private void addPermission(NodeRef parent, AuthorityPermission authorityPermission){
-    	if (getPermissionService().hasPermission(parent, 
+    	if (getPermissionService().hasPermission(parent,
     			PermissionService.CREATE_CHILDREN).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_CREATE_CHILDREN");
-    	if (getPermissionService().hasPermission(authorityPermission.getNodeRef(), 
+    	if (getPermissionService().hasPermission(authorityPermission.getNodeRef(),
     			PermissionService.CHANGE_PERMISSIONS).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_APPLY_ACL");
-    	if (getPermissionService().hasPermission(authorityPermission.getNodeRef(), 
+    	if (getPermissionService().hasPermission(authorityPermission.getNodeRef(),
     			PermissionService.DELETE).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_DELETE_OBJECT");
-    	if (getPermissionService().hasPermission(parent, 
+    	if (getPermissionService().hasPermission(parent,
     			PermissionService.DELETE_ASSOCIATIONS).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_DELETE_ASSOCIATIONS");
-    	if (getPermissionService().hasPermission(parent, 
+    	if (getPermissionService().hasPermission(parent,
     			PermissionService.CREATE_ASSOCIATIONS).equals(AccessStatus.ALLOWED))
-    		authorityPermission.addAllowableActions("CAN_CREATE_ASSOCIATIONS");    	
-    	if (getPermissionService().hasPermission(authorityPermission.getNodeRef(), 
+    		authorityPermission.addAllowableActions("CAN_CREATE_ASSOCIATIONS");
+    	if (getPermissionService().hasPermission(authorityPermission.getNodeRef(),
     			PermissionService.WRITE_PROPERTIES).equals(AccessStatus.ALLOWED))
     		authorityPermission.addAllowableActions("CAN_UPDATE_PROPERTIES");
     }
@@ -280,14 +284,14 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         if (groupName != null){
             if (NodeRef.isNodeRef(groupName)){
             	groupRef = new NodeRef(groupName);
-            }else	
+            }else
             	groupRef = groupAuthorityService.getAuthorityNodeRefOrNull(groupName);
-        }    
+        }
         if (authorityType == null || authorityType.equals(AuthorityType.GROUP.name())){
         	Set<NodeRef> childs = groupAuthorityService.getAllGroupAuthorities(groupRef);
         	for (NodeRef child : childs) {
         		AuthorityPermission authorityPermission = new AuthorityPermission(child,
-        				new ScriptGroup(groupAuthorityService.getAuthorityNameOrNull(child), 
+        				new ScriptGroup(groupAuthorityService.getAuthorityNameOrNull(child),
         				services, this.getScope()));
         		addPermission(groupRef, authorityPermission);
         		result.add(authorityPermission);
@@ -297,7 +301,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         	Set<NodeRef> childs = groupAuthorityService.getAllUserAuthorities(groupRef);
         	for (NodeRef child : childs) {
         		AuthorityPermission authorityPermission = new AuthorityPermission(child,
-        				new ScriptUser(groupAuthorityService.getAuthorityNameOrNull(child), 
+        				new ScriptUser(groupAuthorityService.getAuthorityNameOrNull(child),
                 				child, services, this.getScope()));
         		addPermission(groupRef, authorityPermission);
         		result.add(authorityPermission);
@@ -323,17 +327,17 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     	Arrays.sort(groups, new GroupAuthorityComparator(sortBy));
 
         // Now page
-        int maxItems = paging.getMaxItems(); 
+        int maxItems = paging.getMaxItems();
         int skipCount = paging.getSkipCount();
         paging.setTotalItems(groups.length);
         return ModelUtil.page(groups, maxItems, skipCount);
-    }   
- 
+    }
+
     public static class GroupAuthorityComparator implements Comparator<Authority>
     {
         private Map<Authority,String> nameCache;
         private String sortBy;
-        
+
         public GroupAuthorityComparator(String sortBy)
         {
             this.sortBy = sortBy;
@@ -348,7 +352,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         	else
         		return g1.getAuthorityType().compareTo(g2.getAuthorityType());
         }
-        
+
         private String get(Authority g)
         {
             String v = nameCache.get(g);
@@ -357,7 +361,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
                 // Get the value from the group
                 if("displayName".equals(sortBy))
                 {
-                    v = g.getDisplayName(); 
+                    v = g.getDisplayName();
                 }
                 else if("shortName".equals(sortBy))
                 {
@@ -365,7 +369,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
                 }
                 else
                 {
-                    v = g.getFullName(); 
+                    v = g.getFullName();
                 }
                 // Lower case it for case insensitive search
                 v = v.toLowerCase();
@@ -375,5 +379,5 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
             return v;
         }
     }
-    
+
 }

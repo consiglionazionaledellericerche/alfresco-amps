@@ -19,8 +19,6 @@
 
   <modules>
     <module>backup</module>
-    <module>advanced-workflow</module>
-    <module>alfresco-cnr-ldap</module>
     <module>jconon</module>
     <module>java-script-extension</module>
     <module>groups-extension</module>
