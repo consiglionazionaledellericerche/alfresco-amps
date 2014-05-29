@@ -27,4 +27,23 @@
     <servlet-name>RestletServlet</servlet-name>  
     <url-pattern>/service/*</url-pattern>  
   </servlet-mapping>  
+  
+  
+  
+  <!-- Custom configuration -->
+  <servlet-mapping>  
+    <servlet-name>CnrRestletServlet</servlet-name>  
+    <url-pattern>/cnr/*</url-pattern>  
+  </servlet-mapping>
+  <servlet>  
+    <servlet-name>CnrRestletServlet</servlet-name>  
+    <servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
+    <init-param>
+      <!-- Application class name -->
+      <param-name>org.restlet.application</param-name>
+      <param-value>it.cnr.rest.application.Application</param-value>
+    </init-param>
+  </servlet>
+  
+  <!-- end of Custom configuration -->
 </web-app>
