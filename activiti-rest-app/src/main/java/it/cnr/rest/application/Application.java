@@ -6,8 +6,6 @@ import org.restlet.Restlet;
 import org.restlet.data.ChallengeScheme;
 import org.restlet.routing.Router;
 import org.restlet.security.ChallengeAuthenticator;
-import org.restlet.security.SecretVerifier;
-import org.restlet.security.Verifier;
 
 
 public class Application extends org.restlet.Application {
@@ -16,29 +14,8 @@ public class Application extends org.restlet.Application {
 
 	@Override
 	public synchronized Restlet createInboundRoot() {
-		Verifier verifier = new SecretVerifier() {
 
-			@Override
-			public boolean verify(String username, char[] password)
-					throws IllegalArgumentException {
-				System.out.println("CHECK AUTHORIZATION FOR USER " + username
-						+ " " + password);
-				return true;
-			}
-		};
-		authenticator = new ChallengeAuthenticator(null, true,
-				ChallengeScheme.HTTP_BASIC, "Activiti Realm") {
-
-			@Override
-			protected boolean authenticate(Request request, Response response) {
-				if (request.getChallengeResponse() == null) {
-					return false;
-				} else {
-					return super.authenticate(request, response);
-				}
-			}
-		};
-		authenticator.setVerifier(verifier);
+		authenticator = getAuthenticator();
 
 		Router router = new Router(getContext());
 
@@ -49,12 +26,19 @@ public class Application extends org.restlet.Application {
 		return authenticator;
 	}
 
-	public String authenticate(Request request, Response response) {
-		if (!request.getClientInfo().isAuthenticated()) {
-			authenticator.challenge(response, false);
-			return null;
-    }
-		return request.getClientInfo().getUser().getIdentifier();
+	private static ChallengeAuthenticator getAuthenticator() {
+
+		ChallengeAuthenticator a = new ChallengeAuthenticator(null, true,
+				ChallengeScheme.HTTP_BASIC, "CNR Realm") {
+
+			@Override
+			protected boolean authenticate(Request request, Response response) {
+				return true;
+			}
+		};
+
+		return a;
 	}
+
 }
 
