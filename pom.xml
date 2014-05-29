@@ -17,6 +17,7 @@
     <module>alfresco-amp</module>
     <module>alfresco-app</module>
     <module>share-app</module>
+    <module>activiti-rest-app</module>
   </modules>
 
   <repositories>
