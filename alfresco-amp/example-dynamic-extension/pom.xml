@@ -1,10 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+  <properties>
+    <project.groupId>it.cnr.si</project.groupId>
+    <project.artifactId>estensione-dinamica</project.artifactId>
+    <project.version>0.9</project.version>
+    <project.description>Dynamic Extension: progetto di prova</project.description>
+  </properties>
 
-	<groupId>it.cnr.si</groupId>
-	<artifactId>estensione-dinamica</artifactId>
-  <version>0.9</version>
+  <groupId>${project.groupId}</groupId>
+  <artifactId>${project.artifactId}</artifactId>
+  <version>${project.version}</version>
+  <description>${project.description}</description>
+
 
   <dependencies>
     <dependency>
@@ -38,5 +46,36 @@
       <version>1.0.0</version>
     </dependency>
   </dependencies>
+
+<build>
+	<plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+			<configuration>
+				<archive>
+					<manifestEntries>
+            <!--Properties Obligatorie-->
+						<Alfresco-Dynamic-Extension>true</Alfresco-Dynamic-Extension>
+            <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+            <Alfresco-Spring-Configuration>com.github.dynamicextensionsalfresco.examples</Alfresco-Spring-Configuration>
+            <!--Properties Opzionali: specificano i package importati ed esposti dal Bundle-->
+            <Bundle-Name>${project.artifactId}</Bundle-Name>
+            <Bundle-Version>${project.version}</Bundle-Version>
+						<Bundle-Description>${project.description}</Bundle-Description>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+            <!--Da scrivere senza spazi-->
+            <Import-Package>
+              com.github.dynamicextensionsalfresco.webscripts.annotations,org.alfresco.service.namespace,org.springframework.extensions.webscripts,org.springframework.stereotype; version="[3.0,4)",org.aopalliance.intercept, net.sf.cglib.core,org.springframework.aop, net.sf.cglib.reflect,org.aopalliance.aop, net.sf.cglib.proxy,org.springframework.aop.framework
+            </Import-Package>
+            <Export-Package>
+              ${project.groupId}.${project.artifactId};version="${project.version}";uses:="com.github.dynamicextensionsalfresco.webscripts.annotations,org.alfresco.service.namespace,org.springframework.extensions.webscripts,org.springframework.stereotype"
+            </Export-Package>
+					</manifestEntries>
+				</archive>
+			</configuration>
+		</plugin>
+	</plugins>
+</build>
 
 </project>
