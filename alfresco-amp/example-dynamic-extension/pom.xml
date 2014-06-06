@@ -3,25 +3,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<project.groupId>it.cnr.si</project.groupId>
-		<project.artifactId>estensione-dinamica</project.artifactId>
-		<project.version>0.9</project.version>
-		<project.description>Alfresco Dynamic Extension: progetto di prova</project.description>
-		<project.name>Example Dynamic Extension per Alfresco</project.name>
-	</properties>
-
 	<parent>
 		<artifactId>alfresco-amp-parent</artifactId>
 		<groupId>it.cnr.si.amp</groupId>
 		<version>0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>${project.groupId}</groupId>
-	<artifactId>${project.artifactId}</artifactId>
-	<version>${project.version}</version>
-	<description>${project.description}</description>
-	<name>${project.name}</name>
+	<groupId>it.cnr.si</groupId>
+	<artifactId>estensione-dinamica</artifactId>
+	<version>0.95</version>
+	<description>Alfresco Dynamic Extension: progetto di prova</description>
+	<name>Example Dynamic Extension per Alfresco</name>
+
 	<packaging>bundle</packaging>
 
 	<dependencies>
