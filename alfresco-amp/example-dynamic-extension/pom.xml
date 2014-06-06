@@ -2,16 +2,22 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
   <properties>
-    <project.groupId>it.cnr.si</project.groupId>
-    <project.artifactId>estensione-dinamica</project.artifactId>
-    <project.version>0.9</project.version>
-    <project.description>Dynamic Extension: progetto di prova</project.description>
+	<project.groupId>it.cnr.si</project.groupId>
+	<project.artifactId>estensione-dinamica</project.artifactId>
+	<project.version>0.9</project.version>
+	<project.description>Dynamic Extension: progetto di prova</project.description>
   </properties>
 
-  <groupId>${project.groupId}</groupId>
-  <artifactId>${project.artifactId}</artifactId>
-  <version>${project.version}</version>
-  <description>${project.description}</description>
+	<parent>
+		<artifactId>alfresco-amp-parent</artifactId>
+		<groupId>it.cnr.si.amp</groupId>
+		<version>0.1-SNAPSHOT</version>
+	</parent>
+
+	<groupId>${project.groupId}</groupId>
+	<artifactId>${project.artifactId}</artifactId>
+	<version>${project.version}</version>
+	<description>${project.description}</description>
 
 
   <dependencies>
@@ -44,8 +50,10 @@
       <groupId>org.springframework.extensions.surf</groupId>
       <artifactId>spring-surf</artifactId>
       <version>1.0.0</version>
-    </dependency>
+    </dependency>    
   </dependencies>
+  
+   
 
 <build>
 	<plugins>
