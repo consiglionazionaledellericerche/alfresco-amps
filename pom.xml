@@ -9,7 +9,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <nexus.url>http://bandt.si.cnr.it:8280/nexus</nexus.url>
-    <alfresco.version>4.2.c</alfresco.version>
+    <alfresco.version>4.1.5</alfresco.version>
+    <alfresco.groupId>org.alfresco.enterprise</alfresco.groupId>
     <java.version>1.6</java.version>
   </properties>
 
@@ -55,7 +56,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.alfresco</groupId>
+      <groupId>${alfresco.groupId}</groupId>
       <artifactId>alfresco</artifactId>
       <version>${alfresco.version}</version>
       <type>pom</type>
