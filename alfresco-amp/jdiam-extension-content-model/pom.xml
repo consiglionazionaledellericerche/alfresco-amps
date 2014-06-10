@@ -10,7 +10,6 @@
   <description>Alfresco JDIAM extension content model</description>
   <properties>
     <webapp.name>jdiam-extension-content-model</webapp.name>
-    <alfresco.version>3.2r</alfresco.version>
   </properties>
 
   <parent>
