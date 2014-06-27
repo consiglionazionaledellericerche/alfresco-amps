@@ -33,6 +33,7 @@ import org.springframework.extensions.webscripts.servlet.FormData.FormField;
 import org.springframework.stereotype.Component;
 
 import com.github.dynamicextensionsalfresco.webscripts.annotations.FileField;
+import com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.RequestParam;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
@@ -137,7 +138,7 @@ public class SynchronizingAlfrescoWebScript {
 	 * @param acpFile
 	 *            : file acp da importare
 	 */
-	@Uri(method = com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod.POST, value = "/import/acp", multipartProcessing = true)
+	@Uri(method = HttpMethod.POST, value = "/import/acp", multipartProcessing = true)
 	public void importAcp(final WebScriptResponse response,
 			@RequestParam String nodeRef, @FileField final FormField acpFile) {
 		if (acpFile != null) {
