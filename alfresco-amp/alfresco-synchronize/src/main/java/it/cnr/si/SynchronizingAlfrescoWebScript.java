@@ -37,9 +37,6 @@ import com.github.dynamicextensionsalfresco.webscripts.annotations.RequestParam;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.Uri;
 import com.github.dynamicextensionsalfresco.webscripts.annotations.WebScript;
 
-
-
-
 @Component
 @WebScript(baseUri = "/dynamic-extensions")
 public class SynchronizingAlfrescoWebScript {
@@ -69,21 +66,43 @@ public class SynchronizingAlfrescoWebScript {
 	@Autowired
 	private CMISServices cmisService;
 
-
+	/**
+	 * @param destDirName
+	 *            : nome della folder nel file system in cui copiare il file acp
+	 *            generato
+	 * @param packageName
+	 *            : nome del file acp
+	 * @param storeRef
+	 *            : nodeRef spazio da esportare nel file acp
+	 * @param self
+	 *            : boolean che indica se si vuole esportare anche lo spazio
+	 *            indicato in storeRef oppure solo i suoi figli
+	 * @param children
+	 *            : boolean che indica se si vogliono esportare gli spazi figli
+	 * @param content
+	 *            : boolean che indica se si vuole esportare il contenuto dei
+	 *            nodi
+	 * @param association
+	 *            : boolean che indica se si vuole esportare le associazioni
+	 * @param nullProperties
+	 *            : boolean che indica se si vuole esportare le proprietà
+	 *            settate a null
+	 * @param download
+	 *            : boolean che indica se si vuole effettuare il download del
+	 *            file acp generato
+	 * @throws IOException
+	 */
 	@Uri("/export/acp")
 	public void exportAcp(final WebScriptResponse response,
-			@RequestParam String destDirName,
-			@RequestParam String packageName,
-			@RequestParam String storeRef,
-			@RequestParam boolean self,
-			@RequestParam boolean children,
-			@RequestParam boolean content,
+			@RequestParam String destDirName, @RequestParam String packageName,
+			@RequestParam String storeRef, @RequestParam boolean self,
+			@RequestParam boolean children, @RequestParam boolean content,
 			@RequestParam boolean association,
-			@RequestParam boolean nullProperties,
-			@RequestParam boolean download)
+			@RequestParam boolean nullProperties, @RequestParam boolean download)
 			throws IOException {
-		File file = export(destDirName, packageName,
-				storeRef, self, children, content, association, nullProperties);
+
+		File file = export(destDirName, packageName, storeRef, self, children,
+				content, association, nullProperties);
 		if (download) {
 			FileExportHandle handle = new FileExportHandle();
 			handle.storeRef = new StoreRef(storeRef);
@@ -111,11 +130,16 @@ public class SynchronizingAlfrescoWebScript {
 		}
 	}
 
-		
+	/**
+	 * @param nodeRef
+	 *            : nodeRef dello spazio in cui copiare il contenuto
+	 *            dell'acpFile
+	 * @param acpFile
+	 *            : file acp da importare
+	 */
 	@Uri(method = com.github.dynamicextensionsalfresco.webscripts.annotations.HttpMethod.POST, value = "/import/acp", multipartProcessing = true)
 	public void importAcp(final WebScriptResponse response,
-			@RequestParam String nodeRef,
-			@FileField final FormField acpFile) {
+			@RequestParam String nodeRef, @FileField final FormField acpFile) {
 		if (acpFile != null) {
 			File tempFile = null;
 			try {
@@ -130,14 +154,12 @@ public class SynchronizingAlfrescoWebScript {
 						+ acpFile.getFilename() + " to nodeRef" + nodeRef, e);
 			}
 			ACPImportPackageHandler acpHandler = new ACPImportPackageHandler(
-					tempFile,
-					DEFAULT_ENCODING);
+					tempFile, DEFAULT_ENCODING);
 			NodeRef space = new NodeRef(nodeRef);
 			Location importLocation = new Location(space);
 			importer.importView(acpHandler, importLocation, null, null);
 		}
 	}
-
 
 	private File export(String destDirName, String packageName,
 			String storeRef, boolean self, boolean children, boolean content,
@@ -169,7 +191,7 @@ public class SynchronizingAlfrescoWebScript {
 			File contentDir = new File(packageName);
 			ACPExportPackageHandler acpHandler = new ACPExportPackageHandler(
 					outputStream, dataFile, contentDir, mimetypeService);
-		// export the store
+			// export the store
 			exporter.exportView(acpHandler, exportParameters, null);
 		} catch (FileNotFoundException e) {
 			file.delete();
