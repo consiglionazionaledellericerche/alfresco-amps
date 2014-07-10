@@ -16,14 +16,15 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<activiti.version>5.7</activiti.version>
+		<activiti.version>5.13-alf-20140107</activiti.version>
 	</properties>
 
 	<dependencies>
+
 		<dependency>
 			<groupId>org.restlet.jee</groupId>
 			<artifactId>org.restlet</artifactId>
-			<version>2.0.8</version>
+			<version>2.0.15</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -36,6 +37,11 @@
 			<artifactId>activiti-webapp-rest2</artifactId>
 			<version>${activiti.version}</version>
 			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-common-rest</artifactId>
+			<version>${activiti.version}</version>
 		</dependency>
 	</dependencies>
 
