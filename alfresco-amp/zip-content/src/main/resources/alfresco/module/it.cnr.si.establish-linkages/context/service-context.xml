@@ -1,0 +1,23 @@
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<beans>
+	<bean id="establishLinkages" class="it.cnr.si.EstablishLinkages" >
+		 <!-- <property name="contentService" ref="ContentService" />-->
+      <property name="nodeService" ref="NodeService" />
+      <property name="namespaceService" ref="namespaceService"/>
+      <property name="dictionaryService" ref="dictionaryService" />
+      <!-- <property name="fileFolderService" ref="FileFolderService" />-->
+      <property name="searchService" ref="SearchService"/>
+	</bean>
+
+	 <bean id="webscript.it.cnr.si.establish-linkages.get" class="it.cnr.si.EstablishLinkages" parent="webscript">
+      <!-- <property name="contentService" ref="ContentService" />-->
+      <property name="nodeService" ref="NodeService" />
+      <property name="namespaceService" ref="namespaceService"/>
+      <property name="dictionaryService" ref="dictionaryService" />
+      <!-- <property name="fileFolderService" ref="FileFolderService" />-->
+      <property name="searchService" ref="SearchService"/>
+   	</bean>
+</beans>
+
+
+

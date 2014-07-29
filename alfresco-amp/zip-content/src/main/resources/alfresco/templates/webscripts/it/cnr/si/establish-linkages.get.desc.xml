@@ -1,0 +1,8 @@
+
+<webscript>
+  <shortname>establishLinkages</shortname>
+  <description>Establish Linkages</description>
+  <url>/zipper/establishLinkages?sourceNodeRef={sourceNodeRef}&amp;destNodeRef={destNodeRef}</url>
+  <format default="json"/>
+  <authentication>user</authentication>
+</webscript>

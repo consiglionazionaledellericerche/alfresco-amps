@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>it.cnr.si</groupId>
   <artifactId>zip-content</artifactId>
-  <version>1.0</version>
+  <version>2.0</version>
   <name>Alfresco - AMP - zip-content</name>
   <packaging>amp</packaging>
   <!-- <type>amp</type>-->
