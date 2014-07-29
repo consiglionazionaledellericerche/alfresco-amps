@@ -91,36 +91,6 @@ public class EstablishLinkages extends AbstractWebScript {
 	 *            la destinazione del link
 	 */
 
-	// private void establishLinkages(NodeRef sourceNodeRef, NodeRef
-	// destNodeRef) {
-	//
-	// ChildAssociationRef assocRef = nodeService
-	// .getPrimaryParent(sourceNodeRef);
-	// String name = (String) nodeService.getProperty(sourceNodeRef,
-	// ContentModel.PROP_NAME);
-	// String linkTo = "Link to";
-	// name = linkTo + ' ' + name;
-	//
-	// LOGGER.debug("Attempting to link node ID: " + sourceNodeRef
-	// + " into node: " + destNodeRef.toString());
-	//
-	// // creo un particolare nodo Object Link, che ha una proprietà con il
-	// // link
-	// // TODO: si potrebbe usare direttamente FileFolderService per i
-	// // contenuti)
-	// String LINK_NODE_EXTENSION = ".url";
-	// List<NodeRef> oldLink = checkExists(name + LINK_NODE_EXTENSION,
-	// destNodeRef);
-	// if (oldLink.size() == 0) {
-	// createLinkage(sourceNodeRef, destNodeRef, assocRef, name,
-	// LINK_NODE_EXTENSION);
-	// } else {
-	// nodeService.deleteNode(oldLink.get(0));
-	// createLinkage(sourceNodeRef, destNodeRef, assocRef, name,
-	// LINK_NODE_EXTENSION);
-	// }
-	// }
-
 	private void createLinkage(NodeRef sourceNodeRef, NodeRef destNodeRef,
 			ChildAssociationRef assocRef, String name,
 			String LINK_NODE_EXTENSION) {
