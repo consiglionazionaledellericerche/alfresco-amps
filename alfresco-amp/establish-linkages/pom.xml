@@ -3,12 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>it.cnr.si</groupId>
-  <artifactId>zip-content</artifactId>
+  <artifactId>establish-linkages</artifactId>
   <version>1.0</version>
-  <name>Alfresco - AMP - zip-content</name>
+  <name>Alfresco - AMP - establish-linkages</name>
   <packaging>amp</packaging>
   <!-- <type>amp</type>-->
-  <description>Alfresco zip-content: bean che zippa cartelle e documenti</description>
+  <description>Alfresco establish-linkages: bean che crea un link in alfresco</description>
   
   <parent>
     <artifactId>alfresco-amp-parent</artifactId>

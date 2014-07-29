@@ -25,6 +25,7 @@
     <module>jdiam-extension-content-model</module>
     <module>sigla-extension-content-model</module>
     <module>zip-content</module>
+    <module>establish-linkages</module>
     <module>firma-digitale</module>
 
   </modules>
