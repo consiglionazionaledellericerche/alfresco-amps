@@ -6,7 +6,7 @@
     <bean id="cnr-extension.dictionaryBootstrap" parent="dictionaryModelBootstrap" depends-on="dictionaryBootstrap">
         <property name="models">
                 <list>
-                    <value>alfresco/model/cnr/cnrPersonModel.xml</value>
+                    <value>alfresco/model/cnr/cnr-personModel.xml</value>
                 </list>
         </property>
     </bean>
