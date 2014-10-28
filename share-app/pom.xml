@@ -14,8 +14,6 @@
   </parent>
 
   <properties>
-    <alfresco.groupId>org.alfresco</alfresco.groupId>
-    <alfresco.version>4.2.3</alfresco.version>
     <alfresco.client.war>share</alfresco.client.war>
     <alfresco.host>test7.si.cnr.it/alfresco</alfresco.host>
     <nexus.url>http://bandt.si.cnr.it:8280/nexus</nexus.url>
@@ -104,6 +102,19 @@
                   </regexFlags>
                 </configuration>
               </plugin>
+
+              <plugin>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                  <execution>
+                    <id>enforce-sdk-requirements</id>
+                    <configuration>
+                      <fail>false</fail>
+                    </configuration>
+                  </execution>
+                </executions>
+              </plugin>
+
             </plugins>
           </build>
 
