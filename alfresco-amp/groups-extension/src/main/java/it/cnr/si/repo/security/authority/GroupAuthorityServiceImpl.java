@@ -5,6 +5,7 @@ import it.cnr.si.service.cmr.security.GroupAuthorityService;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -206,20 +207,39 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
     	authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), cascade);
     }
     
-    public Set<NodeRef> getAllUserAuthorities(NodeRef parent){
-    	return getAuthorities(parent, AuthorityType.USER);
+    public Set<NodeRef> getAllUserAuthorities(NodeRef parent, List<String> zones){
+    	return getAuthorities(parent, AuthorityType.USER, zones);
     }
 
-    public Set<NodeRef> getAllGroupAuthorities(NodeRef parent){
-    	return getAuthorities(parent, AuthorityType.GROUP);
+    public Set<NodeRef> getAllGroupAuthorities(NodeRef parent, List<String> zones){
+    	return getAuthorities(parent, AuthorityType.GROUP, zones);
     }
     
-    public Set<NodeRef> getAuthorities(NodeRef parent, AuthorityType authorityType){
+    public Set<NodeRef> getAuthorities(NodeRef parent, AuthorityType authorityType, List<String> zones){
     	Set<String> authorities = null;
-    	if (parent == null)
-    		authorities = authorityService.getAllRootAuthorities(authorityType);
-    	else{
-    		authorities = authorityService.getContainedAuthorities(authorityType, getAuthorityNameOrNull(parent), true);
+    	if (parent == null) {
+    		if (zones != null && zones.size() > 0) {
+    			authorities = new HashSet<String>();
+    			for (String zone : zones) {
+    				authorities.addAll(authorityService.getAllRootAuthoritiesInZone(zone, authorityType));	
+				}
+    		}else
+    			authorities = authorityService.getAllRootAuthorities(authorityType);
+    	} else{
+    		if (zones != null) {
+    			Set<String> authoritiesInZones = new HashSet<String>();
+    			authorities = authorityService.getContainedAuthorities(authorityType, getAuthorityNameOrNull(parent), true);
+    			for (String zoneName : zones) {
+    				authoritiesInZones.addAll(authorityService.getAllAuthoritiesInZone(zoneName, authorityType));
+    			}					
+    			for (Iterator<String> iterator = authorities.iterator(); iterator.hasNext();) {
+					String authority = iterator.next();
+    				if (!authoritiesInZones.contains(authority)){
+    					iterator.remove();
+        			}										
+				}
+    		}else
+        		authorities = authorityService.getContainedAuthorities(authorityType, getAuthorityNameOrNull(parent), true);
     	}
     	Set<NodeRef> result = new HashSet<NodeRef>(authorities.size());
     	for (String authority : authorities) {

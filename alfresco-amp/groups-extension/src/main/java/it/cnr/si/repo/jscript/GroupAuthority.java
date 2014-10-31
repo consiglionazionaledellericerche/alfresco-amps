@@ -26,6 +26,7 @@ import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.util.ModelUtil;
 import org.alfresco.util.ScriptPagingDetails;
 import org.springframework.extensions.surf.util.ParameterCheck;
+import org.springframework.util.StringUtils;
 
 public class GroupAuthority extends BaseScopableProcessorExtension {
 	private GroupAuthorityService groupAuthorityService;
@@ -186,13 +187,38 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     }
 
     public AuthorityPermission[] getChildAuthorities(String groupName, ScriptPagingDetails paging, String sortBy){
-    	return getChildAuthorities(groupName, null, paging, sortBy);
+    	return getChildAuthorities(groupName, null, paging, sortBy, null);
     }
 
     public AuthorityPermission[] getChildAuthorities(String groupName, String authorityType){
-    	return getChildAuthorities(groupName, authorityType, new ScriptPagingDetails(), null);
+    	return getChildAuthorities(groupName, authorityType, new ScriptPagingDetails(), null, null);
+    }
+    
+    /**
+     * 
+     * @param zones
+     * @return
+     */
+    public AuthorityPermission[] getChildAuthoritiesInZones(String zones){
+    	return getChildAuthoritiesInZones(new ScriptPagingDetails(), null, zones);
     }
 
+    public AuthorityPermission[] getChildAuthoritiesInZones(ScriptPagingDetails paging, String sortBy, String zones){
+    	return getChildAuthoritiesInZones(null, paging, sortBy, zones);
+    }
+
+    public AuthorityPermission[] getChildAuthoritiesInZones(String groupName, String zones){
+    	return getChildAuthoritiesInZones(groupName, new ScriptPagingDetails(), null, zones);
+    }
+
+    public AuthorityPermission[] getChildAuthoritiesInZones(String groupName, ScriptPagingDetails paging, String sortBy, String zones){
+    	return getChildAuthorities(groupName, null, paging, sortBy, zones);
+    }
+
+    public AuthorityPermission[] getChildAuthoritiesInZones(String groupName, String authorityType, String zones){
+    	return getChildAuthorities(groupName, authorityType, new ScriptPagingDetails(), null, zones);
+    }
+   
     public class AuthorityPermission implements Authority{
     	private final Authority authority;
     	private final NodeRef nodeRef;
@@ -205,7 +231,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
 			this.allowableActions = new ArrayList<String>();
 		}
 
-        public java.util.Set getZones(){
+        public java.util.Set<String> getZones(){
             return null;
         }
 
@@ -277,7 +303,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     /**
      * Get all the children of this group, regardless of type
      */
-    public AuthorityPermission[] getChildAuthorities(String groupName, String authorityType, ScriptPagingDetails paging, String sortBy)
+    public AuthorityPermission[] getChildAuthorities(String groupName, String authorityType, ScriptPagingDetails paging, String sortBy, String zones)
     {
     	Set<AuthorityPermission> result = new HashSet<AuthorityPermission>();
         NodeRef groupRef = null;
@@ -288,7 +314,8 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
             	groupRef = groupAuthorityService.getAuthorityNodeRefOrNull(groupName);
         }
         if (authorityType == null || authorityType.equals(AuthorityType.GROUP.name())){
-        	Set<NodeRef> childs = groupAuthorityService.getAllGroupAuthorities(groupRef);
+        	Set<NodeRef> childs = groupAuthorityService.getAllGroupAuthorities(groupRef, 
+                    zones != null ? Arrays.asList(StringUtils.commaDelimitedListToStringArray(zones)) : null);
         	for (NodeRef child : childs) {
         		AuthorityPermission authorityPermission = new AuthorityPermission(child,
         				new ScriptGroup(groupAuthorityService.getAuthorityNameOrNull(child),
@@ -298,7 +325,8 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     		}
         }
         if (authorityType == null || authorityType.equals(AuthorityType.USER.name())){
-        	Set<NodeRef> childs = groupAuthorityService.getAllUserAuthorities(groupRef);
+        	Set<NodeRef> childs = groupAuthorityService.getAllUserAuthorities(groupRef, 
+                zones != null ? Arrays.asList(StringUtils.commaDelimitedListToStringArray(zones)) : null);
         	for (NodeRef child : childs) {
         		AuthorityPermission authorityPermission = new AuthorityPermission(child,
         				new ScriptUser(groupAuthorityService.getAuthorityNameOrNull(child),
