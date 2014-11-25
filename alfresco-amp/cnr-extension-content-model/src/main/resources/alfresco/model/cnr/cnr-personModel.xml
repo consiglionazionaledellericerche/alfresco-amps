@@ -70,9 +70,6 @@
             <property name="cnrperson:emailcertificatoperpuk">
                <title>E-mail certificatoperpuk</title>
                <type>d:text</type>
-               <constraints>
-                 <constraint ref="cnrperson:email"/>
-               </constraints>
             </property>
             <!-- attributi non LDAP -->
             <property name="cnrperson:dataDiNascita">
