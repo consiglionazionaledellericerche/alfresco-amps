@@ -17,6 +17,18 @@
       <version>0.1-SNAPSHOT</version>
   </parent>
 
+  <dependencies>
+    <!-- TODO: da togliere quanto prima, serve solo per buildare alfresco war hotfix -->
+    <dependency>
+      <groupId>${alfresco.groupId}</groupId>
+      <artifactId>alfresco</artifactId>
+      <version>4.2.3.1</version>
+      <type>pom</type>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+
   <modules>
     <module>backup</module>
     <module>jconon</module>
