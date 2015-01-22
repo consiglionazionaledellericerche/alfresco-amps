@@ -22,7 +22,7 @@
     <dependency>
       <groupId>${alfresco.groupId}</groupId>
       <artifactId>alfresco</artifactId>
-      <version>4.2.3.1</version>
+      <version>${alfresco.version}</version>
       <type>pom</type>
       <scope>provided</scope>
     </dependency>
