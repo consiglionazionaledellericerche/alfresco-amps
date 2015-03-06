@@ -1,37 +1,13 @@
 package it.cnr.si;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedOutputStream;
-import java.util.zip.Deflater;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.ibm.icu.text.Normalizer;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.alfresco.model.ApplicationModel;
 import org.alfresco.model.ContentModel;
 import org.alfresco.service.cmr.dictionary.DictionaryService;
 import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
-import org.alfresco.service.cmr.repository.ChildAssociationRef;
-import org.alfresco.service.cmr.repository.ContentReader;
-import org.alfresco.service.cmr.repository.ContentService;
-import org.alfresco.service.cmr.repository.ContentWriter;
-import org.alfresco.service.cmr.repository.NodeRef;
-import org.alfresco.service.cmr.repository.NodeService;
-import org.alfresco.service.cmr.repository.StoreRef;
+import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.search.ResultSet;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.NamespaceService;
@@ -45,19 +21,25 @@ import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.extensions.webscripts.WebScriptResponse;
 import org.springframework.security.crypto.codec.Utf8;
 
-import com.ibm.icu.text.Normalizer;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.zip.*;
 
 /**
  * https://github.com/atolcd/alfresco-zip-and-download
  */
 public class ZipContent extends AbstractWebScript {
 
-	private static Log logger = LogFactory.getLog(ZipContent.class);
 	private static final int BUFFER_SIZE = 1024;
 	private static final String MIMETYPE_ZIP = "application/zip";
 	private static final String TEMP_FILE_PREFIX = "alf";
 	private static final String ZIP_EXTENSION = ".zip";
-
+	private static Log logger = LogFactory.getLog(ZipContent.class);
+	private static String DEFAULT_ENCODING = "UTF-8";
 	private ContentService contentService;
 	private NodeService nodeService;
 	private NamespaceService namespaceService;
@@ -65,11 +47,21 @@ public class ZipContent extends AbstractWebScript {
 	private FileFolderService fileFolderService;
 	private SearchService searchService;
 
+	/**
+	 * ZipEntry() does not convert filenames from Unicode to platform (waiting
+	 * Java 7) http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4244499
+	 *
+	 * @param s
+	 * @return
+	 */
+	public static String unAccent(String s) {
+		String temp = Normalizer.normalize(s, Normalizer.NFD, 0);
+		return temp.replaceAll("[^\\p{ASCII}]", "");
+	}
+
 	public void setSearchService(SearchService searchService) {
 		this.searchService = searchService;
 	}
-
-	private static String DEFAULT_ENCODING = "UTF-8";
 
 	public FileFolderService getFileFolderService() {
 		return fileFolderService;
@@ -110,7 +102,7 @@ public class ZipContent extends AbstractWebScript {
 				}
 			} else {
 				throw new WebScriptException(
-						HttpServletResponse.SC_BAD_REQUEST, "nodes");
+						HttpServletResponse.SC_BAD_REQUEST, "L'array nodes è vuoto");
 			}
 		} else if (query != null && nodes == null) {
 			if (query.length() != 0) {
@@ -119,37 +111,46 @@ public class ZipContent extends AbstractWebScript {
 								.getIdentifier());
 				ResultSet rs = searchService.query(store,
 						SearchService.LANGUAGE_CMIS_ALFRESCO, query);
-				nodesRef = rs.getNodeRefs();
+				if(rs.getNodeRefs().size() != 0) {
+					nodesRef = rs.getNodeRefs();
+				} else {
+					throw new WebScriptException(
+							HttpServletResponse.SC_BAD_REQUEST, "La query ha result set vuoto");
+				}
 			} else {
 				throw new WebScriptException(
-						HttpServletResponse.SC_BAD_REQUEST, "query");
+						HttpServletResponse.SC_BAD_REQUEST, "Il campo query è valorizzato con una stringa vuota");
 			}
 		} else {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
-					"query or nodes");
+					"Occorre specificare il parametro query oppure il parametro nodes");
 		}
 
 		String filename = Utf8.decode(req.getParameter("filename").getBytes());
 		if (filename == null || filename.length() == 0) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
-					"filename");
+					"Il parametro filename non è valorizzato");
 		}
 
 		String noaccentStr = req.getParameter("noaccent");
 		if (noaccentStr == null || noaccentStr.length() == 0) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
-					"noaccent");
+					"Il parametro noaccent non è valorizzato");
 		}
 
 		String destinazione = req.getParameter("destination");
 		if (destinazione == null || destinazione.length() == 0) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
-					"destination");
+					"Il parametro destination non è valorizzato");
 		}
 
 		Boolean download = Boolean.valueOf(req.getParameter("download"));
 		if (download == null)
 			download = false;
+
+        Boolean compress = Boolean.valueOf(req.getParameter("compress"));
+        if (compress == null)
+            compress = true;
 
 		try {
 			res.setContentType(MIMETYPE_ZIP);
@@ -162,7 +163,7 @@ public class ZipContent extends AbstractWebScript {
 			res.setHeader("Pragma", "public");
 			res.setHeader("Expires", "0");
 			createZipFile(nodesRef, destinazione, filename,
-					res.getOutputStream(), new Boolean(noaccentStr), download);
+					res.getOutputStream(), new Boolean(noaccentStr), download, compress);
 		} catch (Exception e) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
 					e.getLocalizedMessage() + "--" + e.getMessage());
@@ -170,7 +171,7 @@ public class ZipContent extends AbstractWebScript {
 	}
 
 	public void createZipFile(List<NodeRef> nodesRef, String destinazione,
-			String filename, OutputStream os, boolean noaccent, boolean download)
+			String filename, OutputStream os, boolean noaccent, boolean download, boolean compress)
 			throws Exception {
 		File zipAppo = null;
 		ZipOutputStream out = null;
@@ -185,7 +186,11 @@ public class ZipContent extends AbstractWebScript {
 			BufferedOutputStream buff = new BufferedOutputStream(checksum);
 			out = new ZipOutputStream(buff);
 			out.setMethod(ZipOutputStream.DEFLATED);
-			out.setLevel(Deflater.BEST_COMPRESSION);
+
+            if(compress)
+                out.setLevel(Deflater.BEST_COMPRESSION);
+            else
+                out.setLevel(Deflater.NO_COMPRESSION);
 
 			try {
 				for (int i = 0; i < nodesRef.size(); i++) {
@@ -236,7 +241,7 @@ public class ZipContent extends AbstractWebScript {
 				} else {
 					// Restituisco il noderef del file zip creato
 					final JSONObject json = new JSONObject();
-					json.put("nodeRefZip", zipInfo.getNodeRef().toString());
+					json.put("nodeRef", zipInfo.getNodeRef().toString());
 					os.write(json.toString(2).getBytes());
 				}
 			}
@@ -248,7 +253,7 @@ public class ZipContent extends AbstractWebScript {
 
 	/**
 	 * Non modificato
-	 * 
+	 *
 	 * @param node
 	 * @param out
 	 * @param noaccent
@@ -342,17 +347,5 @@ public class ZipContent extends AbstractWebScript {
 					+ nodeQnameType.getPrefixedQName(this.namespaceService)
 					+ ", filename: " + nodeName);
 		}
-	}
-
-	/**
-	 * ZipEntry() does not convert filenames from Unicode to platform (waiting
-	 * Java 7) http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4244499
-	 * 
-	 * @param s
-	 * @return
-	 */
-	public static String unAccent(String s) {
-		String temp = Normalizer.normalize(s, Normalizer.NFD, 0);
-		return temp.replaceAll("[^\\p{ASCII}]", "");
 	}
 }
