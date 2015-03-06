@@ -38,6 +38,7 @@
     <module>sigla-extension-content-model</module>
     <module>cnr-extension-content-model</module>
     <module>zip-content</module>
+    <module>iso-content</module>
     <module>establish-linkages</module>
     <module>firma-digitale</module>
 
