@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>it.cnr.si</groupId>
+    <artifactId>iso-content</artifactId>
+    <version>1.0</version>
+
+    <name>Alfresco - AMP - iso-content</name>
+    <!--<packaging>pom</packaging>-->
+    <packaging>amp</packaging>
+
+    <description>
+        Alfresco iso-content: bean che crea un file .iso contenente cartelle e documenti di Alfresco
+    </description>
+
+    <parent>
+        <artifactId>alfresco-amp-parent</artifactId>
+        <groupId>it.cnr.si.amp</groupId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.github.stephenc.java-iso-tools</groupId>
+            <artifactId>iso9660-writer</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
+</project>
+
+
+
+
+

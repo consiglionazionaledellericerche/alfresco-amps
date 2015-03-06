@@ -1,0 +1,23 @@
+<!--Utilizzare bean con la lettera maiuscola: sono service pubblici a differenza dei bean con la lettera minuscola-->
+<!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
+<beans>
+<bean id="isoContent" class="it.cnr.si.IsoContent" >
+
+    <property name="contentService" ref="ContentService" />
+    <property name="nodeService" ref="NodeService" />
+    <property name="namespaceService" ref="namespaceService"/>
+    <property name="dictionaryService" ref="dictionaryService" />
+    <property name="fileFolderService" ref="FileFolderService" />
+    <property name="searchService" ref="SearchService"/>
+</bean>
+
+<bean id="webscript.it.cnr.si.iso-content.get" class="it.cnr.si.IsoContent" parent="webscript">
+    <property name="contentService" ref="ContentService" />
+    <property name="nodeService" ref="NodeService" />
+    <property name="namespaceService" ref="namespaceService"/>
+    <property name="dictionaryService" ref="dictionaryService" />
+    <property name="fileFolderService" ref="FileFolderService" />
+    <property name="searchService" ref="SearchService"/>
+</bean>
+</beans>
+
