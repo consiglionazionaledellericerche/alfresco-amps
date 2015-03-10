@@ -35,14 +35,13 @@ import java.util.Locale;
 /**
  * Created by cirone on 19/02/2015.
  */
-@SuppressWarnings("ALL")
 public class IsoContent extends AbstractWebScript {
 
     private static final int BUFFER_SIZE = 1024;
     private static final String MIMETYPE_ISO = "application/octet-stream";
     private static final String TEMP_FILE_PREFIX = "alf";
     private static final String ISO_EXTENSION = ".iso";
-    private static final org.apache.commons.logging.Log LOGGER = LogFactory.getLog(IsoContent9660.class);
+    private static final org.apache.commons.logging.Log LOGGER = LogFactory.getLog(IsoContent.class);
     private ContentService contentService;
     private NodeService nodeService;
     private NamespaceService namespaceService;
@@ -200,8 +199,8 @@ public class IsoContent extends AbstractWebScript {
         }
 
         // creo il file ISO in dest
-        NodeRef zipNodeRef = outfile.getNodeRef();
-        ContentWriter writer = contentService.getWriter(zipNodeRef,
+        NodeRef isoNodeRef = outfile.getNodeRef();
+        ContentWriter writer = contentService.getWriter(isoNodeRef,
                                                         ContentModel.PROP_CONTENT, true);
         writer.setLocale(Locale.getDefault());
         String DEFAULT_ENCODING = "UTF-8";
@@ -218,7 +217,7 @@ public class IsoContent extends AbstractWebScript {
                 }
                 in.close();
             } else {
-                // Restituisco il noderef del file zip creato
+                // Restituisco il noderef del file iso creato
                 final JSONObject json = new JSONObject();
                 json.put("nodeRef", outfile.getNodeRef().toString());
                 os.write(json.toString(2).getBytes());
@@ -277,7 +276,8 @@ public class IsoContent extends AbstractWebScript {
                     root.addChild(appo);
                 } catch (Exception e) {
                     throw new WebScriptException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                                                 e.getLocalizedMessage() + " - " + Arrays.toString(e.getStackTrace()));                }
+                                                 e.getLocalizedMessage() + " - " + Arrays.toString(e.getStackTrace()));
+                }
             } else {
                 LOGGER.warn("Could not read : " + nodeName + "content");
             }
