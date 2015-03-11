@@ -105,8 +105,7 @@ public class IsoContent extends AbstractWebScript {
                 StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,
                                               StoreRef.STORE_REF_WORKSPACE_SPACESSTORE
                                                       .getIdentifier());
-                ResultSet rs = searchService.query(store,
-                                                   SearchService.LANGUAGE_CMIS_ALFRESCO, query);
+                ResultSet rs = searchService.query(store, SearchService.LANGUAGE_CMIS_ALFRESCO, query);
                 if (rs.getNodeRefs().size() != 0) {
                     nodesRef = rs.getNodeRefs();
                 } else {
@@ -149,7 +148,6 @@ public class IsoContent extends AbstractWebScript {
             res.setHeader("Content-Transfer-Encoding", "binary");
             res.addHeader("Content-Disposition", "attachment;filename=\""
                     + (Boolean.valueOf(noaccentStr) ? unAccent(filename) : filename) + ISO_EXTENSION + "\"");
-
             res.setHeader("Cache-Control",
                           "must-revalidate, post-check=0, pre-check=0");
             res.setHeader("Pragma", "public");
@@ -161,10 +159,16 @@ public class IsoContent extends AbstractWebScript {
             throw new WebScriptException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                                          ioExc.getLocalizedMessage() + " - " + Arrays.toString(ioExc.getStackTrace()));
         }
-
     }
 
-
+    /**
+     * @param nodesRefs: Array dei nodeRef ilc ui contenuto va inserito nei file ISO
+     * @param destinazione: noderef dello spazio di Alfresco in cui verrà salfavo il file ISO creato
+     * @param filename: nome del file ISO
+     * @param os: OutputStream della response in cui scrivere il file ISO creati
+     * @param noaccent: boleano che indica se normalizzare il nome del file iso creato
+     * @param download: boleano che indica se scrivere il file iso nel OutputStream della response
+     */
     void createIsoFile(
             List<NodeRef> nodesRefs, String destinazione,
             String filename, OutputStream os, boolean noaccent, boolean download) {
@@ -236,7 +240,7 @@ public class IsoContent extends AbstractWebScript {
 
     /**
      * @param node:     nodeRef dello spazio da aggiungere al file iso
-     * @param root:     ISO9660Directory corrispondente al root
+     * @param root:     UDFImageBuilderFile corrispondente alla cartella root il cui contenuto va aggiunto al file ISO
      * @param noaccent: boleano che indica se normalizzare il nome del file iso creato
      */
     void addToIso(
@@ -250,7 +254,7 @@ public class IsoContent extends AbstractWebScript {
             if (linkDestinationNode == null) {
                 return;
             }
-            //entry Duplicata: controllare se il collegamento non è nello stesso spazio di destinazione del link (link ciclico)
+            //entry Duplicata: controlla se il collegamento non è nello stesso spazio di destinazione del link (link ciclico)
             if (nodeService
                     .getPrimaryParent(node)
                     .getParentRef()
@@ -261,18 +265,17 @@ public class IsoContent extends AbstractWebScript {
             nodeQnameType = this.nodeService.getType(linkDestinationNode);
             node = linkDestinationNode;
         }
-        String nodeName = (String) nodeService.getProperty(node,
-                                                           ContentModel.PROP_NAME);
+        String nodeName = (String) nodeService.getProperty(node, ContentModel.PROP_NAME);
         nodeName = noaccent ? unAccent(nodeName) : nodeName;
 
-        if (this.dictionaryService.isSubClass(nodeQnameType,
-                                              ContentModel.TYPE_CONTENT)) {
-            ContentReader reader = contentService.getReader(node,
-                                                            ContentModel.PROP_CONTENT);
+        if (this.dictionaryService.isSubClass(nodeQnameType, ContentModel.TYPE_CONTENT)) {
+            ContentReader reader = contentService.getReader(node, ContentModel.PROP_CONTENT);
             if (reader != null) {
                 File appo = new File(nodeName);
+                //il reader legge il contenuto del file di alfresco e lo copia nel file passatogli
                 reader.getContent(appo);
                 try {
+                    //file aggiunto all' UDFImageBuilderFile
                     root.addChild(appo);
                 } catch (Exception e) {
                     throw new WebScriptException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
@@ -281,12 +284,9 @@ public class IsoContent extends AbstractWebScript {
             } else {
                 LOGGER.warn("Could not read : " + nodeName + "content");
             }
-        } else if (this.dictionaryService.isSubClass(nodeQnameType,
-                                                     ContentModel.TYPE_FOLDER)
-                && !this.dictionaryService.isSubClass(nodeQnameType,
-                                                      ContentModel.TYPE_SYSTEM_FOLDER)) {
-            List<ChildAssociationRef> children = nodeService
-                    .getChildAssocs(node);
+        } else if (this.dictionaryService.isSubClass(nodeQnameType, ContentModel.TYPE_FOLDER)
+                && !this.dictionaryService.isSubClass(nodeQnameType, ContentModel.TYPE_SYSTEM_FOLDER)) {
+            List<ChildAssociationRef> children = nodeService.getChildAssocs(node);
             UDFImageBuilderFile child = new UDFImageBuilderFile(nodeName);
             try {
                 root.addChild(child);
@@ -294,15 +294,15 @@ public class IsoContent extends AbstractWebScript {
                 throw new WebScriptException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                                              e.getLocalizedMessage() + " - " + Arrays.toString(e.getStackTrace()));
             }
-
+            // richiamo addIso sui children della cartella esplorata
             for (ChildAssociationRef childAssoc : children) {
                 NodeRef childNodeRef = childAssoc.getChildRef();
                 addToIso(childNodeRef, child, noaccent);
             }
         } else {
-            LOGGER.info("Tipo di contenuto non gestibile: "
-                                + nodeQnameType.getPrefixedQName(this.namespaceService)
-                                + ", filename: " + nodeName);
+            LOGGER.error("Tipo di contenuto non gestibile: "
+                                 + nodeQnameType.getPrefixedQName(this.namespaceService)
+                                 + ", filename: " + nodeName);
         }
     }
 }
