@@ -8,8 +8,8 @@
   <packaging>pom</packaging>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <alfresco.version>4.1.5</alfresco.version>
-    <alfresco.groupId>org.alfresco.enterprise</alfresco.groupId>
+    <alfresco.version>4.2.3.14</alfresco.version>
+    <alfresco.groupId>org.alfresco</alfresco.groupId>
     <java.version>1.6</java.version>
   </properties>
 
