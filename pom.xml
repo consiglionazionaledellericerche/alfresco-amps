@@ -15,7 +15,6 @@
 
   <modules>
    <module>alfresco-amp</module>
-   <module>alfresco-app</module>
   </modules>
 
   <repositories>
