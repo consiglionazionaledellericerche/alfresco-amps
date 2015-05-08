@@ -23,4 +23,12 @@
    <module>alfresco-amp</module>
   </modules>
 
+
+  <scm>
+    <connection>scm:git:ssh://git@git.si.cnr.it/documentale/alfresco-amps.git</connection>
+    <developerConnection>scm:git:ssh://git@git.si.cnr.it/documentale/alfresco-amps.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
+
 </project>
