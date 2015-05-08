@@ -1,112 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <artifactId>archetype</artifactId>
+    <groupId>it.cnr.si</groupId>
+    <version>0.22</version>
+  </parent>
+
   <artifactId>alfresco-parent</artifactId>
-  <groupId>it.cnr.si</groupId>
-  <version>0.1-SNAPSHOT</version>
+  <groupId>it.cnr.si.alfresco</groupId>
+  <version>2.8-SNAPSHOT</version>
   <name>Alfresco - Parent</name>
   <packaging>pom</packaging>
+
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <alfresco.version>4.2.3.14</alfresco.version>
-    <alfresco.groupId>org.alfresco</alfresco.groupId>
-    <java.version>1.6</java.version>
+    <alfresco.version>4.2.4</alfresco.version>
+    <maven.amp.plugin.version>3.0.4</maven.amp.plugin.version>
   </properties>
 
   <modules>
    <module>alfresco-amp</module>
   </modules>
 
-  <repositories>
-    <repository>
-      <id>cnr</id>
-      <name>cnr public</name>
-      <url>${nexus.url}/content/groups/public</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>cnr-snapshots</id>
-      <name>cnr public snapshots</name>
-      <url>${nexus.url}/content/groups/public-snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>cnr</id>
-      <name>cnr public</name>
-      <url>${nexus.url}/content/groups/public</url>
-    </pluginRepository>
-  </pluginRepositories>
-
-  <dependencies>
-    <dependency>
-      <groupId>${alfresco.groupId}</groupId>
-      <artifactId>alfresco</artifactId>
-      <version>${alfresco.version}</version>
-      <type>pom</type>
-      <!-- <classifier>community</classifier>-->
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <version>2.7.1</version>
-        <configuration>
-          <targetJdk>${java.version}</targetJdk>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <!--
-              <goal>pmd</goal>
-              <goal>check</goal>
-              <goal>cpd</goal>
-            -->
-            <!-- TODO: cpd-check -->
-          </goals>
-        </execution>
-      </executions>
-    </plugin>
-  </plugins>
-</build>
-
-<distributionManagement>
-  <!-- Publish the versioned releases here -->
-  <repository>
-    <id>buildandtest</id>
-    <name>nexus</name>
-    <url>${nexus.url}/content/repositories/releases</url>
-  </repository>
-
-  <!-- Publish the versioned releases here -->
-  <snapshotRepository>
-    <id>buildandtest</id>
-    <name>nexus</name>
-    <url>${nexus.url}/content/repositories/snapshots</url>
-  </snapshotRepository>
-</distributionManagement>
 </project>

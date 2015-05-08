@@ -1,1 +1,0 @@
-Model XML files in this class path folder will be automatically (re)registered as a Data Dictionary model when a Dynamic Extension is deployed.

@@ -1,8 +1,0 @@
-<webscript>
-  <shortname>End Workflow Instance</shortname>
-  <description>Ends an instance removing tasks from mytasks and completed-tasks information</description>
-  <url>/process/end-instance?p={instanceId}</url>
-  <url>/process/end-instance.json?p={instanceId}</url>
-  <format default="json"/>
-  <authentication>admin</authentication>
-</webscript>

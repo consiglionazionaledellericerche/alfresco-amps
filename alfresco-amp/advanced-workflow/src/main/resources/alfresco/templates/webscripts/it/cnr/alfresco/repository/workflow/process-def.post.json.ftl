@@ -1,4 +1,0 @@
-{
-   "data": 
-   	    "deploy" : "${success}"
-}

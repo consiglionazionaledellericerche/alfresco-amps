@@ -2,18 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>it.cnr.si</groupId>
+
   <artifactId>zip-content</artifactId>
-  <version>1.2</version>
   <name>Alfresco - AMP - zip-content</name>
   <packaging>amp</packaging>
-  <!-- <type>amp</type>-->
   <description>Alfresco zip-content: bean che zippa cartelle e documenti</description>
-  
+
   <parent>
     <artifactId>alfresco-amp-parent</artifactId>
-    <groupId>it.cnr.si.amp</groupId>
-    <version>0.1-SNAPSHOT</version>
+    <groupId>it.cnr.si.alfresco</groupId>
+    <version>2.8-SNAPSHOT</version>
   </parent>
 </project>
 
