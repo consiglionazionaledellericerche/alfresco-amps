@@ -17,3 +17,10 @@
 	<#else>
 		${outcome?string}
 	</#if>
+
+
+## Firma PDF
+
+	var nodeRef = 'workspace://SpacesStore/e7712707-66fe-4bb6-84ea-59ba35d7667e';	
+
+	model.a = arubaSign.pdfsignatureV2("utentefr", "utentefr123", "6629961578", nodeRef);

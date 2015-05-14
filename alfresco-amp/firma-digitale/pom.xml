@@ -20,7 +20,7 @@
     <dependency>
       <groupId>it.cnr.commons</groupId>
       <artifactId>firmadigitale</artifactId>
-      <version>0.2.5</version>
+      <version>0.4</version>
     </dependency>
   </dependencies>
 </project>

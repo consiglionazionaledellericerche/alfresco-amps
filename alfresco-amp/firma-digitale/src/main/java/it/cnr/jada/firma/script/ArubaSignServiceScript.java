@@ -77,4 +77,38 @@ public class ArubaSignServiceScript extends BaseScopableProcessorExtension imple
         otp, bytes);
   }
 
+
+    public void pdfsignatureV2(String username, String password, String otp,
+                            String nodeRef) throws ArubaSignServiceException,
+            IOException {
+
+        NodeRef node = new NodeRef(nodeRef);
+
+        LOGGER.debug("pdfsignatureV2 " + nodeRef);
+
+        ContentReader reader = contentService.getReader(node,
+                ContentModel.PROP_CONTENT);
+
+        byte[] bytes;
+
+        if (reader != null) {
+            bytes = IOUtils.toByteArray(reader.getContentInputStream());
+        } else {
+            bytes = new byte[0];
+        }
+
+        LOGGER.debug(bytes.length + " bytes");
+
+        byte[] responseBytes = arubaSignServiceClient.pdfsignatureV2(username, password,
+                otp, bytes);
+
+        ContentWriter w = contentService.getWriter(new NodeRef(nodeRef),
+                ContentModel.PROP_CONTENT, true);
+        ByteArrayInputStream is = new ByteArrayInputStream(responseBytes);
+        w.putContent(is);
+
+    }
+
+
+
 }
