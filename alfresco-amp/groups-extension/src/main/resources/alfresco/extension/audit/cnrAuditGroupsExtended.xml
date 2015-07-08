@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Audit xmlns="http://www.alfresco.org/repo/audit/model/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.alfresco.org/repo/audit/model/3.2 alfresco-audit-3.2.xsd">
+	<DataExtractors>
+		<DataExtractor name="simpleValue" class="org.alfresco.repo.audit.extractor.SimpleValueDataExtractor"/>
+	</DataExtractors>
+	<DataGenerators>
+		<DataGenerator name="transactionId" class="org.alfresco.repo.audit.generator.TransactionIdDataGenerator"/>
+	</DataGenerators>
+
+	<PathMappings>
+		<PathMap source="/cnrAuditGroups" target="/cnrAuditGroupsExtended"/>
+		<PathMap source="/repository" target="/cnrAuditGroupsExtended"/>
+		<PathMap source="/alfresco-api" target="/cnrAuditGroupsExtended"/>
+	</PathMappings>
+	<Application name="cnrAuditGroupsExtended" key="cnrAuditGroupsExtended">
+		<AuditPath key="post">
+			<AuditPath key="GroupAuthorityService">
+
+				<AuditPath key="createAuthority">
+					<RecordValue key="no-error" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/createAuthority/no-error" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/createAuthority/no-error"/>
+					<RecordValue key="result" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/createAuthority/result" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/createAuthority/result"/>
+					<AuditPath key="args">
+						<RecordValue key="shortName" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/createAuthority/args/shortName" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/createAuthority/args/shortName"/>
+						<RecordValue key="authorityDisplayName" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/createAuthority/args/authorityDisplayName" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/createAuthority/args/authorityDisplayName"/>
+						<RecordValue key="authorityParentRef" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/createAuthority/args/authorityParentRef" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/createAuthority/args/authorityParentRef"/>
+					</AuditPath>
+				</AuditPath>
+				<AuditPath key="addAuthority">
+					<RecordValue key="no-error" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/addAuthority/no-error" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/addAuthority/no-error"/>
+					<AuditPath key="args">
+						<RecordValue key="childName" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/addAuthority/args/childName" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/addAuthority/args/childName"/>
+						<RecordValue key="parentName" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/addAuthority/args/parentName" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/addAuthority/args/parentName"/>
+					</AuditPath>
+				</AuditPath>
+				<AuditPath key="removeAuthority">
+					<RecordValue key="no-error" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/removeAuthority/no-error" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/removeAuthority/no-error"/>
+					<AuditPath key="args">
+						<RecordValue key="childName" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/removeAuthority/args/childName" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/removeAuthority/args/childName"/>
+						<RecordValue key="parentName" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/removeAuthority/args/parentName" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/removeAuthority/args/parentName"/>
+					</AuditPath>
+				</AuditPath>
+				<AuditPath key="deleteAuthority">
+					<RecordValue key="no-error" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/deleteAuthority/no-error" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/deleteAuthority/no-error"/>
+					<AuditPath key="args">
+						<RecordValue key="authorityNoderRef" dataExtractor="simpleValue" dataSource="/cnrAuditGroupsExtended/post/GroupAuthorityService/deleteAuthority/args/authorityNoderRef" dataTrigger="/cnrAuditGroupsExtended/post/GroupAuthorityService/deleteAuthority/args/authorityNoderRef"/>
+					</AuditPath>
+				</AuditPath>
+
+			</AuditPath>
+		</AuditPath>
+
+	</Application>
+</Audit>
