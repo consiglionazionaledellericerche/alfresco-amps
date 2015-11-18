@@ -1,0 +1,8 @@
+
+<webscript>
+  <shortname>zipContent</shortname>
+  <description>Zip content</description>
+  <url>/zipper/zipContent?query={query}&amp;nodes={parent}&amp;destination={destination}&amp;filename={name}&amp;noaccent={noaccent}&amp;download={download}&amp;getParent={getParent}</url>
+  <format default="json"/>
+  <authentication>user</authentication>
+</webscript>

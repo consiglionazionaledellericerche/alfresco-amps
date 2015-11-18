@@ -1,8 +1,0 @@
-
-<webscript>
-  <shortname>isoContent</shortname>
-  <description>ISO content</description>
-  <url>/iso/isoContent?query={query}&amp;nodes={parent}&amp;destination={destination}&amp;filename={name}&amp;noaccent={noaccent}&amp;download={download}</url>
-  <format default="json"/>
-  <authentication>user</authentication>
-</webscript>
