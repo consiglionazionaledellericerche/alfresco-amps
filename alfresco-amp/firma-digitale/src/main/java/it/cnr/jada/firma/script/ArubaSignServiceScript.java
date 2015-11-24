@@ -202,7 +202,7 @@ ApplicationContextAware {
 		}
 
 		List<byte[]> responseBytes = arubaSignServiceClient.pdfsignatureV2Multiple(username, password,
-				otp, bytesArray);
+				otp, bytesArray, apparence);
 		for (int i = 0; i < responseBytes.size(); i++) {
 			ContentWriter w = contentService.getWriter(new NodeRef(nodeRefs[i]),
 					ContentModel.PROP_CONTENT, true);
