@@ -153,13 +153,13 @@ ApplicationContextAware {
 	}
 	
 	public void pdfsignatureV2Multiple(String username, String password, String otp,
-			List<String> nodeRefs) throws ArubaSignServiceException,
+			String[] nodeRefs) throws ArubaSignServiceException,
 			IOException {
 		pdfsignatureV2Multiple(username, password, otp, nodeRefs, null);
 	}
 
 	public void pdfsignatureV2Multiple(String username, String password, String otp,
-			List<String> nodeRefs, String image, int leftx, int lefty, String location, 
+			String[] nodeRefs, String image, int leftx, int lefty, String location, 
 			int page, String reason, int rightx, int righty, String testo) throws ArubaSignServiceException,
 			IOException {
 		PdfSignApparence apparence = new PdfSignApparence();
@@ -177,7 +177,7 @@ ApplicationContextAware {
 	}
 	
 	private void pdfsignatureV2Multiple(String username, String password, String otp,
-			List<String> nodeRefs, PdfSignApparence apparence) throws ArubaSignServiceException,
+			String[] nodeRefs, PdfSignApparence apparence) throws ArubaSignServiceException,
 			IOException {
 		List<byte[]> bytesArray = new ArrayList<byte[]>();
 		
@@ -204,7 +204,7 @@ ApplicationContextAware {
 		List<byte[]> responseBytes = arubaSignServiceClient.pdfsignatureV2Multiple(username, password,
 				otp, bytesArray);
 		for (int i = 0; i < responseBytes.size(); i++) {
-			ContentWriter w = contentService.getWriter(new NodeRef(nodeRefs.get(i)),
+			ContentWriter w = contentService.getWriter(new NodeRef(nodeRefs[i]),
 					ContentModel.PROP_CONTENT, true);
 			ByteArrayInputStream is = new ByteArrayInputStream(responseBytes.get(i));
 			w.putContent(is);			
