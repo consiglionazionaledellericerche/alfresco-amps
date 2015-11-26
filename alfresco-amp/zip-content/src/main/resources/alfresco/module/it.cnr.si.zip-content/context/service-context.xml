@@ -9,7 +9,7 @@
       <property name="searchService" ref="SearchService"/>
 	</bean>
 
-	 <bean id="webscript.it.cnr.si.zip-content.get" class="it.cnr.si.ZipContent" parent="webscript">
+      <bean id="webscript.it.cnr.si.zip-content.post" class="it.cnr.si.ZipContent" parent="webscript">
       <property name="contentService" ref="ContentService" />
       <property name="nodeService" ref="NodeService" />
       <property name="namespaceService" ref="namespaceService"/>

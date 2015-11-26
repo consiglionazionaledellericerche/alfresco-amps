@@ -11,11 +11,13 @@ import org.alfresco.service.cmr.model.FileFolderService;
 import org.alfresco.service.cmr.model.FileInfo;
 import org.alfresco.service.cmr.repository.*;
 import org.alfresco.service.cmr.search.ResultSet;
+import org.alfresco.service.cmr.search.ResultSetRow;
 import org.alfresco.service.cmr.search.SearchService;
 import org.alfresco.service.namespace.NamespaceService;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.util.TempFileProvider;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.extensions.webscripts.AbstractWebScript;
@@ -84,41 +86,72 @@ public class IsoContent extends AbstractWebScript {
     }
 
     @Override
-    public void execute(WebScriptRequest req, WebScriptResponse res)
-            throws WebScriptException {
-        String[] nodes = req.getParameterValues("nodes");
-        List<NodeRef> nodesRef;
-        String query = req.getParameter("query");
+    public void execute(WebScriptRequest req, WebScriptResponse res) throws WebScriptException {
+        List<NodeRef> nodesRef = new ArrayList<>();;
+//		in caso di parametro non impostato nella request getParent avrà valore false
+        boolean getParent = Boolean.parseBoolean(req.getParameter("getParent"));
+        List<ChildAssociationRef> parentAssociation;
 
-        if (nodes != null && query == null) {
-            if (nodes.length != 0) {
-                nodesRef = new ArrayList<NodeRef>();
-                for (String node : nodes) {
-                    nodesRef.add(new NodeRef(node));
-                }
-            } else {
-                throw new WebScriptException(
-                        HttpServletResponse.SC_BAD_REQUEST, "L'array nodes è vuoto");
-            }
-        } else if (query != null && nodes == null) {
-            if (query.length() != 0) {
-                StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,
-                                              StoreRef.STORE_REF_WORKSPACE_SPACESSTORE
-                                                      .getIdentifier());
-                ResultSet rs = searchService.query(store, SearchService.LANGUAGE_CMIS_ALFRESCO, query);
-                if (rs.getNodeRefs().size() != 0) {
-                    nodesRef = rs.getNodeRefs();
+        try {
+//			se il content della request NON è vuoto contiene il JSONArray dei nodes da zippare
+            if (! req.getContent().getContent().isEmpty()) {
+                org.json.JSONArray nodes = (JSONArray) ((JSONObject) req.parseContent()).get("nodes");
+                if (nodes.length() != 0) {
+                    for (int i = 0; i < nodes.length(); i++) {
+                        NodeRef nodeRefToAdd = null;
+                        nodeRefToAdd = new NodeRef((String) nodes.get(i));
+                        if(getParent){
+                            parentAssociation = nodeService.getParentAssocs(nodeRefToAdd);
+                            NodeRef parent = parentAssociation.get(0).getParentRef();
+                            nodesRef.add(parent);
+                        } else{
+                            nodesRef.add(nodeRefToAdd);
+                        }
+                    }
                 } else {
                     throw new WebScriptException(
-                            HttpServletResponse.SC_BAD_REQUEST, "La query ha result set vuoto");
+                            HttpServletResponse.SC_BAD_REQUEST, "L'array nodes è vuoto");
+                }
+
+            } else if (req.getContent().getContent().isEmpty()) {
+                //se il content della request è vuoto la request contiene il parametro query
+                String query = req.getParameter("query");
+                if (query.length() != 0) {
+                    StoreRef store = new StoreRef(StoreRef.PROTOCOL_WORKSPACE,
+                                                  StoreRef.STORE_REF_WORKSPACE_SPACESSTORE
+                                                          .getIdentifier());
+                    ResultSet rs = searchService.query(store,
+                                                       SearchService.LANGUAGE_CMIS_ALFRESCO, query);
+                    if(rs.getNodeRefs().size() != 0) {
+                        if(getParent){
+                            for (ResultSetRow child : rs) {
+                                parentAssociation = nodeService.getParentAssocs(child.getNodeRef());
+                                nodesRef.add(parentAssociation.get(0).getParentRef());
+                            }
+                        } else {
+                            nodesRef = rs.getNodeRefs();
+                        }
+                    } else {
+                        throw new WebScriptException(
+                                HttpServletResponse.SC_BAD_REQUEST, "La query ha result set vuoto");
+                    }
+                } else {
+                    throw new WebScriptException(
+                            HttpServletResponse.SC_BAD_REQUEST, "Il campo query è valorizzato con una stringa vuota");
                 }
             } else {
-                throw new WebScriptException(
-                        HttpServletResponse.SC_BAD_REQUEST, "Il campo query è valorizzato con una stringa vuota");
+                throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
+                                             "Occorre specificare il parametro query oppure il parametro nodes");
             }
-        } else {
+        } catch (JSONException e) {
+            e.printStackTrace();
+            LOGGER.error(e.getMessage());
             throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
-                                         "Occorre specificare il parametro query oppure il parametro nodes");
+                                         "Errore nel parsing del json nel body della request contenente i nodes");
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.error(e.getMessage());
+            throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST, "Errore nella lettura del content della request");
         }
 
         String filename = Utf8.decode(req.getParameter("filename").getBytes());

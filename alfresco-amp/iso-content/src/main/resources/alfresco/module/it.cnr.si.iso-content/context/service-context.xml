@@ -11,7 +11,7 @@
         <property name="searchService" ref="SearchService"/>
     </bean>
 
-    <bean id="webscript.it.cnr.si.iso-content.get" class="it.cnr.si.IsoContent" parent="webscript">
+    <bean id="webscript.it.cnr.si.iso-content.post" class="it.cnr.si.IsoContent" parent="webscript">
         <property name="contentService" ref="ContentService" />
         <property name="nodeService" ref="NodeService" />
         <property name="namespaceService" ref="namespaceService"/>
