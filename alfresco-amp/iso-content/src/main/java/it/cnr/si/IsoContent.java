@@ -209,6 +209,15 @@ public class IsoContent extends AbstractWebScript {
         QName contentQName = QName
                 .createQName("{http://www.alfresco.org/model/content/1.0}content");
         NodeRef destNodeRef = new NodeRef(destinazione);
+
+        NodeRef oldIso = nodeService.getChildByName(destNodeRef,
+                                                    ContentModel.ASSOC_CONTAINS, filename + ISO_EXTENSION);
+
+        if (oldIso != null) {
+            // cancello il vecchio file zip prima di sostituirlo con
+            // quello che sto creando
+            nodeService.deleteNode(oldIso);
+        }
         // creo il file ISO in dest
         FileInfo outfile = fileFolderService.create(destNodeRef, filename
                 + ".iso", contentQName);
