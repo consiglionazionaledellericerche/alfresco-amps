@@ -9,7 +9,7 @@
   <parent>
       <groupId>it.cnr.si.alfresco</groupId>
       <artifactId>alfresco-parent</artifactId>
-      <version>2.15-SNAPSHOT</version>
+      <version>2.15</version>
   </parent>
 
   <dependencies>
