@@ -118,7 +118,7 @@ public class ZipContent extends AbstractWebScript {
 							HttpServletResponse.SC_BAD_REQUEST, "L'array nodes è vuoto");
 				}
 
-			} else if (req.getContent().getContent().isEmpty()) {
+			} else {
 				//se il content della request è vuoto la request contiene il parametro query
 				String query = req.getParameter("query");
 				if (query.length() != 0) {
@@ -144,9 +144,6 @@ public class ZipContent extends AbstractWebScript {
 					throw new WebScriptException(
 							HttpServletResponse.SC_BAD_REQUEST, "Il campo query è valorizzato con una stringa vuota");
 				}
-			} else {
-				throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
-											 "Occorre specificare il parametro query oppure il parametro nodes");
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
