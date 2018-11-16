@@ -26,10 +26,7 @@ import org.springframework.security.crypto.codec.Utf8;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.zip.*;
 
 /**
@@ -182,6 +179,8 @@ public class ZipContent extends AbstractWebScript {
 		if (compress == null)
 			compress = true;
 
+		String typeContent = req.getParameter("typeContent");
+
 		try {
 			res.setContentType(MIMETYPE_ZIP);
 			res.setHeader("Content-Transfer-Encoding", "binary");
@@ -193,7 +192,7 @@ public class ZipContent extends AbstractWebScript {
 			res.setHeader("Pragma", "public");
 			res.setHeader("Expires", "0");
 			createZipFile(nodesRef, destinazione, filename,
-						  res.getOutputStream(), new Boolean(noaccentStr), download, compress);
+						  res.getOutputStream(), new Boolean(noaccentStr), download, compress, typeContent);
 		} catch (Exception e) {
 			throw new WebScriptException(HttpServletResponse.SC_BAD_REQUEST,
 										 e.getLocalizedMessage() + "--" + e.getMessage());
@@ -202,7 +201,7 @@ public class ZipContent extends AbstractWebScript {
 
 
 	public void createZipFile(List<NodeRef> nodesRef, String destinazione,
-							  String filename, OutputStream os, boolean noaccent, boolean download, boolean compress)
+							  String filename, OutputStream os, boolean noaccent, boolean download, boolean compress, String typeContent)
 			throws Exception {
 		File zipAppo = null;
 		ZipOutputStream out = null;
@@ -225,7 +224,7 @@ public class ZipContent extends AbstractWebScript {
 
 			try {
 				for (int i = 0; i < nodesRef.size(); i++) {
-					addToZip(nodesRef.get(i), out, noaccent, "");
+					addToZip(nodesRef.get(i), out, noaccent, "", typeContent);
 				}
 			} catch (Exception e) {
 				LOGGER.debug(e);
@@ -292,7 +291,7 @@ public class ZipContent extends AbstractWebScript {
 	 * @throws IOException
 	 */
 	public void addToZip(NodeRef node, ZipOutputStream out, boolean noaccent,
-						 String path) throws IOException {
+						 String path, String typeContent) throws IOException {
 		QName nodeQnameType = this.nodeService.getType(node);
 		// Special case : links
 		if (this.dictionaryService.isSubClass(nodeQnameType,
@@ -320,7 +319,7 @@ public class ZipContent extends AbstractWebScript {
 			NodeRef linkDestinationNode = (NodeRef) nodeService.getProperty(
 					node, ContentModel.PROP_LINK_DESTINATION);
 			if (linkDestinationNode != null) {
-				addToZip(linkDestinationNode, out, noaccent, path);
+				addToZip(linkDestinationNode, out, noaccent, path, typeContent);
 			}
 		}
 		String nodeName = (String) nodeService.getProperty(node,
@@ -331,7 +330,14 @@ public class ZipContent extends AbstractWebScript {
 											  ContentModel.TYPE_CONTENT)) {
 			ContentReader reader = contentService.getReader(node,
 															ContentModel.PROP_CONTENT);
-			if (reader != null) {
+			boolean addToZip = true;
+			if (typeContent != null && typeContent.length() > 0) {
+				final List<String> types = Arrays.asList(typeContent.split(";"));
+				if (!types.contains(nodeQnameType.getPrefixString()))
+					addToZip = false;
+			}
+
+			if (reader != null && addToZip) {
 				InputStream is = reader.getContentInputStream();
 				String filename = path.isEmpty() ? nodeName : path + '/'
 						+ nodeName;
@@ -370,7 +376,7 @@ public class ZipContent extends AbstractWebScript {
 				for (ChildAssociationRef childAssoc : children) {
 					NodeRef childNodeRef = childAssoc.getChildRef();
 					addToZip(childNodeRef, out, noaccent,
-							 path.isEmpty() ? nodeName : path + '/' + nodeName);
+							 path.isEmpty() ? nodeName : path + '/' + nodeName, typeContent);
 				}
 			}
 		} else {
