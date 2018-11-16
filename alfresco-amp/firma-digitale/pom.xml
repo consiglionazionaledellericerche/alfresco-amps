@@ -15,7 +15,13 @@
     <dependency>
       <groupId>it.cnr.commons</groupId>
       <artifactId>firmadigitale</artifactId>
-      <version>1.1</version>
+      <version>1.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>it.cnr.jada-libs</groupId>
+          <artifactId>capi-full-30-all14</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 </project>
