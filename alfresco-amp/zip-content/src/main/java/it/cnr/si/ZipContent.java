@@ -333,7 +333,7 @@ public class ZipContent extends AbstractWebScript {
 			boolean addToZip = true;
 			if (typeContent != null && typeContent.length() > 0) {
 				final List<String> types = Arrays.asList(typeContent.split(";"));
-				if (!types.contains(nodeQnameType.getPrefixString()))
+				if (!types.contains(dictionaryService.getType(nodeQnameType).getName().toPrefixString()))
 					addToZip = false;
 			}
 
