@@ -42,12 +42,13 @@ public interface GroupAuthorityService{
     /**
      * Create an authority.
      * 
-     * @param type -
+     * @param authorityParentRef -
      *            the type of the authority
      * @param shortName -
      *            the short name of the authority to create
      *            this will also be set as the default display name for the authority 
-     * 
+     * @param authorityDisplayName The display name of authority
+	 *
      * @return the name of the authority (this will be the prefix, if any
      *         associated with the type appended with the short name)
      */

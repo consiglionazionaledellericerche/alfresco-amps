@@ -50,7 +50,8 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
 
 	/**
      * AddAuthority as a child of group parent
-     * @param fullAuthorityName the full name of the authority to add to this group.
+     * @param parentName the parent name of group.
+     * @param childName the child name to add
      */
     public void addAuthority(String parentName, String childName)
     {
@@ -63,7 +64,8 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
 
     /**
      * RemoveAuthority as a child of group parent
-     * @param fullAuthorityName the full name of the authority to add to this group.
+     * @param parentName the parent name of group.
+     * @param childName the child name to add
      */
     public void removeAuthority(String parentName, String childName)
     {
@@ -77,7 +79,9 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     /**
      * Create a new root level group with the specified unique name
      *
-     * @param groupName     The unique group name to create - NOTE: do not prefix with "GROUP_"
+     * @param groupName The unique group name to create - NOTE: do not prefix with "GROUP_"
+     * @param  groupDisplayName The display name of group
+     * @param zones the list of zones
      *
      * @return the group reference if successful or null if failed
      */
@@ -91,6 +95,8 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
      *
      * @param parentGroup   The parent group node - can be null for a root level group
      * @param groupName     The unique group name to create - NOTE: do not prefix with "GROUP_"
+     * @param  groupDisplayName The display name of group
+     * @param zones the list of zones
      *
      * @return the group reference if successful or null if failed
      */
@@ -195,8 +201,8 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     }
     
     /**
-     * 
-     * @param zones
+     *
+     * @param zones the list of zones
      * @return
      */
     public AuthorityPermission[] getChildAuthoritiesInZones(String zones){
@@ -302,6 +308,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
     }
     /**
      * Get all the children of this group, regardless of type
+     *
      */
     public AuthorityPermission[] getChildAuthorities(String groupName, String authorityType, ScriptPagingDetails paging, String sortBy, String zones)
     {
