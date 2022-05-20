@@ -13,9 +13,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>it.cnr.commons</groupId>
+      <groupId>it.cnr.si</groupId>
       <artifactId>firmadigitale</artifactId>
-      <version>1.2</version>
+      <version>1.17</version>
       <exclusions>
         <exclusion>
           <groupId>it.cnr.jada-libs</groupId>
