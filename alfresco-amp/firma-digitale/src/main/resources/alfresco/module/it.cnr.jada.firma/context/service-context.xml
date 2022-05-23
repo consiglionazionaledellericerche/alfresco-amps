@@ -9,6 +9,6 @@
         <property name="contentService" ref="ContentService" />
     </bean> 
 
-	<bean id="arubaSignServiceClient" class="it.cnr.jada.firma.arss.ArubaSignServiceClient">
+	<bean id="arubaSignServiceClient" class="it.cnr.si.firmadigitale.firma.arss.ArubaSignServiceClient">
 	  <property name="props" ref="global-properties"></property></bean>    
 	</beans>
