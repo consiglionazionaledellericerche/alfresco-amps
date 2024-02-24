@@ -4,7 +4,7 @@
 
   <artifactId>establish-linkages</artifactId>
   <name>Alfresco - AMP - establish-linkages</name>
-  <packaging>amp</packaging>
+  <packaging>jar</packaging>
   <!-- <type>amp</type>-->
   <description>Alfresco establish-linkages: bean che crea un link in alfresco</description>
 

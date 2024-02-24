@@ -4,7 +4,7 @@
 
     <artifactId>iso-content</artifactId>
     <name>Alfresco - AMP - iso-content</name>
-    <packaging>amp</packaging>
+    <packaging>jar</packaging>
     <description>
         Alfresco iso-content: bean che crea un file .iso contenente cartelle e documenti di Alfresco
     </description>

@@ -4,7 +4,7 @@
 
   <artifactId>java-script-extension</artifactId>
   <name>Alfresco - AMP - JavaScript Extension</name>
-  <packaging>amp</packaging>
+  <packaging>jar</packaging>
   <description>Alfresco extension</description>
 
   <properties>

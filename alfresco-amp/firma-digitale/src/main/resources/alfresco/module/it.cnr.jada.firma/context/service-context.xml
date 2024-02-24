@@ -1,6 +1,5 @@
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 <beans>
-
     <bean id="arubaSignServiceScript" parent="baseJavaScriptExtension" class="it.cnr.jada.firma.script.ArubaSignServiceScript">
         <property name="extensionName">
             <value>arubaSign</value>
@@ -10,5 +9,6 @@
     </bean> 
 
 	<bean id="arubaSignServiceClient" class="it.cnr.si.firmadigitale.firma.arss.ArubaSignServiceClient">
-	  <property name="props" ref="global-properties"></property></bean>    
-	</beans>
+	  <property name="props" ref="global-properties"></property>
+    </bean>
+</beans>

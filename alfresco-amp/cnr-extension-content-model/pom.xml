@@ -4,7 +4,7 @@
 
   <artifactId>cnr-extension-content-model</artifactId>
   <name>Alfresco - AMP - CNR extension content model</name>
-  <packaging>amp</packaging>
+  <packaging>jar</packaging>
   <description>Alfresco extension</description>
 
   <parent>

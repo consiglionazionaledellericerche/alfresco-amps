@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>firma</artifactId>
-  <packaging>amp</packaging>
+  <packaging>jar</packaging>
   <name>Alfresco - AMP - firma</name>
 
   <parent>

@@ -4,7 +4,7 @@
 
   <artifactId>zip-content</artifactId>
   <name>Alfresco - AMP - zip-content</name>
-  <packaging>amp</packaging>
+  <packaging>jar</packaging>
   <description>Alfresco zip-content: bean che zippa cartelle e documenti</description>
 
   <parent>

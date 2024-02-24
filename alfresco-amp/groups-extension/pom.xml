@@ -4,7 +4,7 @@
 
   <artifactId>groups-extension</artifactId>
   <name>Alfresco - AMP - Groups Extension</name>
-  <packaging>amp</packaging>
+  <packaging>jar</packaging>
   <description>Alfresco extension</description>
 
   <parent>

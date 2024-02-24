@@ -4,7 +4,7 @@
 
   <artifactId>jconon-amp</artifactId>
   <name>Alfresco - AMP - JCONON extension</name>
-  <packaging>amp</packaging>
+  <packaging>jar</packaging>
   <description>Alfresco extension</description>
 
   <parent>

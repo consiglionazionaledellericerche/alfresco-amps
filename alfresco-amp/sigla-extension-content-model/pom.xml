@@ -4,7 +4,7 @@
 
   <artifactId>sigla-extension-content-model</artifactId>
   <name>Alfresco - AMP - SIGLA extension content model</name>
-  <packaging>amp</packaging>
+  <packaging>jar</packaging>
   <description>Alfresco extension</description>
 
   <parent>
