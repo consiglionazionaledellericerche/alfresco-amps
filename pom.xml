@@ -10,7 +10,7 @@
 
   <artifactId>alfresco-parent</artifactId>
   <groupId>it.cnr.si.alfresco</groupId>
-  <version>2.26-SNAPSHOT</version>
+  <version>3.0</version>
   <name>Alfresco - Parent</name>
   <packaging>pom</packaging>
 
@@ -40,7 +40,7 @@
     <acs.debug.port>8888</acs.debug.port>
     <postgres.port>5555</postgres.port>
     <!-- This parameter is only required for those cases in which ACS is not exposed in http://localhost:8080/alfresco (i.e. Windows Docker) -->
-    <test.acs.endpoint.path></test.acs.endpoint.path>
+    <test.acs.endpoint.path />
 
   </properties>
 
@@ -52,7 +52,7 @@
   <scm>
     <connection>scm:git:ssh://git@git.si.cnr.it/documentale/alfresco-amps.git</connection>
     <developerConnection>scm:git:ssh://git@git.si.cnr.it/documentale/alfresco-amps.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>3.0</tag>
   </scm>
 
 
