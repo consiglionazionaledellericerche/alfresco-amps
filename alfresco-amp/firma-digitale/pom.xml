@@ -15,11 +15,15 @@
     <dependency>
       <groupId>it.cnr.si</groupId>
       <artifactId>firmadigitale</artifactId>
-      <version>1.17</version>
+      <version>1.18</version>
       <exclusions>
         <exclusion>
           <groupId>it.cnr.jada-libs</groupId>
           <artifactId>capi-full-30-all14</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
