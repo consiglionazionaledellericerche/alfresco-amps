@@ -10,7 +10,7 @@
 
   <artifactId>alfresco-parent</artifactId>
   <groupId>it.cnr.si.alfresco</groupId>
-  <version>3.1</version>
+  <version>3.2-SNAPSHOT</version>
   <name>Alfresco - Parent</name>
   <packaging>pom</packaging>
 
@@ -52,7 +52,7 @@
   <scm>
     <connection>scm:git:ssh://git@git.si.cnr.it/documentale/alfresco-amps.git</connection>
     <developerConnection>scm:git:ssh://git@git.si.cnr.it/documentale/alfresco-amps.git</developerConnection>
-    <tag>3.1</tag>
+    <tag>HEAD</tag>
   </scm>
 
 
