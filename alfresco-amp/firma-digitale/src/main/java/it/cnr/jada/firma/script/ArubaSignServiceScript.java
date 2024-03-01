@@ -16,15 +16,15 @@ import org.alfresco.service.cmr.repository.ContentService;
 import org.alfresco.service.cmr.repository.ContentWriter;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import java.util.logging.Logger;
 
 public class ArubaSignServiceScript extends BaseScopableProcessorExtension implements
 ApplicationContextAware {
 
 	private static final Logger LOGGER = Logger
-			.getLogger(ArubaSignServiceScript.class);
+			.getLogger(ArubaSignServiceScript.class.getName());
 
 	private ContentService contentService;
 
@@ -61,7 +61,7 @@ ApplicationContextAware {
 
 		NodeRef node = new NodeRef(nodeRef);
 
-		LOGGER.debug("pkcs7Sign " + nodeRef);
+		LOGGER.fine("pkcs7Sign " + nodeRef);
 
 		ContentReader reader = contentService.getReader(node,
 				ContentModel.PROP_CONTENT);
@@ -74,7 +74,7 @@ ApplicationContextAware {
 			bytes = new byte[0];
 		}
 
-		LOGGER.debug(bytes.length + " bytes");
+		LOGGER.fine(bytes.length + " bytes");
 
 		return arubaSignServiceClient.pkcs7SignV2(username, password,
 				otp, bytes);
@@ -117,7 +117,7 @@ ApplicationContextAware {
 		apparence.setRightx(rightx);
 		apparence.setRighty(righty);
 		apparence.setTesto(testo);
-		LOGGER.debug("PdfSignApparence: " + apparence);	
+		LOGGER.fine("PdfSignApparence: " + apparence);	
 		
 		pdfsignatureV2(username, password, otp, nodeRef, apparence);		
 	}	
@@ -127,7 +127,7 @@ ApplicationContextAware {
 
 		NodeRef node = new NodeRef(nodeRef);
 
-		LOGGER.debug("pdfsignatureV2 " + nodeRef);
+		LOGGER.fine("pdfsignatureV2 " + nodeRef);
 
 		ContentReader reader = contentService.getReader(node,
 				ContentModel.PROP_CONTENT);
@@ -140,7 +140,7 @@ ApplicationContextAware {
 			bytes = new byte[0];
 		}
 
-		LOGGER.debug(bytes.length + " bytes");
+		LOGGER.fine(bytes.length + " bytes");
 
 		byte[] responseBytes = arubaSignServiceClient.pdfsignatureV2(username, password,
 				otp, bytes, apparence);
@@ -172,7 +172,7 @@ ApplicationContextAware {
 		apparence.setRightx(rightx);
 		apparence.setRighty(righty);
 		apparence.setTesto(testo);
-		LOGGER.debug("PdfSignApparence: " + apparence);		
+		LOGGER.fine("PdfSignApparence: " + apparence);		
 		pdfsignatureV2Multiple(username, password, otp, nodeRefs, apparence);
 	}
 	
@@ -184,7 +184,7 @@ ApplicationContextAware {
 		for (String nodeRef : nodeRefs) {			
 			NodeRef node = new NodeRef(nodeRef);
 
-			LOGGER.debug("pdfsignatureV2 " + nodeRef);
+			LOGGER.fine("pdfsignatureV2 " + nodeRef);
 
 			ContentReader reader = contentService.getReader(node,
 					ContentModel.PROP_CONTENT);
@@ -197,7 +197,7 @@ ApplicationContextAware {
 				bytes = new byte[0];
 			}
 
-			LOGGER.debug(bytes.length + " bytes");
+			LOGGER.fine(bytes.length + " bytes");
 			bytesArray.add(bytes);
 		}
 
