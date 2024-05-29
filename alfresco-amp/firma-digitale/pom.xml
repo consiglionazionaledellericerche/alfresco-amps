@@ -15,7 +15,7 @@
     <dependency>
       <groupId>it.cnr.si</groupId>
       <artifactId>firmadigitale</artifactId>
-      <version>1.18</version>
+      <version>2.0</version>
       <exclusions>
         <exclusion>
           <groupId>it.cnr.jada-libs</groupId>
