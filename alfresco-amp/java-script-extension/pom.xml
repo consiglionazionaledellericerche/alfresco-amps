@@ -14,7 +14,7 @@
   <parent>
     <artifactId>alfresco-amp-parent</artifactId>
     <groupId>it.cnr.si.alfresco</groupId>
-    <version>3.2</version>
+    <version>3.3-SNAPSHOT</version>
   </parent>
 
   <dependencies>
