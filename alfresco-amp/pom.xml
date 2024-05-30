@@ -9,7 +9,7 @@
   <parent>
       <groupId>it.cnr.si.alfresco</groupId>
       <artifactId>alfresco-parent</artifactId>
-      <version>3.2-SNAPSHOT</version>
+      <version>3.2</version>
   </parent>
 
   <!-- Libs used in Unit and Integration tests -->
