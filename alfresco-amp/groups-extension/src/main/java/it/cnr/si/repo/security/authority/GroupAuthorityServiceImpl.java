@@ -143,197 +143,205 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
     }
     
     public void addAuthority(NodeRef parentName, NodeRef childName) {
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-			groupAuthorityDAO.addAuthority(Collections.singleton(groupAuthorityDAO.getAuthorityName(parentName)),
-					groupAuthorityDAO.getAuthorityName(childName));
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
+			@Override
+			public Void doWork() throws Exception {
+				groupAuthorityDAO.addAuthority(Collections.singleton(groupAuthorityDAO.getAuthorityName(parentName)),
+						groupAuthorityDAO.getAuthorityName(childName));
+				return null;
+			}
+		});
 	}
 
     public void removeAuthority(NodeRef parentName, NodeRef childName) {
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
+		AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
+			@Override
+			public Void doWork() throws Exception {
     		groupAuthorityDAO.removeAuthority(groupAuthorityDAO.getAuthorityName(parentName),
     			groupAuthorityDAO.getAuthorityName(childName));
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+				return null;
+			}
+		});
 	}
     
     public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName){
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-    		return createAuthority(authorityParentRef, shortName, authorityDisplayName, null, null);
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
+			@Override
+			public NodeRef doWork() throws Exception {
+    			return createAuthority(authorityParentRef, shortName, authorityDisplayName, null, null);
+			}
+		});
     }
     
     public NodeRef createAuthority(final NodeRef authorityParentRef, String shortName, final String authorityDisplayName, final String... authorityZones){
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-			final String name = authorityService.getName(AuthorityType.GROUP, shortName);
-			NodeRef childRef = AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
-				@Override
-				public NodeRef doWork() throws Exception {
-					Set<String> zones = new HashSet<String>();
-					if (authorityZones == null)
-						zones.add(AuthorityService.ZONE_APP_DEFAULT);
-					else
-						zones.addAll(Arrays.asList(authorityZones));
-					groupAuthorityDAO.createAuthority(name, authorityDisplayName, zones);
-					NodeRef newGroup = groupAuthorityDAO.getAuthorityNodeRefOrNull(name);
-					if (!authorityParentRef.equals(getAuthorityContainer()))
-						addAuthority(authorityParentRef, newGroup);
-					return newGroup;
-				}
-			});
-			ownableService.takeOwnership(childRef);
-			permissionService.setPermission(childRef, AuthenticationUtil.getFullyAuthenticatedUser(),
-					PermissionService.FULL_CONTROL, true);
-			return childRef;
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
+			@Override
+			public NodeRef doWork() throws Exception {
+
+				final String name = authorityService.getName(AuthorityType.GROUP, shortName);
+				NodeRef childRef = AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
+					@Override
+					public NodeRef doWork() throws Exception {
+						Set<String> zones = new HashSet<String>();
+						if (authorityZones == null)
+							zones.add(AuthorityService.ZONE_APP_DEFAULT);
+						else
+							zones.addAll(Arrays.asList(authorityZones));
+						groupAuthorityDAO.createAuthority(name, authorityDisplayName, zones);
+						NodeRef newGroup = groupAuthorityDAO.getAuthorityNodeRefOrNull(name);
+						if (!authorityParentRef.equals(getAuthorityContainer()))
+							addAuthority(authorityParentRef, newGroup);
+						return newGroup;
+					}
+				});
+				ownableService.takeOwnership(childRef);
+				permissionService.setPermission(childRef, AuthenticationUtil.getFullyAuthenticatedUser(),
+						PermissionService.FULL_CONTROL, true);
+				return childRef;
+			}
+		});
     }
     
     public String getAuthorityNameOrNull(NodeRef nodeRef){
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-    		return groupAuthorityDAO.getAuthorityName(nodeRef);
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<String>() {
+			@Override
+			public String doWork() throws Exception {
+    			return groupAuthorityDAO.getAuthorityName(nodeRef);
+			}
+		});
     }
 
     public String getAuthorityDisplayNameOrNull(NodeRef nodeRef){
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-    		return groupAuthorityDAO.getAuthorityDisplayName( getAuthorityNameOrNull(nodeRef));
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
-
+		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<String>() {
+			@Override
+			public String doWork() throws Exception {
+    			return groupAuthorityDAO.getAuthorityDisplayName( getAuthorityNameOrNull(nodeRef));
+			}
+		});
     }
     
     public NodeRef getAuthorityNodeRefOrNull(String groupName){
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-    		return groupAuthorityDAO.getAuthorityNodeRefOrNull(groupName);
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
+		  	@Override
+			public NodeRef doWork() throws Exception {
+				return groupAuthorityDAO.getAuthorityNodeRefOrNull(groupName);
+			}
+		});
     }
 
     /**
      * {@inheritDoc}
      */
     public void deleteAuthority(NodeRef authorityNoderRef) {
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-    		authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), false);
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
+			@Override
+			public Void doWork() throws Exception {
+				authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), false);
+				return null;
+			}
+		});
     }
     
     /**
      * {@inheritDoc}
      */
     public void deleteAuthority(NodeRef authorityNoderRef, boolean cascade) {
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-    		authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), cascade);
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
+			@Override
+			public Void doWork() throws Exception {
+				authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), cascade);
+				return null;
+			}
+		});
     }
     
     public Set<NodeRef> getAllUserAuthorities(NodeRef parent, List<String> zones){
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-    		return getAuthorities(parent, AuthorityType.USER, zones);
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Set<NodeRef>>() {
+			@Override
+			public Set<NodeRef> doWork() throws Exception {
+    			return getAuthorities(parent, AuthorityType.USER, zones);
+			}
+		});
     }
 
     public Set<NodeRef> getAllGroupAuthorities(NodeRef parent, List<String> zones){
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-    		return getAuthorities(parent, AuthorityType.GROUP, zones);
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Set<NodeRef>>() {
+			@Override
+			public Set<NodeRef> doWork() throws Exception {
+    			return getAuthorities(parent, AuthorityType.GROUP, zones);
+			}
+		});
     }
     
     public Set<NodeRef> getAuthorities(NodeRef parent, AuthorityType authorityType, List<String> zones){
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-			Set<String> authorities = null;
-			if (parent == null) {
-				if (zones != null && zones.size() > 0) {
-					authorities = new HashSet<String>();
-					for (String zone : zones) {
-						authorities.addAll(authorityService.getAllRootAuthoritiesInZone(zone, authorityType));
-					}
-				}else
-					authorities = authorityService.getAllRootAuthorities(authorityType);
-			} else{
-				if (zones != null) {
-					Set<String> authoritiesInZones = new HashSet<String>();
-					authorities = authorityService.getContainedAuthorities(authorityType, getAuthorityNameOrNull(parent), true);
-					for (String zoneName : zones) {
-						authoritiesInZones.addAll(authorityService.getAllAuthoritiesInZone(zoneName, authorityType));
-					}
-					for (Iterator<String> iterator = authorities.iterator(); iterator.hasNext();) {
-						String authority = iterator.next();
-						if (!authoritiesInZones.contains(authority)){
-							iterator.remove();
+		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Set<NodeRef>>() {
+			@Override
+			public Set<NodeRef> doWork() throws Exception {
+				Set<String> authorities = null;
+				if (parent == null) {
+					if (zones != null && zones.size() > 0) {
+						authorities = new HashSet<String>();
+						for (String zone : zones) {
+							authorities.addAll(authorityService.getAllRootAuthoritiesInZone(zone, authorityType));
 						}
-					}
-				}else
-					authorities = authorityService.getContainedAuthorities(authorityType, getAuthorityNameOrNull(parent), true);
+					}else
+						authorities = authorityService.getAllRootAuthorities(authorityType);
+				} else{
+					if (zones != null) {
+						Set<String> authoritiesInZones = new HashSet<String>();
+						authorities = authorityService.getContainedAuthorities(authorityType, getAuthorityNameOrNull(parent), true);
+						for (String zoneName : zones) {
+							authoritiesInZones.addAll(authorityService.getAllAuthoritiesInZone(zoneName, authorityType));
+						}
+						for (Iterator<String> iterator = authorities.iterator(); iterator.hasNext();) {
+							String authority = iterator.next();
+							if (!authoritiesInZones.contains(authority)){
+								iterator.remove();
+							}
+						}
+					}else
+						authorities = authorityService.getContainedAuthorities(authorityType, getAuthorityNameOrNull(parent), true);
+				}
+				Set<NodeRef> result = new HashSet<NodeRef>(authorities.size());
+				for (String authority : authorities) {
+					result.add(getAuthorityNodeRefOrNull(authority));
+				}
+				return result;
 			}
-			Set<NodeRef> result = new HashSet<NodeRef>(authorities.size());
-			for (String authority : authorities) {
-				result.add(getAuthorityNodeRefOrNull(authority));
-			}
-			return result;
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		});
     }
 
 	@Override
 	public Set<String> getAuthorityZones(String name) {
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-			return authorityService.getAuthorityZones(name);
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Set<String>>() {
+			@Override
+			public Set<String> doWork() throws Exception {
+				return authorityService.getAuthorityZones(name);
+			}
+		});
+
 	}
 
 	@Override
 	public void addAuthorityToZones(String authorityName, String... zones) {
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-			authorityService.addAuthorityToZones(authorityName, new HashSet<String>(Arrays.asList(zones)));
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
+			@Override
+			public Void doWork() throws Exception {
+				authorityService.addAuthorityToZones(authorityName, new HashSet<String>(Arrays.asList(zones)));
+				return null;
+			}
+		});
+
 	}
 
 	@Override
 	public void removeAuthorityFromZones(String authorityName, String... zones) {
-		try {
-			AuthenticationUtil.setRunAsUserSystem();
-			authorityService.removeAuthorityFromZones(authorityName, new HashSet<String>(Arrays.asList(zones)));
-		} finally {
-			AuthenticationUtil.clearCurrentSecurityContext();
-		}
+		AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
+			@Override
+			public Void doWork() throws Exception {
+				authorityService.removeAuthorityFromZones(authorityName, new HashSet<String>(Arrays.asList(zones)));
+				return null;
+			}
+		});
 	}
 }

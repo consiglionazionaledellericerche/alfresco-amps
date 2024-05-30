@@ -331,7 +331,7 @@ public class GroupAuthority extends BaseScopableProcessorExtension {
         		result.add(authorityPermission);
     		}
         }
-        if (groupRef != null && (authorityType == null || authorityType.equals(AuthorityType.USER.name()))){
+        if (authorityType == null || authorityType.equals(AuthorityType.USER.name())){
         	Set<NodeRef> childs = groupAuthorityService.getAllUserAuthorities(groupRef, 
                 zones != null ? Arrays.asList(StringUtils.commaDelimitedListToStringArray(zones)) : null);
         	for (NodeRef child : childs) {
