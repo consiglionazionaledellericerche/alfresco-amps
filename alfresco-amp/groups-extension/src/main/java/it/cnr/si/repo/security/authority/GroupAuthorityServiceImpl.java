@@ -26,7 +26,12 @@ import org.alfresco.service.cmr.security.PermissionService;
 import org.alfresco.service.namespace.NamespacePrefixResolver;
 import org.alfresco.service.namespace.QName;
 import org.alfresco.service.namespace.RegexQNamePattern;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
 
+@Service("GroupAuthorityService")
 public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 
     private QName qnameAssocSystem;
@@ -141,7 +146,9 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
     {
         return getSystemContainer(qnameAssocZones);
     }
-    
+
+    @Override
+    @PreAuthorize("hasPermission(#parentName, 'sys:base.CreateChildren') and hasPermission(#childName, 'sys:base.ReadProperties')")
     public void addAuthority(NodeRef parentName, NodeRef childName) {
 		AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
 			@Override
@@ -152,7 +159,8 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 			}
 		});
 	}
-
+    @Override
+    @PreAuthorize("hasPermission(#parentName, 'sys:base.DeleteChildren') and hasPermission(#childName, 'sys:base.ReadProperties')")
     public void removeAuthority(NodeRef parentName, NodeRef childName) {
 		AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
 			@Override
@@ -163,7 +171,8 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 			}
 		});
 	}
-    
+    @Override
+    @PreAuthorize("hasPermission(#authorityParentRef, 'sys:base.CreateChildren')")
     public NodeRef createAuthority(NodeRef authorityParentRef, String shortName, String authorityDisplayName){
 		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
 			@Override
@@ -172,7 +181,8 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 			}
 		});
     }
-    
+    @Override
+    @PreAuthorize("hasPermission(#authorityParentRef, 'sys:base.CreateChildren')")
     public NodeRef createAuthority(final NodeRef authorityParentRef, String shortName, final String authorityDisplayName, final String... authorityZones){
 		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
 			@Override
@@ -201,7 +211,8 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 			}
 		});
     }
-    
+    @Override
+    @PreAuthorize("hasPermission(#nodeRef, 'sys:base.ReadProperties')")
     public String getAuthorityNameOrNull(NodeRef nodeRef){
 		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<String>() {
 			@Override
@@ -211,6 +222,7 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 		});
     }
 
+    @PreAuthorize("hasPermission(#nodeRef, 'sys:base.ReadProperties')")
     public String getAuthorityDisplayNameOrNull(NodeRef nodeRef){
 		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<String>() {
 			@Override
@@ -219,7 +231,8 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 			}
 		});
     }
-    
+    @Override
+    @PreAuthorize("hasPermission(#nodeRef, 'sys:base.ReadProperties')")
     public NodeRef getAuthorityNodeRefOrNull(String groupName){
 		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<NodeRef>() {
 		  	@Override
@@ -232,11 +245,13 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
     /**
      * {@inheritDoc}
      */
-    public void deleteAuthority(NodeRef authorityNoderRef) {
+    @Override
+    @PreAuthorize("hasPermission(#authorityNodeRef, 'sys:base.DeleteChildren')")
+    public void deleteAuthority(NodeRef authorityNodeRef) {
 		AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
 			@Override
 			public Void doWork() throws Exception {
-				authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), false);
+				authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNodeRef), false);
 				return null;
 			}
 		});
@@ -245,16 +260,19 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
     /**
      * {@inheritDoc}
      */
-    public void deleteAuthority(NodeRef authorityNoderRef, boolean cascade) {
+    @Override
+    @PreAuthorize("hasPermission(#authorityNodeRef, 'sys:base.DeleteChildren')")
+    public void deleteAuthority(NodeRef authorityNodeRef, boolean cascade) {
 		AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Void>() {
 			@Override
 			public Void doWork() throws Exception {
-				authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNoderRef), cascade);
+				authorityService.deleteAuthority(groupAuthorityDAO.getAuthorityName(authorityNodeRef), cascade);
 				return null;
 			}
 		});
     }
-    
+    @Override
+    @PreAuthorize("hasPermission(#parent, 'sys:base.ReadChildren')")
     public Set<NodeRef> getAllUserAuthorities(NodeRef parent, List<String> zones){
 		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Set<NodeRef>>() {
 			@Override
@@ -263,7 +281,8 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 			}
 		});
     }
-
+    @Override
+    @PreAuthorize("hasPermission(#parent, 'sys:base.ReadChildren')")
     public Set<NodeRef> getAllGroupAuthorities(NodeRef parent, List<String> zones){
 		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Set<NodeRef>>() {
 			@Override
@@ -272,7 +291,9 @@ public class GroupAuthorityServiceImpl implements GroupAuthorityService{
 			}
 		});
     }
-    
+
+    @Override
+    @PreAuthorize("hasPermission(#parent, 'sys:base.ReadChildren')")
     public Set<NodeRef> getAuthorities(NodeRef parent, AuthorityType authorityType, List<String> zones){
 		return AuthenticationUtil.runAsSystem(new AuthenticationUtil.RunAsWork<Set<NodeRef>>() {
 			@Override
