@@ -30,34 +30,6 @@ maven-deploy:
     refs:
       - master
 
-#Ad ogni nuovo tag viene fatta la push sul docker hub.
-docker-build-push-hub:
-  stage: build
-  script:
-    - docker build -t $CI_PROJECT_NAME:$CI_COMMIT_REF_NAME .
-    - docker login -u $DOCKER_HUB_USER -p $DOCKER_HUB_PASSWORD
-    - docker tag $CI_PROJECT_NAME:$CI_COMMIT_REF_NAME $DOCKER_HUB_ORGANIZATION/$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME
-    - docker tag $CI_PROJECT_NAME:$CI_COMMIT_REF_NAME $DOCKER_HUB_ORGANIZATION/$CI_PROJECT_NAME:latest
-    - docker push $DOCKER_HUB_ORGANIZATION/$CI_PROJECT_NAME:$CI_COMMIT_REF_NAME
-    - docker push $DOCKER_HUB_ORGANIZATION/$CI_PROJECT_NAME:latest
-  only:
-    - tags
-
-#Ad ogni nuovo commit sul master viene fatta la push sul docker registry locale.
-docker-build-push-master:
-  stage: build
-  script:
-    - docker build -t $CONTAINER_TEST_IMAGE .
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker tag $CONTAINER_TEST_IMAGE $CI_REGISTRY/$CONTAINER_RELEASE_IMAGE
-    - docker push $CI_REGISTRY/$CONTAINER_RELEASE_IMAGE
-  allow_failure: true
-  only:
-    variables:
-      - $CI_COMMIT_MESSAGE !~ /prepare release/ && $CI_COMMIT_MESSAGE !~ /prepare for next development iteration/
-    refs:
-      - master
-
 #il deploy su maven central dal tag solo se il deploy della release è fallito per qualche motivo.
 perform-maven-central:
   stage: release
