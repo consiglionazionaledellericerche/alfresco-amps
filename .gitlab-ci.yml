@@ -22,7 +22,7 @@ cache:
   
 maven-deploy:
   stage: deploy
-  image: maven:3.9.9-eclipse-temurin-11
+  image: maven:3.9.9-openjdk-11-alpine
   script: "mvn clean deploy $MAVEN_CLI_OPTS"
   only:
     variables:
@@ -33,7 +33,7 @@ maven-deploy:
 #il deploy su maven central dal tag solo se il deploy della release è fallito per qualche motivo.
 perform-maven-central:
   stage: release
-  image: maven:3.9.9-eclipse-temurin-11
+  image: maven:3.9.9-openjdk-11-alpine
   script:
     # Add gpg private key
     - 'which gnupg || ( apk add --update gnupg && rm -rf /var/cache/apk/*)'
@@ -51,7 +51,7 @@ perform-maven-central:
 #la release è opzionale e manuale.
 perform-maven-release-maven-central:
   stage: release
-  image: maven:3.9.9-eclipse-temurin-11
+  image: maven:3.9.9-openjdk-11-alpine
   script:
     - 'which git || (apk add --update git && rm -rf /var/cache/apk/*)'
     # Install ssh-agent if not already installed, it is required by Docker.
