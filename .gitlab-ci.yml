@@ -79,7 +79,6 @@ perform-maven-release-maven-central:
     - git checkout -B "$CI_BUILD_REF_NAME"
 
     # Add gpg private key
-    - 'which gpg || (apt-get update && apt-get install -y gnupg && rm -rf /var/lib/apt/lists/*)'
     - gpg -v --list-keys
     - echo "pinentry-mode loopback" > /root/.gnupg/gpg.conf
     - echo "allow-loopback-pinentry" > /root/.gnupg/gpg-agent.conf
